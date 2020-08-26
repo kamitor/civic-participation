@@ -1,4 +1,7 @@
 
+// STILL A DRAFT
+// WE WILL IMPLEMENT PAGE BY PAGE, AND THEREFORE VOTING STRUCTURES MAY NOT BE PRESENT TILL THE END
+
 class Account {
     accountName: string;
     commonName: string;

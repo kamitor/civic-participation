@@ -3,6 +3,9 @@
 using namespace std;
 using namespace eosio;
 
+// STILL A DRAFT
+// WE WILL IMPLEMENT PAGE BY PAGE, AND THEREFORE VOTING STRUCTURES MAY NOT BE PRESENT TILL THE END
+
 enum ProposalCategory { Green, Kids, Road }
 enum ProposalType { Create, Remove, Update }
 enum ProposalStatus { Proposed, Reviewing, Approved, Rejected, VotePassed, VoteFailed, Actioned, Closed }
