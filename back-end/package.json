@@ -20,11 +20,12 @@
         "express": "^4.16.4",
         "mongoose": "^5.9.10",
         "morgan": "~1.9.1",
+        "node-fetch": "^2.6.0",
         "winston": "^3.2.1",
         "ws": "^7.3.0"
     },
     "devDependencies": {
-        "node-fetch": "^2.6.0",
+        "eslint": "^7.7.0",
         "nodemon": "^2.0.3",
         "prettier": "2.0.5",
         "util": "^0.12.2"
