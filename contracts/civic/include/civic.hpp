@@ -1,35 +1,53 @@
-#include <civic.hpp>
+#include <eosio/eosio.hpp>
 
-ACTION civic::hi(name from, string message) {
-  require_auth(from);
+using namespace std;
+using namespace eosio;
 
-  // Init the _message table
-  messages_table _messages(get_self(), get_self().value);
+enum ProposalCategory { Green, Kids, Road }
+enum ProposalType { Create, Remove, Update }
+enum ProposalStatus { Proposed, Reviewing, Approved, Rejected, VotePassed, VoteFailed, Actioned, Closed }
 
-  // Find the record from _messages table
-  auto msg_itr = _messages.find(from.value);
-  if (msg_itr == _messages.end()) {
-    // Create a message record if it does not exist
-    _messages.emplace(from, [&](auto& msg) {
-      msg.user = from;
-      msg.text = message;
-    });
-  } else {
-    // Modify a message record if it exists
-    _messages.modify(msg_itr, from, [&](auto& msg) {
-      msg.text = message;
-    });
-  }
-}
+CONTRACT civic : public contract {
+  public:
+    using contract::contract;
 
-ACTION civic::clear() {
-  require_auth(get_self());
+    static constexpr uint32_t vote_period_seconds = 30 * 24 * 60 * 60; // 30 days
+    static constexpr uint32_t vote_pass_count = 5; // 5 yes votes
 
-  messages_table _messages(get_self(), get_self().value);
+    ACTION proposalcreate(name creator, string title, string description, ProposalCategory category, float budget, ProposalType type, vector<bytes[]> photos, string location);
 
-  // Delete all records in _messages table
-  auto msg_itr = _messages.begin();
-  while (msg_itr != _messages.end()) {
-    msg_itr = _messages.erase(msg_itr);
-  }
-}
+    ACTION proposalupdate(name updater, uint32_t proposal_id, string title, string description, ProposalCategory category, float budget, ProposalType type, vector<bytes[]> photos, string location, ProposalStatus new_status, string regulations, string comment);
+
+    ACTION proposalvote(name voter, uint32_t proposal_id, bool vote);
+
+    ACTION updatefailedproposals(name authorizer);
+
+  private:
+    TABLE proposal {
+      uint32_t            proposal_id;
+      string              title;
+      string              description;
+      ProposalCategory    category;
+      float               budget;
+      ProposalType        type;
+      vector<bytes[]>     photos;
+      string              location;
+      ProposalStatus      status;
+      string              regulations;
+
+      uint32_t            created_time;
+      uint32_t            approved_time;
+      vector<eosio::name> voted;
+      uint8_t             yes_vote_count;
+
+      auto primary_key() const { return proposal_id; }
+    }
+    typedef multi_index<name("proposals"), proposals> proposals_table;
+
+    // TABLE messages {
+    //   name    user;
+    //   string  text;
+    //   auto primary_key() const { return user.value; }
+    // };
+    // typedef multi_index<name("messages"), messages> messages_table;
+};
