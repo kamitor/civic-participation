@@ -1,0 +1,15 @@
+FROM dfuse/dfuse-eosio
+
+RUN ln -s /app/dfuseeos /bin/dfuseeos
+RUN cd / \
+    # "y" will initialize to run a producing node, "n" will connect to existing node
+    && (echo "y" && cat) | dfuseeos init
+RUN sed -i 's/127.0.0.1:8888/0.0.0.0:8888/g' producer/config.ini
+
+CMD dfuseeos start
+
+# docker-compose build dfuse
+# docker-compose run dfuse
+
+# docker build ./blockchain/ -f Dockerfile-dfuse -t dfuse
+# docker run -p 8888:8888 -p 8081:8081 -p 8080:8080 -it dfuse dfuseeos start
