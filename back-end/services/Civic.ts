@@ -1,15 +1,4 @@
-
-// STILL A DRAFT
-// WE WILL IMPLEMENT PAGE BY PAGE, AND THEREFORE VOTING STRUCTURES MAY NOT BE PRESENT TILL THE END
-
-class Account {
-    accountName: string;
-    commonName: string;
-    type: AccountType;
-    privateKey: string; // ??
-}
-
-enum AccountType { Human, Org }
+import { Accountability } from './Accountability'
 
 enum ProposalCategory { Green, Kids, Road }
 enum ProposalType { Create, Remove, Update }
@@ -48,7 +37,7 @@ class ProposalHistory {
     comment: string;
 }
 
-class Civic {
+export class Civic {
     accountability: Accountability;
     account: Account;
 
@@ -57,18 +46,6 @@ class Civic {
     proposalCreate(proposal: Proposal): ProposalDetailed {}
     proposalUpdate(proposal: ProposalExtended): ProposalDetailed {}
     proposalVote(proposalId: number, vote: boolean): ProposalDetailed {}
-    proposalList(status?: ProposalStatus): ProposalDetailed[] {}
+    proposalList(status ? : ProposalStatus): ProposalDetailed[] {}
     proposalHistory(proposalId: number): ProposalHistory[] {}
-}
-
-class Accountability {
-    dfuseClient: DfuseClient;
-
-    push_transaction(... args) {}
-
-    get_table_rows(... args) {}
-
-    get_actions(... args) {} // extended dfuse response with authorized (human) accountName for each tx
-
-    get_account(... args) {} // extended dfuse response with commonName
 }
