@@ -1,7 +1,14 @@
 // these settings are used on npm start
 const settings = {
     eosio: {
-        nodeos: "http://localhost:8888"
+        nodeos: "http://localhost:8888",
+        accounts: {
+            eosio: {
+                pkey: "5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3",
+                pubkey: "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
+            }
+        }
+
     },
     dfuseOptions: dfuseOptions = {
         apiKey: "web_abcdef123456789",

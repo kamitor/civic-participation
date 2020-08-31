@@ -4,7 +4,7 @@ const asyncRouter = require('./asyncRouter');
 
 // Blockchain proxy
 // Use the following array for paths that should not be proxied to the blockchain
-const blockchainPathBlacklist = ['/new-account'];
+const blockchainPathBlacklist = ['/login'];
 
 const pre = async function(req, res, next) {
     if (blockchainPathBlacklist.includes(req.path)) {

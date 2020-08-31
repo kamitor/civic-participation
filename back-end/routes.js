@@ -9,6 +9,6 @@ const getAccount = require('./routes/chain/get_account');
 router.post("/v1/chain/get_account", asyncRouter(getAccount));
 
 // New API endpoints
-router.post('/new-account', asyncRouter(newAccount));
+router.post('/login', asyncRouter(newAccount));
 
 module.exports = router;
