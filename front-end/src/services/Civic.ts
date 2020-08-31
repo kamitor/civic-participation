@@ -1,8 +1,9 @@
 import { Accountability } from './Accountability'
+import { AccountExtended } from '../types/accounts';
 
-enum ProposalCategory { Green, Kids, Road }
-enum ProposalType { Create, Remove, Update }
-enum ProposalStatus { Proposed, Reviewing, Approved, Rejected, VotePassed, VoteFailed, Actioned, Closed }
+export enum ProposalCategory { Green, Kids, Road }
+export enum ProposalType { Create, Remove, Update }
+export enum ProposalStatus { Proposed, Reviewing, Approved, Rejected, VotePassed, VoteFailed, Actioned, Closed }
 
 class Proposal {
     title: string;
@@ -17,7 +18,8 @@ class Proposal {
 class ProposalExtended extends Proposal {
     proposalId: number;
     status: ProposalStatus; // also used for new status when updating
-    regulations: string
+    regulations: string;
+    comment: string;
 }
 
 class ProposalDetailed extends ProposalExtended {
@@ -35,17 +37,29 @@ class ProposalHistory {
     humanAuthorizerCommonName: string;
     status: ProposalStatus;
     comment: string;
+    txId?: string;
 }
 
-export class Civic {
+class MyAccount {
+    accountName: string;
+    commonName: string;
+    privateKey: string;
+}
+
+export default class Civic {
     accountability: Accountability;
-    account: Account;
+    account: MyAccount;
 
-    accountLogin(accountName: string): void {};
+    async accountLogin(accountName: string, commonName?: string): Promise<AccountExtended> { };
+    async accountGet(accountName: string): Promise<AccountExtended> {
+        return await this.accountability.get_account(accountName);
+    };
 
-    proposalCreate(proposal: Proposal): ProposalDetailed {}
-    proposalUpdate(proposal: ProposalExtended): ProposalDetailed {}
-    proposalVote(proposalId: number, vote: boolean): ProposalDetailed {}
-    proposalList(status ? : ProposalStatus): ProposalDetailed[] {}
-    proposalHistory(proposalId: number): ProposalHistory[] {}
+    async proposalCreate(proposal: Proposal): Promise<ProposalDetailed> { }
+    async proposalUpdate(proposal: ProposalExtended): Promise<ProposalDetailed> { }
+    async proposalVote(proposalId: number, vote: boolean): Promise<ProposalDetailed> { }
+
+    async proposalList(status?: ProposalStatus): Promise<ProposalDetailed[]> { }
+    async proposalGet(proposalId: number): Promise<ProposalDetailed> { }
+    async proposalHistory(proposalId: number): Promise<ProposalHistory[]> { }
 }
