@@ -21,23 +21,24 @@ async function main() {
         useUnifiedTopology: true
     })
     console.log("Connected to database");
-    // Set up the system contract
-    console.log(eosioAccount)
+
     await accountability.login(eosioAccount);
+
+    // Set up the system contract
     await deploySystemContract();
 
     // Create some people
-    // accountability = new Accountability() // maybe needed
     await accountability.login(eosioAccount);
-    await createNewPerson("yvo", "Yvo Hunink", keyFromName('yvo').pubKey);
-    await createNewPerson("hidde", "Hidde Kamst", keyFromName('yvo').pubKey);
-    await createNewPerson("tijn", "Tijn Kyuper", keyFromName('tijn').pubKey);
+    await createNewPerson(accountability, "yvo", "Yvo Hunink", keyFromName('yvo').pubKey);
+    await createNewPerson(accountability, "hidde", "Hidde Kamst", keyFromName('yvo').pubKey);
+    await createNewPerson(accountability, "tijn", "Tijn Kyuper", keyFromName('tijn').pubKey);
 
     // Create some new orgs
     await createNewOrg("gov", "The Ministry of The Hague", ["hidde", "tijn", "yvo"], 0.66);
 
     // Update the system contract to be controlled by the government
     await updateEosioAuth();
+    await accountability.login(eosioAccount);
 
     // TODO Deploy civic contract
 
@@ -62,7 +63,6 @@ async function deploySystemContract() {
 }
 
 async function updateEosioAuth() {
-    await accountability.login(eosioAccount);
     let data = {
         account: "eosio",
         permission: "active",
@@ -100,6 +100,7 @@ async function updateEosioAuth() {
         }
     }
     await accountability.transact("eosio", "updateauth", data);
+    console.log('Updated eosio auth to be owned by gov');
 }
 
 async function createNewOrg(accountName, commonName, owners, thresholdPercent) {

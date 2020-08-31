@@ -10,6 +10,13 @@ const ecc = require('eosjs-ecc');
  */
 module.exports = async function(req, res, next) {
 
+    const accountability = new Accountability();
+    accountability.login({
+        name: 'yvo',
+        permission: 'active',
+        privKey: keyFromName('yvo').privKey,
+    })
+
     await createNewPerson(req.accountName, req.commonName, req.pubKey);
 
     res.send();
@@ -18,15 +25,9 @@ module.exports = async function(req, res, next) {
 module.exports.createNewPerson = createNewPerson;
 module.exports.keyFromName = keyFromName;
 
-async function createNewPerson(accountName, commonName, key) {
+async function createNewPerson(accountability, accountName, commonName, key) {
     const data = newPersonData("eosio", accountName, key, key);
 
-    const accountability = new Accountability();
-    accountability.login({
-        name: 'yvo',
-        permission: 'active',
-        privKey: keyFromName('yvo').privKey,
-    })
     await accountability.transact("eosio", "newperson", data);
     await accountController.insert({
         accountName: accountName,
