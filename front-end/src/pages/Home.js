@@ -8,10 +8,10 @@ function Home() {
             let civic = new Civic(); // put this in context API, or use singleton
 
             try {
-                await civic.accountLogin('jack');
+                await civic.accountLogin('jack', 'Password1234!');
             } catch (e) {
                 // account did not exis, so ask for common name and send back so it is created
-                await civic.accountLogin('jack', 'Jack Tanner');
+                await civic.accountLogin('jack', 'Password1234!', 'Jack Tanner');
             }
 
             const proposal = {
@@ -26,7 +26,7 @@ function Home() {
             const proposalData = await civic.proposalCreate(proposal);
             const proposalId = proposalData.proposalId;
 
-            await civic.accountLogin('yvo');
+            await civic.accountLogin('yvo', 'Password2345!');
             proposal.proposalId = proposalId;
             proposal.staus = ProposalStatus.Reviewing;
             await civic.proposalUpdate(proposal);
@@ -37,7 +37,7 @@ function Home() {
             proposal.staus = ProposalStatus.Approved;
             await civic.proposalUpdate(proposal);
 
-            await civic.accountLogin('jack');
+            await civic.accountLogin('jack', 'Password1234!');
             await civic.proposalVote(proposalId, true);
 
             let proposals = await civic.proposalList();

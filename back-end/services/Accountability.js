@@ -3,8 +3,9 @@ const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');
 const ecc = require('eosjs-ecc');
 const { copyObj } = require('./objects');
 const { createDfuseClient } = require('@dfuse/client');
-const { DfuseClient } = require('@dfuse/client/types/client');
+// const { DfuseClient } = require('@dfuse/client/types/client');
 const fs = require('fs');
+const path = require('path');
 const { wait } = require('./objects');
 
 // Only needed for nodejs execution for eosjs and @dfuse/client
@@ -51,15 +52,16 @@ class Accountability {
     login(account) {
         let accountCopy = copyObj(account);
 
-        const signatureProvider = new JsSignatureProvider([accountCopy.privkey]);
-        accountCopy.pubKey = ecc.privateToPublic(accountCopy.privkey);
+        const signatureProvider = new JsSignatureProvider([accountCopy.privKey]);
+        accountCopy.pubKey = ecc.privateToPublic(accountCopy.privKey);
 
-        delete accountCopy.pkey;
+        delete accountCopy.privKey;
         this.account = accountCopy;
 
+        const rpc = this.rpc;
         this.api = TextEncoder ?
-            new Api({ this.rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() }) :
-            new Api({ this.rpc, signatureProvider });
+            new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() }) :
+            new Api({ rpc, signatureProvider });
     }
 
     async transact(receiver, action, data, options) {

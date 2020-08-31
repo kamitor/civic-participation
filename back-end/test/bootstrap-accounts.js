@@ -7,6 +7,11 @@ const { createNewPerson, keyFromName } = require('../routes/login');
 const AccountType = require('../models/account.type');
 
 let accountability = new Accountability();
+let eosioAccount = {
+    privKey: settings.eosio.accounts.eosio.privKey,
+    name: "eosio",
+    permission: "active"
+}
 
 async function main() {
     console.log("starting blockchain initialization");
@@ -17,16 +22,12 @@ async function main() {
     })
     console.log("Connected to database");
     // Set up the system contract
-    let eosioAccount = {
-        privKey: settings.eosio.accounts.eosio.pkey,
-        name: "eosio",
-        permission: "active"
-    }
+    console.log(eosioAccount)
     await accountability.login(eosioAccount);
     await deploySystemContract();
 
     // Create some people
-    accountability = new Accountability()
+    // accountability = new Accountability() // maybe needed
     await accountability.login(eosioAccount);
     await createNewPerson("yvo", "Yvo Hunink", keyFromName('yvo').pubKey);
     await createNewPerson("hidde", "Hidde Kamst", keyFromName('yvo').pubKey);
@@ -61,11 +62,6 @@ async function deploySystemContract() {
 }
 
 async function updateEosioAuth() {
-    eosioAccount = {
-        pkey: settings.eosio.accounts.eosio.pkey,
-        name: "eosio",
-        permission: "active"
-    }
     await accountability.login(eosioAccount);
     let data = {
         account: "eosio",
@@ -83,12 +79,12 @@ async function updateEosioAuth() {
     }
     await accountability.transact("eosio", "updateauth", data);
 
-    eosioAccount = {
-        pkey: settings.eosio.accounts.eosio.pkey,
+    const eosioOwnerAccount = {
+        privKey: settings.eosio.accounts.eosio.privKey,
         name: "eosio",
         permission: "owner"
     }
-    await accountability.login(eosioAccount);
+    await accountability.login(eosioOwnerAccount);
     data = {
         account: "eosio",
         permission: "owner",
@@ -112,7 +108,7 @@ async function createNewOrg(accountName, commonName, owners, thresholdPercent) {
     let updateAccount = {
         accountName: accountName,
         commonName: commonName,
-        accountType: "organization",
+        accountType: AccountType.Org,
     }
     await accountController.insert(updateAccount);
     console.log("Organization ", accountName, " created");
@@ -121,7 +117,7 @@ async function createNewOrg(accountName, commonName, owners, thresholdPercent) {
 function newOrgData(creator, commonName, owners, thresholdPercent) {
     let data = {
         creator: creator,
-        commonName: commonName,
+        name: commonName,
         owner: {
             threshold: Math.min(Math.floor(owners.length * thresholdPercent) + 1, owners.length),
             keys: [],
