@@ -4,10 +4,11 @@ const Accountability = require('../services/Accountability');
 const ecc = require('eosjs-ecc');
 
 /**
- * Creates an account with the commonName
- * @param accountName: string
- * @param pubKey: string
- * @param commonName: string
+ * Creates an account if it does not exist and add they common name to the database
+ * @param {string} accountName
+ * @param {string} pubKey
+ * @param {string} commonName
+ * @return {AccountExtended}
  */
 module.exports = async function(req, res, next) {
 
@@ -27,7 +28,7 @@ module.exports.createNewPerson = createNewPerson;
 module.exports.keyFromName = keyFromName;
 
 async function createNewPerson(accountability, accountName, commonName, key) {
-    const data = newPersonData("eosio", accountName, key);
+    const data = newPersonData("eosio", accountName, key, key);
 
     await accountability.transact("eosio", "newperson", data);
     await accountController.insert({

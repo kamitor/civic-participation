@@ -5,8 +5,9 @@ const ecc = require('eosjs-ecc');
 
 /**
  * Confirms the user has the correct public key
- * @param accountName: string
- * @param pubKey: string
+ * @param {string} accountName
+ * @param {string} pubKey
+ * @return {AccountExtended}
  */
 module.exports = async function(req, res, next) {
 
