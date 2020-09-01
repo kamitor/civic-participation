@@ -8,13 +8,9 @@ function Home() {
         async function main() {
             let civic = new Civic(); // put this in context API, or use singleton
 
-            try {
-                await civic.accountLogin('jack', 'Password1234!');
-            } catch (e) {
-                // account did not exis, so ask for common name and send back so it is created
-                await civic.accountLogin('jack', 'Password1234!', 'Jack Tanner');
-            }
-
+            await civic.accountLogin('jack', 'Password1234!');
+            await civic.accountCreate('jack', 'Password1234!', 'Jack Tanner');
+            
             const proposal = {
                 title: 'Build a flowerbed next to John\'s tacos',
                 description: 'A BIG DESCRIPTION',

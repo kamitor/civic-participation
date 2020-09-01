@@ -18,14 +18,24 @@ export default class Civic {
     }
 
     /** 
-     * Login to account, if it does not exist then create account. Initializes the civicContract
+     * Login to account
+     * Initializes the civicContract
      * @param {string} accountName - username
      * @param {string} password - password
-     * @param {string} [commonName] - common name e.g. 'Jack Tanner' (optional)
      * @returns {AccountExtended}
      */
     async accountLogin(accountName, password, commonName) { };
-    
+
+        /** 
+     * Create account with the common name provided
+     * Initializes the civicContract
+     * @param {string} accountName - username
+     * @param {string} password - password
+     * @param {string} commonName - common name e.g. 'Jack Tanner'
+     * @returns {AccountExtended}
+     */
+    async accountCreate(accountName, password, commonName) { };
+
     /** 
      * Get information about an account
      * @param {string} accountName - username
