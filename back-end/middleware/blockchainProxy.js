@@ -1,10 +1,11 @@
 const nodeFetch = require('node-fetch');
 const settings = require('../settings');
 const asyncRouter = require('./asyncRouter');
+const { mergeObj } = require('../services/objects');
 
 // Blockchain proxy
 // Use the following array for paths that should not be proxied to the blockchain
-const blockchainPathBlacklist = ['/login'];
+const blockchainPathBlacklist = ['/login', '/create-account'];
 
 const pre = async function(req, res, next) {
     if (blockchainPathBlacklist.includes(req.path)) {
@@ -30,13 +31,7 @@ const pre = async function(req, res, next) {
     req.blockchainResStatus = fetchResponse.status;
 
     req.addBlockchainRes = function(obj = {}) {
-        let retObj = obj;
-        for (let key in blockchainRes) {
-            if (blockchainRes.hasOwnProperty(key)) {
-                retObj[key] = blockchainRes[key];
-            }
-        }
-        return retObj;
+        return mergeObj(obj, blockchainRes);
     }
     next();
 }
