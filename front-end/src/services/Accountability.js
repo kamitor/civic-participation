@@ -1,15 +1,18 @@
 import { createDfuseClient } from '@dfuse/client';
-import { Api, JsonRpc, RpcError } from ' eosjs';
+import { Api, JsonRpc, RpcError } from 'eosjs';
 import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig';
 import ecc from 'eosjs-ecc';
 import { copyObj } from './objects';
 
 import settings from '../settings';
 
-class Accountability {
-    rpc; // read from blockchain with eosjs
-    api; // interact with blockchain with eosjs
-    dfuseClient; // use enhanced blockchain api
+export default class Accountability {
+    // SEE account FOR TYPES!!!
+    // import {AccountExtended, SearchTransactionsResponseExtended} from '../types/accounts.ignore'
+
+    rpc; // {JsonRpc} read from blockchain with eosjs
+    api; // {Api} interact with blockchain with eosjs
+    dfuseClient; // {DfuseClient} use enhanced blockchain api
     account; // { name, permission, pubKey}
 
     /** 
@@ -20,23 +23,24 @@ class Accountability {
     constructor(network = { nodeos: settings.eosio.nodeos, dfuseOptions: settings.dfuseOptions }) {
         this.rpc = fetch ? new JsonRpc(network.nodeos, { fetch }) : new JsonRpc(network.nodeos);
         if (settings.isLiveEnvironment()) settings.secure = true;
+        const dfuseOptions = network.dfuseOptions;
         if (fetch) {
             dfuseOptions.httpClientOptions = {
                 fetch: fetch
             }
         }
-        if (ws) {
-            dfuseOptions.graphqlStreamClientOptions = {
-                socketOptions: {
-                    webSocketFactory: (url) => ws(url, ["graphql-ws"])
-                }
-            }
-            dfuseOptions.streamClientOptions = {
-                socketOptions: {
-                    webSocketFactory: (url) => ws(url)
-                }
-            }
-        }
+        // if (ws) {
+        //     dfuseOptions.graphqlStreamClientOptions = {
+        //         socketOptions: {
+        //             webSocketFactory: (url) => ws(url, ["graphql-ws"])
+        //         }
+        //     }
+        //     dfuseOptions.streamClientOptions = {
+        //         socketOptions: {
+        //             webSocketFactory: (url) => ws(url)
+        //         }
+        //     }
+        // }
         this.dfuseClient = createDfuseClient(dfuseOptions);
     }
 
@@ -62,10 +66,12 @@ class Accountability {
             new Api({ rpc, signatureProvider });
     }
 
+
     /**
     * Returns data from the current blockchain state
     */
     // use this.dfuseClient.stateTable()
+
 
     /**
      * Searches the transaction history
@@ -74,11 +80,13 @@ class Accountability {
      */
     // use this.dfuseClient.searchTransactions()
 
+
     /**
      * Gets information about an account, with extended response type with common name
      * @response {AccountExtended}
      */
     // use this.rpc.get_account()
+
 
     /** 
      * Sends a transaction to the blockchain
@@ -122,6 +130,3 @@ class Accountability {
     }
 
 }
-
-
-module.exports = Accountability

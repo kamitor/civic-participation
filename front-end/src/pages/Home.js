@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import Civic, { ProposalCategory, ProposalType, ProposalStatus } from '../services/Civic';
+import Civic from '../services/Civic';
+import { ProposalCategory, ProposalType, ProposalStatus } from '../types/civic';
 
 function Home() {
 
