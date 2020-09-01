@@ -1,12 +1,10 @@
 const { Api, JsonRpc, RpcError, Serialize } = require('eosjs');
 const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');
 const ecc = require('eosjs-ecc');
-const { copyObj } = require('./objects');
 const { createDfuseClient } = require('@dfuse/client');
-// const { DfuseClient } = require('@dfuse/client/types/client');
 const fs = require('fs');
 const path = require('path');
-const { wait } = require('./objects');
+const { wait, copyObj } = require('./objects');
 
 // Only needed for nodejs execution for eosjs and @dfuse/client
 const fetch = require('node-fetch');
@@ -19,8 +17,13 @@ class Accountability {
     rpc; // read from blockchain with eosjs
     api; // interact with blockchain with eosjs
     dfuseClient; // use enhanced blockchain api
-    account; // { name, permission, pubkey}
+    account; // { name, permission, pubKey}
 
+    /** 
+     * @param {Object} network
+     * @param {string} network.nodeos - http origin nameo of nodeos with http api enabled
+     * @param {DfuseOptions} network.dfuseOptions - dfuse API options
+     */
     constructor(network = { nodeos: settings.eosio.nodeos, dfuseOptions: settings.dfuseOptions }) {
         this.rpc = fetch ? new JsonRpc(network.nodeos, { fetch }) : new JsonRpc(network.nodeos);
         if (settings.isLiveEnvironment()) settings.secure = true;
@@ -44,10 +47,12 @@ class Accountability {
         this.dfuseClient = createDfuseClient(dfuseOptions);
     }
 
-    /*
-     * @param privKey
-     * @param name
-     * @param permission
+    /** 
+     * Adds account and private key to object for sending transactions
+     * @param {Object} account
+     * @param {string} account.name - account name
+     * @param {string} account.permission - account permission to use
+     * @param {string} account.privKey - private key
      */
     login(account) {
         let accountCopy = copyObj(account);
@@ -64,6 +69,15 @@ class Accountability {
             new Api({ rpc, signatureProvider });
     }
 
+    /** 
+     * Sends a transaction to the blockchain
+     * @param {string} receiver - account on which to call contract execution
+     * @param {string} action - action to execut
+     * @param {obj} data - arguments for the action to execute with
+     * @param {Object} [options] - configuration parameters (optional)
+     * @param {string} [options.status] - throw error if tx status is not this
+     * @returns {Object} transaction object
+     */
     async transact(receiver, action, data, options) {
         try {
             const tx = await this.api.transact({
@@ -96,6 +110,14 @@ class Accountability {
         }
     }
 
+    /**
+     * Deploys a smart contract to an account on the blockchain
+     * @param {string} contractAccount - account on which to deploy contract
+     * @param {string} contractDir - relative or absolute contract directory with wasm and abi files
+     * @param {Object} [options] - configuration parameters (optional)
+     * @param {string} [options.status] - throw error if tx status is not this
+     * @returns {Object} transaction object
+     */
     async deploy(contractAccount, contractDir, options) {
         const { wasmPath, abiPath } = getDeployableFilesFromDir(contractDir)
 

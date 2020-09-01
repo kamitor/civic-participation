@@ -102,7 +102,12 @@ class Account {
 
 export class AccountExtended extends Account {
     common_name: string;
-    type: AccountType;
+    type: AccountTypeEnum;
 }
 
-enum AccountType { Human, Org }
+enum AccountTypeEnum { Human, Org }
+
+export const AccountType = {
+    Human: 0,
+    Org: 1
+}
