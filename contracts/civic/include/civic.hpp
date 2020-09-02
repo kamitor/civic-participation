@@ -17,9 +17,9 @@ CONTRACT civic : public contract {
     microseconds vote_period = eosio::days(30);
     static constexpr uint32_t vote_yes_pass_count = 5; // 5 yes votes
 
-    ACTION propcreate(name creator, string title, string description, ProposalCategory category, float budget, ProposalType type, vector<string[]> photos, string location);
+    ACTION propcreate(name creator, string title, string description, ProposalCategory category, float budget, ProposalType type, vector<string> photos, string location);
 
-    ACTION propupdate(name updater, uint32_t proposal_id, string title, string description, ProposalCategory category, float budget, ProposalType type, vector<string[]> photos, string location, ProposalStatus new_status, string regulations, string comment);
+    ACTION propupdate(name updater, uint32_t proposal_id, string title, string description, ProposalCategory category, float budget, ProposalType type, vector<string> photos, string location, ProposalStatus new_status, string regulations, string comment);
 
     ACTION propvote(name voter, uint32_t proposal_id, bool vote);
 
@@ -34,7 +34,7 @@ CONTRACT civic : public contract {
       ProposalCategory          category;
       float                               budget;
       ProposalType                 type;
-      vector<string[]>             photos;
+      vector<string>             photos;
       string                              location;
       ProposalStatus                status;
       string                              regulations;

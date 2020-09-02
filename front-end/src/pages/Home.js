@@ -8,8 +8,12 @@ function Home() {
         async function main() {
             let civic = new Civic(); // put this in context API, or use singleton
 
+            try {
+                await civic.accountLogin('jack', 'Password1234!');
+            } catch (e) {
+                await civic.accountCreate('jack', 'Password1234!', 'Jack Tanner');
+            }
             await civic.accountLogin('jack', 'Password1234!');
-            await civic.accountCreate('jack', 'Password1234!', 'Jack Tanner');
             
             const proposal = {
                 title: 'Build a flowerbed next to John\'s tacos',
