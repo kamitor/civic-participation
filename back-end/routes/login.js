@@ -35,7 +35,7 @@ module.exports = async function(req, res) {
 
     const accountDoc = await accountController.findOne({ accountName: accountName });
 
-    const accountExtendedObject = { ...blockchainAccount, common_name: accountDoc.commonName, type: AccountType.Human }
+    const accountExtendedObject = { ...blockchainAccount, commonName: accountDoc.commonName, type: AccountType.Human }
 
     res.send(accountExtendedObject);
 }

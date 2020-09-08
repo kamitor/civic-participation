@@ -2,6 +2,7 @@ const accountController = require('../controllers/accounts.controller');
 const AccountType = require('../models/account.type');
 const Accountability = require('../services/Accountability');
 const ecc = require('eosjs-ecc');
+const crypto = require('crypto')
 
 
 let accountability = new Accountability();
@@ -18,17 +19,19 @@ module.exports = async function(req, res, next) {
     const commonName = req.body.commonName
     const pubKey = req.body.pubKey
 
+    const privKey = keyFromName('yvo', 'Password123').privKey
+
     accountability.login({
         name: 'yvo',
         permission: 'active',
-        privKey: keyFromName('yvo').privKey,
+        privKey: privKey,
     })
 
-    await createNewPerson(accountName, commonName, pubKey);
+    await createNewPerson(accountability, accountName, commonName, pubKey);
 
     const blockchainAccount = await accountability.getAccount(accountName);
 
-    const accountExtendedObject = { ...blockchainAccount, common_name: commonName, type: AccountType.Human }
+    const accountExtendedObject = { ...blockchainAccount, commonName: commonName, type: AccountType.Human }
 
     res.send(accountExtendedObject);
 }
@@ -36,7 +39,7 @@ module.exports = async function(req, res, next) {
 module.exports.createNewPerson = createNewPerson;
 module.exports.keyFromName = keyFromName;
 
-async function createNewPerson(accountName, commonName, key) {
+async function createNewPerson(accountability, accountName, commonName, key) {
     const data = newPersonData("eosio", accountName, key, key);
 
     await accountability.transact("eosio", "newperson", data);
@@ -84,8 +87,8 @@ function newPersonData(creator, name, key, owner = "gov") {
     return data;
 }
 
-function keyFromName(name) {
-    const privKey = ecc.seedPrivate(name);
+function keyFromName(name, password) {
+    const privKey = ecc.seedPrivate(crypto.createHash("sha256").update(name + password).digest("hex"));
     return {
         privKey,
         pubKey: ecc.privateToPublic(privKey)

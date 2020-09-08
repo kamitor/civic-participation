@@ -1,5 +1,8 @@
 import Accountability from './Accountability'
+import Api from './Api'
 import Contract from './Contract';
+import ecc from 'eosjs-ecc';
+import crypto from 'crypto'
 
 export default class Civic {
     // SEE civic AND accounts FOR TYPES!!!
@@ -24,7 +27,29 @@ export default class Civic {
      * @param {string} password - password
      * @returns {AccountExtended}
      */
-    async accountLogin(accountName, password, commonName) { };
+    async accountLogin(accountName, password) {
+        const privKey = ecc.seedPrivate(crypto.createHash("sha256").update(accountName + password).digest("hex"))
+        const pubKey = ecc.privateToPublic(privKey)
+
+        const response = await Api.post('login', {
+            accountName,
+            pubKey
+        })
+
+        this.account = {
+            accountName: accountName,
+            commonName: response.data.commonName,
+            privateKey: privKey
+        }
+
+        await this.civicContract.initializeContract()
+
+        return { 
+            ...response.data,
+            common_name: response.data.commonName,
+            type: response.data.type
+        }
+    };
 
         /** 
      * Create account with the common name provided
@@ -34,7 +59,30 @@ export default class Civic {
      * @param {string} commonName - common name e.g. 'Jack Tanner'
      * @returns {AccountExtended}
      */
-    async accountCreate(accountName, password, commonName) { };
+    async accountCreate(accountName, password, commonName) {
+        const privKey = ecc.seedPrivate(crypto.createHash("sha256").update(accountName + password).digest("hex"))
+        const pubKey = ecc.privateToPublic(privKey)
+
+        const response = await Api.post('create-account', {
+            commonName,
+            accountName,
+            pubKey
+        })
+
+        this.account = {
+            accountName: accountName,
+            commonName: response.data.commonName,
+            privateKey: privKey
+        }
+
+        await this.civicContract.initializeContract()
+
+        return { 
+            ...response.data,
+            common_name: response.data.commonName,
+            type: response.data.type
+        }
+    };
 
     /** 
      * Get information about an account

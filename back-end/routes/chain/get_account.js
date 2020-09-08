@@ -2,7 +2,7 @@ const accountController = require('../../controllers/accounts.controller');
 
 /* GET acounts listing. */
 module.exports = async function(req, res) {
-    const accountName = req.body.account_name;
+    const accountName = req.body.accountName;
     if (!accountName) {
         res.status(400);
         res.send({ message: 'req body should contain all the data!' });
@@ -16,7 +16,8 @@ module.exports = async function(req, res) {
 
     const accountDocInfo = {
         accountType: accountDoc.accountType,
-        name: accountDoc.name
+        accountName: accountDoc.accountName,
+        commonName: accountDoc.commonName,
     };
 
     const retObj = req.addBlockchainRes(accountDocInfo);
