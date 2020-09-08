@@ -3,6 +3,9 @@ const AccountType = require('../models/account.type');
 const Accountability = require('../services/Accountability');
 const ecc = require('eosjs-ecc');
 
+
+let accountability = new Accountability();
+
 /**
  * Creates an account if it does not exist and add they common name to the database
  * @param {string} accountName
@@ -10,11 +13,16 @@ const ecc = require('eosjs-ecc');
  * @param {string} commonName
  * @return {AccountExtended}
  */
-module.exports = async function(req, res) {
-
+module.exports = async function(req, res, next) {
     const accountName = req.body.accountName
     const commonName = req.body.commonName
     const pubKey = req.body.pubKey
+
+    accountability.login({
+        name: 'yvo',
+        permission: 'active',
+        privKey: keyFromName('yvo').privKey,
+    })
 
     await createNewPerson(accountName, commonName, pubKey);
 
@@ -28,7 +36,7 @@ module.exports = async function(req, res) {
 module.exports.createNewPerson = createNewPerson;
 module.exports.keyFromName = keyFromName;
 
-async function createNewPerson(accountability, accountName, commonName, key) {
+async function createNewPerson(accountName, commonName, key) {
     const data = newPersonData("eosio", accountName, key, key);
 
     await accountability.transact("eosio", "newperson", data);

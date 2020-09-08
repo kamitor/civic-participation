@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Accountability = require('../services/Accountability');
 const settings = require('../settings');
 const accountController = require('../controllers/accounts.controller');
-const { createNewPerson, keyFromName } = require('../routes/create-account');
+const { createNewPerson, keyFromName } = require('../routes/create_account');
 const AccountType = require('../models/account.type');
 
 let accountability = new Accountability();
