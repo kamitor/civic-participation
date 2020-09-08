@@ -10,18 +10,19 @@ const ecc = require('eosjs-ecc');
  * @param {string} commonName
  * @return {AccountExtended}
  */
-module.exports = async function(req, res, next) {
+module.exports = async function(req, res) {
 
-    const accountability = new Accountability();
-    accountability.login({
-        name: 'yvo',
-        permission: 'active',
-        privKey: keyFromName('yvo').privKey,
-    })
+    const accountName = req.body.accountName
+    const commonName = req.body.commonName
+    const pubKey = req.body.pubKey
 
-    await createNewPerson(req.accountName, req.commonName, req.pubKey);
+    await createNewPerson(accountName, commonName, pubKey);
 
-    res.send();
+    const blockchainAccount = await accountability.getAccount(accountName);
+
+    const accountExtendedObject = { ...blockchainAccount, common_name: commonName, type: AccountType.Human }
+
+    res.send(accountExtendedObject);
 }
 
 module.exports.createNewPerson = createNewPerson;

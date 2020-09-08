@@ -4,7 +4,7 @@ const asyncRouter = require('./middleware/asyncRouter');
 
 const login = require('./routes/login');
 
-const newAccount = require('./routes/new-account');
+const newAccount = require('./routes/create-account');
 const getAccount = require('./routes/chain/get_account');
 
 // Blockchain API extensions
@@ -12,5 +12,6 @@ router.post("/v1/chain/get_account", asyncRouter(getAccount));
 
 // New API endpoints
 router.post('/login', asyncRouter(login));
+router.post('/create-account', asyncRouter(newAccount));
 
 module.exports = router;
