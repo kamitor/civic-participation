@@ -69,6 +69,20 @@ class Accountability {
             new Api({ rpc, signatureProvider });
     }
 
+    /**
+     * Gets information about an account, with extended response type with common name
+     * @param {string} accountName - account to fetch information
+     * @response {AccountExtended}
+     */
+    async getAccount(accountName) {
+        try {
+            const account = await this.rpc.get_account(accountName)
+            return account
+        } catch(e) {
+            return null
+        }
+    }
+
     /** 
      * Sends a transaction to the blockchain
      * @param {string} receiver - account on which to call contract execution
