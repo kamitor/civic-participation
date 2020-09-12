@@ -1,16 +1,30 @@
+#include <eosio/system.hpp>
+#include <eosio/time.hpp>
+
+
 #include <civic.hpp>
 
-ACTION civic::propcreate(name creator, string title, string description)
+ACTION civic::propcreate(name creator, string title, string description, string category, float budget, uint8_t type, uint8_t status, string location)
 {
     require_auth(creator);
     // Init the _message table
     proposals_table _proposals(get_self(), get_self().value);
 
+    // time point
+    time_point proposal_created = current_time_point();
+
+
     // Create a proposal with proposal id.
     _proposals.emplace(creator, [&](auto &proposal) {
-        proposal.proposal_id =_proposals.available_primary_key();;
+        proposal.proposal_id = _proposals.available_primary_key();
         proposal.title = title;
         proposal.description = description;
+        proposal.category = category;
+        proposal.budget = budget;
+        proposal.type = type;
+        proposal.status = status;
+        proposal.location = location;
+        proposal.created = proposal_created;
     });
 }
 // Default Action hi

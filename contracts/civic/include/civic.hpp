@@ -40,8 +40,7 @@ public:
   // microseconds vote_period = eosio::days(30);
   // static constexpr uint32_t vote_yes_pass_count = 5; // 5 yes votes
 
-  // ACTION propcreate(name creator, string title, string description, ProposalCategory category, float budget, ProposalType type, vector<string> photos, string location);
-  ACTION propcreate(name creator, string title, string description);
+  ACTION propcreate(name creator, string title, string description, string category, float budget, uint8_t type, uint8_t status, string location);
 
   // ACTION propupdate(name updater, uint32_t proposal_id, string title, string description, ProposalCategory category, float budget, ProposalType type, vector<string> photos, string location, ProposalStatus new_status, string regulations, string comment);
 
@@ -60,18 +59,21 @@ public:
 private:
   TABLE proposal
   {
+    // primary key automatically added by EOSIO method
     uint64_t proposal_id;
     string title;
     string description;
-    // string category;
-    // float budget;
-    // ProposalType type;
+    string category;
+    float budget;
+    // Since the enums are not accepted in eosio we are using uint8_t
+    uint8_t type;
     // vector<string> photos;
-    // string location;
-    // ProposalStatus status;
+    // Since the enums are not accepted in eosio we are using uint8_t
+    uint8_t status;
     // string regulations;
-
-    // time_point created;
+    string location;
+    // automatically added by EOSIO method
+    time_point created;
     // time_point approved;
     // time_point last_updated;
     // vector<eosio::name> voted;
