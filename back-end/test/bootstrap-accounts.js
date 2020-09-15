@@ -22,9 +22,8 @@ async function main() {
     })
     console.log("Connected to database");
 
-    await accountability.login(eosioAccount);
-
     // Set up the system contract
+    await accountability.login(eosioAccount);
     await deploySystemContract();
 
     // Create some people
@@ -35,12 +34,17 @@ async function main() {
 
     // Create some new orgs
     await createNewOrg("gov", "The Ministry of The Hague", ["hidde", "tijn", "yvo"], 0.66);
+    await createNewOrg("civic", "Civic Participation Tool", ["gov"], 1);
 
     // Update the system contract to be controlled by the government
     await updateEosioAuth();
-    await accountability.login(eosioAccount);
 
-    // TODO Deploy civic contract
+    await accountability.login({
+        privKey: 'TODO! NEED TO ADD YVO\'S KEY HERE',
+        name: 'civic',
+        permission: 'active'
+    });
+    await deployCivicContract();
 
     console.log("fin")
     process.exit(0)
@@ -60,6 +64,11 @@ async function deploySystemContract() {
         name: "System governance",
         accountType: AccountType.Org
     });
+}
+
+async function deployCivicContract() {
+    await accountability.deploy("civic", "../contracts/civic");
+    console.log("civic contract deployed");
 }
 
 async function updateEosioAuth() {

@@ -1,6 +1,6 @@
 import Accountability from './Accountability'
 import Contract from './Contract';
-
+import { ProposalStatus } from '../types/civic'
 export default class Civic {
     // SEE civic AND accounts FOR TYPES!!!
     // import { ProposalCategory, ProposalStatus, ProposalType,
@@ -26,14 +26,14 @@ export default class Civic {
      */
     async accountLogin(accountName, password, commonName) { };
 
-        /** 
-     * Create account with the common name provided
-     * Initializes the civicContract
-     * @param {string} accountName - username
-     * @param {string} password - password
-     * @param {string} commonName - common name e.g. 'Jack Tanner'
-     * @returns {AccountExtended}
-     */
+    /** 
+ * Create account with the common name provided
+ * Initializes the civicContract
+ * @param {string} accountName - username
+ * @param {string} password - password
+ * @param {string} commonName - common name e.g. 'Jack Tanner'
+ * @returns {AccountExtended}
+ */
     async accountCreate(accountName, password, commonName) { };
 
     /** 
@@ -50,22 +50,38 @@ export default class Civic {
      * @param {Proposal} proposal
      * @returns {ProposalDetailed}
      */
-    async proposalCreate(proposal) { }
-    
+    async proposalCreate(proposal) {
+
+        const tx = await this.civicContract.propcreate(this.account.accountName, proposal.title, proposal.description, proposal.category, proposal.budget, proposal.type, proposal.location);
+        const proposalDetailed = {
+            title: proposal.title,
+            description: proposal.description,
+            category: proposal.category,
+            type: proposal.type,
+            location: proposal.location,
+            // proposalId: number,
+            status: ProposalStatus.Proposed,
+            // created_time: ,
+        }
+        if (proposal.budget) { proposalDetailed.budget = proposal.budget }
+        if (proposal.photos) { proposalDetailed.photos = proposal.photos }
+        return proposalDetailed;
+    }
+
     /** 
      * Updates a proposal as the logged in user
      * @param {ProposalExtended} proposal
      * @returns {ProposalDetailed}
      */
     async proposalUpdate(proposal) { }
-    
+
     /** 
      * Votes on an open proposal as the logged in user
      * @param {number} proposalId
      * @param {boolean} vote - true = yes, false = no
      * @returns {ProposalDetailed}
      */
-    async proposalVote(proposalId, vote){ }
+    async proposalVote(proposalId, vote) { }
 
     /** 
      * Returns a list of proposals ordered by date with optional filter
@@ -73,14 +89,14 @@ export default class Civic {
      * @returns {ProposalDetailed[]}
      */
     async proposalList(status) { }
-    
+
     /** 
      * Returns a proposals 
      * @param {number} proposalId
      * @returns {ProposalDetailed}
      */
     async proposalGet(proposalId) { }
-    
+
     /** 
      * Returns a proposals history of who has done what actions
      * @param {number} proposalId
