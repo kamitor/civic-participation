@@ -7,5 +7,5 @@ cd "$PARENT_PATH"
 source ../../config.sh
 
 SSH_LOCATION="ubuntu@"$SERVER_DOMAIN
-chmod 400 ../keys/ec2.pem
-ssh -i ../keys/ec2.pem $SSH_LOCATION
+chmod 400 ../keys/ubuntu18-vm.pem
+ssh -i ../keys/ubuntu18-vm.pem $SSH_LOCATION
