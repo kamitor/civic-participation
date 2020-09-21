@@ -17,8 +17,7 @@ services:
     volumes:
       - ./:/var/repo
       - ./temp/dfuse:/data
-    # common chain id needed for public key lookup https://github.com/dfuse-io/dfuse-eosio/issues/52
-    command: ["dfuseeos", "start", "--data-dir", "/data", "--common-chain-id", "df383d1cc33cbb9665538c604daac13706978566e17e5fd5f897eff68b88e1e4"]
+    command: ["dfuseeos", "start", "--data-dir", "/data"]
   mongo:
     image: mongo:4.2.7
     container_name: 'mongodb'
