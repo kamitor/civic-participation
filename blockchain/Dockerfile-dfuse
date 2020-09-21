@@ -1,4 +1,5 @@
 FROM dfuse/dfuse-eosio:14063a1
+# nodeos v2.0.6
 
 RUN ln -s /app/dfuseeos /bin/dfuseeos
 RUN yes | dfuseeos init
