@@ -98,30 +98,20 @@ export default class Accountability {
      * @returns {Object} transaction object
      */
     async transact(receiver, action, data, options) {
+        let txData;
         try {
-            const txData = {
+            txData = {
                 actions: [{
-                    "account": "civic",
-                    "name": "propcreate",
-                    "authorization": [
-                        {
-                            "actor": "jack",
-                            "permission": "active"
-                        }
-                    ],
-                    "data": {
-                        "creator": "jack",
-                        "title": "Build a flowerbed next to John's tacos",
-                        "description": "A BIG DESCRIPTION",
-                        "category": 0,
-                        "budget": 0,
-                        "type": 0,
-                        "location": "52.1135031,4.2829047"
-                    }
+                    account: receiver,
+                    name: action,
+                    authorization: [{
+                        actor: this.account.accountName,
+                        permission: this.account.permission,
+                    }],
+                    data: data,
                 }]
             }
 
-            console.log('transact', txData)
             const tx = await this.api.transact(txData, {
                 blocksBehind: 3,
                 expireSeconds: 30,
@@ -132,6 +122,7 @@ export default class Accountability {
             }
             return tx;
         } catch (e) {
+            console.log('transact', txData)
             console.log('\nCaught exception: ' + e);
             if (e instanceof RpcError)
                 console.error(JSON.stringify(e.json, null, 2));
