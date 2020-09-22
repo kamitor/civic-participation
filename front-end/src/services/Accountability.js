@@ -1,4 +1,4 @@
-import { createDfuseClient } from '@dfuse/client';
+import { createDfuseClient } from '@dfuse/client/dist/dfuse-client.es5.js';
 import { Api, JsonRpc, RpcError } from 'eosjs';
 import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig';
 import ecc from 'eosjs-ecc';
@@ -21,26 +21,29 @@ export default class Accountability {
      * @param {DfuseOptions} network.dfuseOptions - dfuse API options
      */
     constructor(network = { nodeos: settings.eosio.nodeos, dfuseOptions: settings.dfuseOptions }) {
-        this.rpc = fetch ? new JsonRpc(network.nodeos, { fetch }) : new JsonRpc(network.nodeos);
         if (settings.isLiveEnvironment()) settings.secure = true;
+
+        // Front end settings
+        this.rpc = new JsonRpc(network.nodeos);
         const dfuseOptions = network.dfuseOptions;
-        if (fetch) {
-            dfuseOptions.httpClientOptions = {
-                fetch: fetch
-            }
-        }
-        // if (ws) {
-        //     dfuseOptions.graphqlStreamClientOptions = {
-        //         socketOptions: {
-        //             webSocketFactory: (url) => ws(url, ["graphql-ws"])
-        //         }
-        //     }
-        //     dfuseOptions.streamClientOptions = {
-        //         socketOptions: {
-        //             webSocketFactory: (url) => ws(url)
-        //         }
+
+        // Back end settings (provide a fetch and ws instanch)
+        // this.rpc = new JsonRpc(network.nodeos, { fetch })
+        // const dfuseOptions = network.dfuseOptions;
+        // dfuseOptions.httpClientOptions = {
+        //     fetch: fetch
+        // }
+        // dfuseOptions.graphqlStreamClientOptions = {
+        //     socketOptions: {
+        //         webSocketFactory: (url) => ws(url, ["graphql-ws"])
         //     }
         // }
+        // dfuseOptions.streamClientOptions = {
+        //     socketOptions: {
+        //         webSocketFactory: (url) => ws(url)
+        //     }
+        // }
+
         this.dfuseClient = createDfuseClient(dfuseOptions);
     }
 
