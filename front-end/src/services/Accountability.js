@@ -1,4 +1,4 @@
-import { createDfuseClient } from '@dfuse/client/dist/dfuse-client.es5.js';
+import { createDfuseClient } from '@dfuse/client';
 import { Api, JsonRpc, RpcError } from 'eosjs';
 import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig';
 import ecc from 'eosjs-ecc';
