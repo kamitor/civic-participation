@@ -103,7 +103,13 @@ export default class Civic {
      * @returns {ProposalDetailed}
      */
     async proposalCreate(proposal) {
-        const tx = await this.civicContract.propcreate(this.account.accountName, proposal.title, proposal.description, proposal.category, proposal.budget, proposal.type, proposal.location);
+        const tx = await this.civicContract.propcreate(this.account.accountName,
+            proposal.title,
+            proposal.description,
+            proposal.category,
+            proposal.budget,
+            proposal.type,
+            proposal.location);
 
         await wait(1000);
         const txDetailed = await this.accountability.dfuseClient.fetchTransaction(tx.transaction_id);
