@@ -2,6 +2,10 @@ const accountController = require('../controllers/accounts.controller');
 const AccountType = require('../models/account.type');
 const Accountability = require('../services/Accountability');
 const ecc = require('eosjs-ecc');
+const crypto = require('crypto')
+
+
+let accountability = new Accountability();
 
 /**
  * Creates an account if it does not exist and add they common name to the database
@@ -11,17 +15,25 @@ const ecc = require('eosjs-ecc');
  * @return {AccountExtended}
  */
 module.exports = async function(req, res, next) {
+    const accountName = req.body.accountName
+    const commonName = req.body.commonName
+    const pubKey = req.body.pubKey
 
-    const accountability = new Accountability();
+    const privKey = keyFromName('yvo', 'Password123').privKey
+
     accountability.login({
         name: 'yvo',
         permission: 'active',
-        privKey: keyFromName('yvo').privKey,
+        privKey: privKey,
     })
 
-    await createNewPerson(req.accountName, req.commonName, req.pubKey);
+    await createNewPerson(accountability, accountName, commonName, pubKey);
 
-    res.send();
+    const blockchainAccount = await accountability.getAccount(accountName);
+
+    const accountExtendedObject = { ...blockchainAccount, commonName: commonName, type: AccountType.Human }
+
+    res.send(accountExtendedObject);
 }
 
 module.exports.createNewPerson = createNewPerson;
@@ -75,8 +87,8 @@ function newPersonData(creator, name, key, owner = "gov") {
     return data;
 }
 
-function keyFromName(name) {
-    const privKey = ecc.seedPrivate(name);
+function keyFromName(name, password) {
+    const privKey = ecc.seedPrivate(crypto.createHash("sha256").update(name + password).digest("hex"));
     return {
         privKey,
         pubKey: ecc.privateToPublic(privKey)
