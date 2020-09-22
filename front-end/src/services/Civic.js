@@ -103,15 +103,14 @@ export default class Civic {
      * @returns {ProposalDetailed}
      */
     async proposalCreate(proposal) {
-
         const tx = await this.civicContract.propcreate(this.account.accountName, proposal.title, proposal.description, proposal.category, proposal.budget, proposal.type, proposal.location);
 
         await wait(1000);
         const txDetailed = await this.accountability.dfuseClient.fetchTransaction(tx.transaction_id);
-        const primaryKey = Number(txDetailed.execution_trace.action_traces[0].console);
-        // Better way to do this:
-        // txDetailed.dbops[0].new.hex; // can convert this to get primary key in http://localhost:8080/v0/state/abi/bin_to_json
-        // this.accountability.dfuseClient.stateAbiBinToJson()
+
+        const blockNum = txDetailed.execution_trace.action_traces[0].block_num;
+        const decodedRows = await this.accountability.dfuseClient.stateAbiBinToJson('civic', 'proposals', [txDetailed.dbops[0].new.hex], blockNum)
+        const decodedRow = decodedRows.rows[0]
 
         const proposalDetailed = {
             title: proposal.title,
@@ -119,9 +118,9 @@ export default class Civic {
             category: proposal.category,
             type: proposal.type,
             location: proposal.location,
-            proposalId: primaryKey,
+            proposalId: decodedRow.proposal_id,
             status: ProposalStatus.Proposed,
-            created_time: tx.processed.action_traces[0].block_time,
+            created: new Date(decodedRow.created),
         }
         if (proposal.budget) { proposalDetailed.budget = proposal.budget }
         if (proposal.photos) { proposalDetailed.photos = proposal.photos }
@@ -133,7 +132,45 @@ export default class Civic {
      * @param {ProposalExtended} proposal
      * @returns {ProposalDetailed}
      */
-    async proposalUpdate(proposal) { }
+    async proposalUpdate(proposal) {
+        const tx = await this.civicContract.propupdate(this.account.accountName,
+            proposal.proposalId,
+            proposal.title,
+            proposal.description,
+            proposal.category,
+            proposal.budget,
+            proposal.type,
+            proposal.location,
+            proposal.status,
+            proposal.regulations,
+            proposal.comment);
+
+        await wait(1000);
+        const txDetailed = await this.accountability.dfuseClient.fetchTransaction(tx.transaction_id);
+
+        const blockNum = txDetailed.execution_trace.action_traces[0].block_num;
+        const decodedRows = await this.accountability.dfuseClient.stateAbiBinToJson('civic', 'proposals', [txDetailed.dbops[0].new.hex], blockNum)
+        const decodedRow = decodedRows.rows[0];
+
+        const proposalDetailed = {
+            title: proposal.title,
+            description: proposal.description,
+            category: proposal.category,
+            type: proposal.type,
+            location: proposal.location,
+            proposalId: proposal.proposalId,
+            status: ProposalStatus.Proposed,
+            created: new Date(decodedRow.created),
+            updated: new Date(decodedRow.last_updated),
+            status: proposal.status,
+        }
+        if (proposal.budget) { proposalDetailed.budget = proposal.budget }
+        if (proposal.photos) { proposalDetailed.photos = proposal.photos }
+        if (proposal.regulations) { proposalDetailed.regulations = proposal.regulations }
+        if (proposal.comment) { proposalDetailed.comment = proposal.comment }
+
+        return proposalDetailed;
+    }
 
     /** 
      * Votes on an open proposal as the logged in user
