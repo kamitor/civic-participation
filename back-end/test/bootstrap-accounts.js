@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Accountability = require('../services/Accountability');
 const settings = require('../settings');
 const accountController = require('../controllers/accounts.controller');
-const { createNewPerson, keyFromName } = require('../routes/create-account');
+const { createNewPerson, keyFromName } = require('../routes/create_account');
 const AccountType = require('../models/account.type');
 
 let accountability = new Accountability();
@@ -28,9 +28,9 @@ async function main() {
 
     // Create some people
     await accountability.login(eosioAccount);
-    await createNewPerson(accountability, "yvo", "Yvo Hunink", keyFromName('yvo').pubKey);
-    await createNewPerson(accountability, "hidde", "Hidde Kamst", keyFromName('yvo').pubKey);
-    await createNewPerson(accountability, "tijn", "Tijn Kyuper", keyFromName('tijn').pubKey);
+    await createNewPerson(accountability, "yvo", "Yvo Hunink", keyFromName('yvo', 'Password123').pubKey);
+    await createNewPerson(accountability, "hidde", "Hidde Kamst", keyFromName('yvo', 'Password123').pubKey);
+    await createNewPerson(accountability, "tijn", "Tijn Kyuper", keyFromName('tijn', 'Password123').pubKey);
 
     // Create some new orgs
     await createNewOrg("gov", "The Ministry of The Hague", ["hidde", "tijn", "yvo"], 0.66);
