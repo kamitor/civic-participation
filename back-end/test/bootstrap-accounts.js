@@ -29,7 +29,7 @@ async function main() {
     // Create some people
     await accountability.login(eosioAccount);
     await createNewPerson(accountability, "yvo", "Yvo Hunink", keyFromName('yvo', 'Password123').pubKey);
-    await createNewPerson(accountability, "hidde", "Hidde Kamst", keyFromName('yvo', 'Password123').pubKey);
+    await createNewPerson(accountability, "hidde", "Hidde Kamst", keyFromName('hidde', 'Password123').pubKey);
     await createNewPerson(accountability, "tijn", "Tijn Kyuper", keyFromName('tijn', 'Password123').pubKey);
 
     // Create some new orgs
