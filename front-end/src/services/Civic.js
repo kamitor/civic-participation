@@ -4,6 +4,7 @@ import Contract from './Contract';
 import { ProposalStatus } from '../types/civic'
 import ecc from 'eosjs-ecc';
 import crypto from 'crypto'
+import { wait } from './objects';
 
 export default class Civic {
     // SEE civic AND accounts FOR TYPES!!!
@@ -104,15 +105,23 @@ export default class Civic {
     async proposalCreate(proposal) {
 
         const tx = await this.civicContract.propcreate(this.account.accountName, proposal.title, proposal.description, proposal.category, proposal.budget, proposal.type, proposal.location);
+
+        await wait(1000);
+        const txDetailed = await this.accountability.dfuseClient.fetchTransaction(tx.transaction_id);
+        const primaryKey = Number(txDetailed.execution_trace.action_traces[0].console);
+        // Better way to do this:
+        // txDetailed.dbops[0].new.hex; // can convert this to get primary key in http://localhost:8080/v0/state/abi/bin_to_json
+        // this.accountability.dfuseClient.stateAbiBinToJson()
+
         const proposalDetailed = {
             title: proposal.title,
             description: proposal.description,
             category: proposal.category,
             type: proposal.type,
             location: proposal.location,
-            // proposalId: number,
+            proposalId: primaryKey,
             status: ProposalStatus.Proposed,
-            // created_time: ,
+            created_time: tx.processed.action_traces[0].block_time,
         }
         if (proposal.budget) { proposalDetailed.budget = proposal.budget }
         if (proposal.photos) { proposalDetailed.photos = proposal.photos }
