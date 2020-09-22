@@ -29,6 +29,9 @@ else
 
     cd ../eosio.token
     ./build.sh
+    
+    cd ../civic
+    ./build.sh
 
     echo ""
     echo "Smart contracts have been built"

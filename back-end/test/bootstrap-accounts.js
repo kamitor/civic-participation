@@ -40,7 +40,7 @@ async function main() {
     await updateEosioAuth();
 
     await accountability.login({
-        privKey: 'TODO! NEED TO ADD YVO\'S KEY HERE',
+        privKey: keyFromName('yvo', 'Password123').privKey,
         name: 'civic',
         permission: 'active'
     });
