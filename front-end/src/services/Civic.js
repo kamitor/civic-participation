@@ -43,6 +43,7 @@ export default class Civic {
             privateKey: privKey
         }
 
+        await this.accountability.login({ accountName, permission: 'active', privKey })
         await this.civicContract.initializeContract()
 
         return {
@@ -76,6 +77,7 @@ export default class Civic {
             privateKey: privKey
         }
 
+        await this.accountability.login({ accountName, permission: 'active', privKey })
         await this.civicContract.initializeContract()
 
         return {

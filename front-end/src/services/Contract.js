@@ -33,24 +33,27 @@ class Contract {
                 }
             })
 
-            c[name] = async function(...args) {
+            c[name] = async function (...args) {
                 let len = args.length;
-                if (len !== fields.length) throw new Error("Number of arguments does not match action");
+                if (len !== fields.length) {
+                    console.error(name + '()', args)
+                    throw new Error("Number of arguments does not match action");
+                }
 
                 const data = {};
                 for (let i = 0; i < len; i++) {
                     data[fields[i].name] = args[i]
                 }
 
-                return await this.eosio.myapi.transact(contractAccount, name, data, { status: "executed" });
+                return await this.eosio.transact(contractAccount, name, data, { status: "executed" });
             }
         }
 
         // Create table getters
         for (let table of abi.abi.tables) {
             const name = table.name;
-            c[name] = async function(scope) {
-                return await this.eosio.myapi.getTable(contractAccount, scope, name);
+            c[name] = async function (scope) {
+                // return await this.eosio.dfuseClient.stateTable(contractAccount, scope, name);
             }
         }
     }

@@ -13,7 +13,7 @@ export default class Accountability {
     rpc; // {JsonRpc} read from blockchain with eosjs
     api; // {Api} interact with blockchain with eosjs
     dfuseClient; // {DfuseClient} use enhanced blockchain api
-    account; // { name, permission, pubKey}
+    account; // { accountName, permission, pubKey}
 
     /** 
      * @param {Object} network
@@ -47,7 +47,7 @@ export default class Accountability {
     /** 
      * Adds account and private key to object for sending transactions
      * @param {Object} account
-     * @param {string} account.name - account name
+     * @param {string} account.accountName - account name
      * @param {string} account.permission - account permission to use
      * @param {string} account.privKey - private key
      */
@@ -99,17 +99,30 @@ export default class Accountability {
      */
     async transact(receiver, action, data, options) {
         try {
-            const tx = await this.api.transact({
+            const txData = {
                 actions: [{
-                    account: receiver,
-                    name: action,
-                    authorization: [{
-                        actor: this.account.name,
-                        permission: this.account.permission,
-                    }],
-                    data: data,
+                    "account": "civic",
+                    "name": "propcreate",
+                    "authorization": [
+                        {
+                            "actor": "jack",
+                            "permission": "active"
+                        }
+                    ],
+                    "data": {
+                        "creator": "jack",
+                        "title": "Build a flowerbed next to John's tacos",
+                        "description": "A BIG DESCRIPTION",
+                        "category": 0,
+                        "budget": 0,
+                        "type": 0,
+                        "location": "52.1135031,4.2829047"
+                    }
                 }]
-            }, {
+            }
+
+            console.log('transact', txData)
+            const tx = await this.api.transact(txData, {
                 blocksBehind: 3,
                 expireSeconds: 30,
             })

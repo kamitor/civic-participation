@@ -9,12 +9,15 @@ function Home() {
             let civic = new Civic(); // put this in context API, or use singleton
 
             try {
-                await civic.accountLogin('jack', 'Password1234!');
+                const accountLoginRes = await civic.accountLogin('jack', 'Password1234!');
+                console.log('accountLogin1', accountLoginRes);
             } catch (e) {
-                await civic.accountCreate('jack', 'Password1234!', 'Jack Tanner');
+                const accountCreateRes = await civic.accountCreate('jack', 'Password1234!', 'Jack Tanner');
+                console.log('accountCreate', accountCreateRes);
             }
-            await civic.accountLogin('jack', 'Password1234!');
-            
+            let accountLoginRes = await civic.accountLogin('jack', 'Password1234!');
+            console.log('accountLogin2', accountLoginRes);
+
             const proposal = {
                 title: 'Build a flowerbed next to John\'s tacos',
                 description: 'A BIG DESCRIPTION',
@@ -25,9 +28,11 @@ function Home() {
                 location: '52.1135031,4.2829047'
             }
             const proposalData = await civic.proposalCreate(proposal);
+            console.log('proposalCreate', proposalData)
             const proposalId = proposalData.proposalId;
 
-            await civic.accountLogin('yvo', 'Password2345!');
+            accountLoginRes = await civic.accountLogin('yvo', 'Password2345!');
+            console.log('accountLogin3', accountLoginRes);
             proposal.proposalId = proposalId;
             proposal.staus = ProposalStatus.Reviewing;
             await civic.proposalUpdate(proposal);
