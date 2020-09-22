@@ -40,7 +40,7 @@ public:
   // microseconds vote_period = eosio::days(30);
   // static constexpr uint32_t vote_yes_pass_count = 5; // 5 yes votes
 
-  ACTION propcreate(name creator, string title, string description, string category, float budget, uint8_t type, uint8_t status, string location);
+  ACTION propcreate(name creator, string title, string description, string category, float budget, uint8_t type, string location);
 
   // ACTION propupdate(name updater, uint32_t proposal_id, string title, string description, ProposalCategory category, float budget, ProposalType type, vector<string> photos, string location, ProposalStatus new_status, string regulations, string comment);
 

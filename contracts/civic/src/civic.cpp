@@ -4,7 +4,7 @@
 
 #include <civic.hpp>
 
-ACTION civic::propcreate(name creator, string title, string description, string category, float budget, uint8_t type, uint8_t status, string location)
+ACTION civic::propcreate(name creator, string title, string description, string category, float budget, uint8_t type, string location)
 {
     require_auth(creator);
     // Init the _message table
@@ -22,7 +22,6 @@ ACTION civic::propcreate(name creator, string title, string description, string 
         proposal.category = category;
         proposal.budget = budget;
         proposal.type = type;
-        proposal.status = status;
         proposal.location = location;
         proposal.created = proposal_created;
     });
