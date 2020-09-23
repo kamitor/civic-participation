@@ -10,22 +10,19 @@ ACTION civic::propcreate(name creator, string title, string description, string 
     proposals_table _proposals(get_self(), get_self().value);
 
     // time point
-    time_point proposal_created = current_time_point();
-    uint64_t proposal_id = _proposals.available_primary_key();
+    time_point now = current_time_point();
 
     // Create a proposal with proposal id.
     _proposals.emplace(creator, [&](auto &proposal) {
-        proposal.proposal_id = proposal_id;
+        proposal.proposal_id = _proposals.available_primary_key();
         proposal.title = title;
         proposal.description = description;
         proposal.category = category;
         proposal.budget = budget;
         proposal.type = type;
         proposal.location = location;
-        proposal.created = proposal_created;
+        proposal.created = now;
     });
-
-    eosio::print(proposal_id);
 }
 // Default Action hi
 // ACTION civic::hi(name from, string message)
