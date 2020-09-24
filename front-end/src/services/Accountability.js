@@ -13,7 +13,7 @@ export default class Accountability {
     rpc; // {JsonRpc} read from blockchain with eosjs
     api; // {Api} interact with blockchain with eosjs
     dfuseClient; // {DfuseClient} use enhanced blockchain api
-    account; // { name, permission, pubKey}
+    account; // { accountName, permission, pubKey}
 
     /** 
      * @param {Object} network
@@ -21,33 +21,36 @@ export default class Accountability {
      * @param {DfuseOptions} network.dfuseOptions - dfuse API options
      */
     constructor(network = { nodeos: settings.eosio.nodeos, dfuseOptions: settings.dfuseOptions }) {
-        this.rpc = fetch ? new JsonRpc(network.nodeos, { fetch }) : new JsonRpc(network.nodeos);
         if (settings.isLiveEnvironment()) settings.secure = true;
+
+        // Front end settings
+        this.rpc = new JsonRpc(network.nodeos);
         const dfuseOptions = network.dfuseOptions;
-        if (fetch) {
-            dfuseOptions.httpClientOptions = {
-                fetch: fetch
-            }
-        }
-        // if (ws) {
-        //     dfuseOptions.graphqlStreamClientOptions = {
-        //         socketOptions: {
-        //             webSocketFactory: (url) => ws(url, ["graphql-ws"])
-        //         }
-        //     }
-        //     dfuseOptions.streamClientOptions = {
-        //         socketOptions: {
-        //             webSocketFactory: (url) => ws(url)
-        //         }
+
+        // Back end settings (provide a fetch and ws instanch)
+        // this.rpc = new JsonRpc(network.nodeos, { fetch })
+        // const dfuseOptions = network.dfuseOptions;
+        // dfuseOptions.httpClientOptions = {
+        //     fetch: fetch
+        // }
+        // dfuseOptions.graphqlStreamClientOptions = {
+        //     socketOptions: {
+        //         webSocketFactory: (url) => ws(url, ["graphql-ws"])
         //     }
         // }
+        // dfuseOptions.streamClientOptions = {
+        //     socketOptions: {
+        //         webSocketFactory: (url) => ws(url)
+        //     }
+        // }
+
         this.dfuseClient = createDfuseClient(dfuseOptions);
     }
 
     /** 
      * Adds account and private key to object for sending transactions
      * @param {Object} account
-     * @param {string} account.name - account name
+     * @param {string} account.accountName - account name
      * @param {string} account.permission - account permission to use
      * @param {string} account.privKey - private key
      */
@@ -98,18 +101,21 @@ export default class Accountability {
      * @returns {Object} transaction object
      */
     async transact(receiver, action, data, options) {
+        let txData;
         try {
-            const tx = await this.api.transact({
+            txData = {
                 actions: [{
                     account: receiver,
                     name: action,
                     authorization: [{
-                        actor: this.account.name,
+                        actor: this.account.accountName,
                         permission: this.account.permission,
                     }],
                     data: data,
                 }]
-            }, {
+            }
+
+            const tx = await this.api.transact(txData, {
                 blocksBehind: 3,
                 expireSeconds: 30,
             })
@@ -119,6 +125,7 @@ export default class Accountability {
             }
             return tx;
         } catch (e) {
+            console.log('transact', txData)
             console.log('\nCaught exception: ' + e);
             if (e instanceof RpcError)
                 console.error(JSON.stringify(e.json, null, 2));

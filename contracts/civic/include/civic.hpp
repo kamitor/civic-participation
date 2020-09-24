@@ -6,53 +6,92 @@ using namespace eosio;
 // STILL A DRAFT
 // WE WILL IMPLEMENT PAGE BY PAGE, AND THEREFORE VOTING STRUCTURES MAY NOT BE PRESENT TILL THE END
 
-enum ProposalCategory { Green, Kids, Road };
-enum ProposalType { Create, Remove, Update };
-enum ProposalStatus { Proposed, Reviewing, Approved, Rejected, VotePassed, VoteFailed, Actioned, Closed };
+enum ProposalCategory
+{
+  Green,
+  Kids,
+  Road
+};
 
-CONTRACT civic : public contract {
-  public:
-    using contract::contract;
+enum ProposalType
+{
+  Create,
+  Remove,
+  Update
+};
 
-    microseconds vote_period = eosio::days(30);
-    static constexpr uint32_t vote_yes_pass_count = 5; // 5 yes votes
+enum ProposalStatus
+{
+  Proposed,
+  Reviewing,
+  Approved,
+  Rejected,
+  VotePassed,
+  VoteFailed,
+  Actioned,
+  Closed
+};
 
-    ACTION propcreate(name creator, string title, string description, ProposalCategory category, float budget, ProposalType type, vector<string> photos, string location);
+CONTRACT civic : public contract
+{
+public:
+  using contract::contract;
 
-    ACTION propupdate(name updater, uint32_t proposal_id, string title, string description, ProposalCategory category, float budget, ProposalType type, vector<string> photos, string location, ProposalStatus new_status, string regulations, string comment);
+  // microseconds vote_period = eosio::days(30);
+  // static constexpr uint32_t vote_yes_pass_count = 5; // 5 yes votes
 
-    ACTION propvote(name voter, uint32_t proposal_id, bool vote);
+  ACTION propcreate(name creator, string title, string description, string category, float budget, uint8_t type, string location);
 
-    // Updates votes passed the voting period that have not passed to status = Rejected
-    ACTION propupdfailed(name authorizer);
+  // ACTION propupdate(name updater, uint32_t proposal_id, string title, string description, ProposalCategory category, float budget, ProposalType type, vector<string> photos, string location, ProposalStatus new_status, string regulations, string comment);
 
-  private:
-    TABLE proposal {
-      uint32_t                         proposal_id;
-      string                             title;
-      string                             description;
-      ProposalCategory          category;
-      float                               budget;
-      ProposalType                 type;
-      vector<string>             photos;
-      string                              location;
-      ProposalStatus                status;
-      string                              regulations;
+  // ACTION propvote(name voter, uint32_t proposal_id, bool vote);
 
-      time_point                    created;
-      time_point                    approved;
-      time_point                    last_updated;
-      vector<eosio::name>   voted;
-      uint8_t                           yes_vote_count;
+  // Updates votes passed the voting period that have not passed to status = Rejected
 
-      auto primary_key() const { return proposal_id; }
-    };
-    typedef multi_index<name("proposals"), proposal> proposals_table;
+  // ACTION propupdfailed(name authorizer);
 
-    // TABLE messages {
-    //   name    user;
-    //   string  text;
-    //   auto primary_key() const { return user.value; }
-    // };
-    // typedef multi_index<name("messages"), messages> messages_table;
+  // Default actions
+  // ACTION hi(name from, string message);
+  // ACTION clear();
+
+  ACTION clear();
+
+private:
+  TABLE proposal
+  {
+    // primary key automatically added by EOSIO method
+    uint64_t proposal_id;
+    string title;
+    string description;
+    string category;
+    float budget;
+    // Since the enums are not accepted in eosio we are using uint8_t
+    uint8_t type;
+    // vector<string> photos;
+    // Since the enums are not accepted in eosio we are using uint8_t
+    uint8_t status;
+    // string regulations;
+    string location;
+    // automatically added by EOSIO method
+    time_point created;
+    // time_point approved;
+    // time_point last_updated;
+    // vector<eosio::name> voted;
+    // uint8_t yes_vote_count;
+
+    auto primary_key() const
+    {
+      return proposal_id;
+    }
+  };
+
+  typedef multi_index<name("proposals"), proposal> proposals_table;
+
+  // Default table
+  // TABLE messages {
+  //   name    user;
+  //   string  text;
+  //   auto primary_key() const { return user.value; }
+  // };
+  // typedef multi_index<name("messages"), messages> messages_table;
 };
