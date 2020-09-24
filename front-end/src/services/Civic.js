@@ -148,7 +148,46 @@ export default class Civic {
      * @param {ProposalStatus} [status] - filter to use on proposals (optional)
      * @returns {ProposalDetailed[]}
      */
-    async proposalList(status) { }
+    async proposalList(status = null) {
+        const proposalsQuery = await this.civicContract.proposals(this.civicContract.contractAccount)
+
+        // filter per status if not null
+        const proposals = status ? proposalsQuery.rows.filter(x => {
+            return x.json.status === status
+        }) : proposalsQuery.rows
+
+        // sort by created date
+        proposals.sort((a, b) => {
+            if (a.json.created > b.json.created) {
+                return 1;
+            }
+            if (a.json.created < b.json.created) {
+                return -1;
+            }
+            return 0;
+        })
+
+        // return ProposalDetailed[] type
+        const response = proposals.map(x =>  ({
+            title: x.json.title,
+            description: x.json.description,
+            category: x.json.category,
+            budget: x.json.budget,
+            type: x.json.type,
+            location: x.json.location,
+            proposalId: x.json.proposal_id,
+            status: x.json.status,
+            created_time: x.json.created,
+            photos: x.json.photos,
+            regulations: x.json.regulations,
+            comment: x.json.comment,
+            approved_time: x.json.approved_time,
+            voted: x.json.voted,
+            yes_vote_count: x.json.yes_vote_count,
+        }))
+
+        return response
+    }
 
     /** 
      * Returns a proposals 

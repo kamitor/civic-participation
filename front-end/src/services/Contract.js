@@ -53,7 +53,7 @@ class Contract {
         for (let table of abi.abi.tables) {
             const name = table.name;
             c[name] = async function (scope) {
-                // return await this.eosio.dfuseClient.stateTable(contractAccount, scope, name);
+                return await this.eosio.dfuseClient.stateTable(contractAccount, scope, name);
             }
         }
     }
