@@ -1,6 +1,8 @@
 FROM node:12.17.0
 
 RUN npm install -g serve
+RUN npm i node-sass
+RUN npm rebuild node-sass --force
 
 WORKDIR /var/repo/front-end
 
