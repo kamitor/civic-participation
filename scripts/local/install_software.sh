@@ -2,6 +2,8 @@
 
 # Ubuntu 18 machine
 
+sudo apt update
+
 # Docker and docker-compose
 sudo apt install docker docker-compose -y
 
@@ -22,7 +24,12 @@ sudo usermod -aG docker ${USER}
 # sudo chmod +x /usr/local/bin/docker-compose
 # docker-compose --version
 
-# nvm with latest node and npm
+# nvm with node 12.17.0 and npm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 # Close and open terminal again
-nvm install node
+
+nvm install 12.17.0
+# need to fix versions for node-sass bindings
+
+git clone https://github.com/Conscious-Cities/civic-participation.git
+cd civic-participation
