@@ -2,10 +2,10 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 
-export default function CommonInput(props) {
+export default function TextInput(props) {
     let color = '#227B3C';
     if (props.color === "blue") {
-        color = '#1261A3'
+        color = '#1261A3';
     }
 
     const useStyles = makeStyles((theme) => ({

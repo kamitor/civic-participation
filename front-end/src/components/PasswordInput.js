@@ -9,7 +9,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Input from '@material-ui/core/Input';
 
-export default function InputAdornments(props) {
+export default function PasswordInput(props) {
     let color = '#227B3C';
     if (props.color === "blue") {
         color = '#1261A3'

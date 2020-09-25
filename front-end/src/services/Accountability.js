@@ -119,7 +119,6 @@ export default class Accountability {
             }
             return tx;
         } catch (e) {
-            console.log('\nCaught exception: ' + e);
             if (e instanceof RpcError)
                 console.error(JSON.stringify(e.json, null, 2));
             else {
