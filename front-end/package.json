@@ -12,10 +12,13 @@
     "eosjs": "^20.0.3",
     "eosjs-ecc": "^4.0.7",
     "moment": "^2.24.0",
+    "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-hook-form": "^6.8.5",
     "react-icons": "^3.10.0",
-    "typeface-roboto": "0.0.75"
+    "typeface-roboto": "0.0.75",
+    "yup": "^0.29.3"
   },
   "scripts": {
     "start": "REACT_APP_NODE_ENV=development PORT=3001 react-scripts start",
