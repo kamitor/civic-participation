@@ -15,8 +15,6 @@ function Home() {
                 const accountCreateRes = await civic.accountCreate('jack', 'Password1234!', 'Jack Tanner');
                 console.log('accountCreate()', accountCreateRes);
             }
-            let accountLoginRes = await civic.accountLogin('jack', 'Password1234!');
-            console.log('accountLogin() - jack 2', accountLoginRes);
 
             const proposal = {
                 title: 'Build a flowerbed next to John\'s tacos',

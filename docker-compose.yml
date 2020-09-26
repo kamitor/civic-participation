@@ -32,4 +32,4 @@ services:
       - MONGODB_USER="user"
       - MONGODB_PASS="pass"
     volumes:
-      - mongo-data:/data
+      - mongo-data:/data/db

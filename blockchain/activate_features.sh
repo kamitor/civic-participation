@@ -2,11 +2,13 @@
 
 # docker-compose exec dfuse /bin/bash /var/repo/blockchain/activate_features.sh
 
-# set -o nounset   ## set -u : exit the script if you try to use an uninitialised variable
-# set -o errexit   ## set -e : exit the script if any statement returns a non-true return value
+set -u ## exit the script if you try to use an uninitialised variable
+set -e ## exit the script if any statement returns a non-true return value
 
 echo "Running wallet"
+set +e
 keosd &
+set -e
 sleep 1
 
 echo "Creating key wallet"
