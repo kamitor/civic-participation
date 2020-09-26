@@ -18,7 +18,7 @@ function help {
     echo "    logs [service] - shows log for service"
 }
 
-function upprint {
+function printservices {
     echo ""
     echo "Services running"
     echo "http://localhost:3000 - React app"

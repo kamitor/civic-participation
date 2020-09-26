@@ -23,11 +23,14 @@ elif [ "${ARG1}" == "init" ]; then
     else
         init
     fi
+    printservices
 elif [ "${ARG1}" == "start" ]; then
     start "${ARG2}"
+    printservices
 elif [ "${ARG1}" == "restart" ]; then
     stop
     start "${ARG2}"
+    printservices
 elif [ "${ARG1}" == "stop" ]; then
     stop
 elif [ "${ARG1}" == "reset" ]; then

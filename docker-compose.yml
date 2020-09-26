@@ -4,7 +4,10 @@ volumes:
   blockchain-data:
     external:
       name: blockchain-data
-
+  mongo-data:
+    external:
+      name: mongo-data
+    
 services:
   dfuse:
     build:
@@ -29,6 +32,4 @@ services:
       - MONGODB_USER="user"
       - MONGODB_PASS="pass"
     volumes:
-      - ./temp/mongo/db:/data/db
-      - ./temp/mongo/configdb:/data/configdb
-      - ./temp/mongo/logs:/data-logs
+      - mongo-data:/data
