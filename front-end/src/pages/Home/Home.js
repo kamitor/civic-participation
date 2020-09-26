@@ -8,8 +8,9 @@ function Home() {
         async function main() {
             let civic = new Civic(); // put this in context API, or use singleton
 
+            let accountLoginRes;
             try {
-                const accountLoginRes = await civic.accountLogin('jack', 'Password1234!');
+                accountLoginRes = await civic.accountLogin('jack', 'Password1234!');
                 console.log('accountLogin() - jack', accountLoginRes);
             } catch (e) {
                 const accountCreateRes = await civic.accountCreate('jack', 'Password1234!', 'Jack Tanner');

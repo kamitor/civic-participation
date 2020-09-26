@@ -12,7 +12,12 @@ function start {
     cd "${PARENT_PATH}"
     docker-compose up -d
 
-    if [ "${ARG1}" != "lean" ]; then
+    if [ "${ARG1}" == "lean" ]; then
+        echo ""
+        echo "Front-end and back-end are NOT started!!!"
+        echo "You need to start these yourself!!!"
+        echo ""
+    else
         echo "Starting react (front-end)"
         cd "${PARENT_PATH}/front-end"
         if [ "${ARG1}" == "prod" ]; then
@@ -82,9 +87,9 @@ function logs {
     elif [ "${SERVICE}" == "node" ]; then
         tail -f -n 20 "${PARENT_PATH}/back-end/node.log"
     elif [ "${SERVICE}" == "dfuse" ]; then
-        docker-compose logs dfuse
+        docker-compose logs -f dfuse
     elif [ "${SERVICE}" == "dfuse" ]; then
-        docker-compose logs mongo
+        docker-compose logs -f mongo
     else
         printlogs
     fi

@@ -13,7 +13,6 @@ function help {
     echo "    start prod     - starts all services in production mode"
     echo "    start lean     - starts blockchain and mongo only - you need to run the front-end and back-end manually"
     echo "    stop           - stops services gracefully"
-    echo "    restart        - stops and starts"
     echo "    reset          - resets all blockchain and mongodb data"
     echo "    logs [service] - shows log for service"
 }

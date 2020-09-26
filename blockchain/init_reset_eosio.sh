@@ -34,8 +34,8 @@ else
 fi
 
 # allow for block production to start
-echo "Waiting 5s for blockchain node to start"
-sleep 5
+echo "Waiting 10s for blockchain node to start"
+sleep 10
 
 docker-compose exec dfuse /bin/bash /var/repo/blockchain/activate_features.sh
 if [ $? -gt 0 ]
