@@ -21,7 +21,7 @@ function start {
         echo "Starting react (front-end)"
         cd "${PARENT_PATH}/front-end"
         if [ "${ARG1}" == "prod" ]; then
-            npm run-script start-prod 3>&1 2>&1 >> react.log &
+            npm run-script start-prod &>> react.log &
         else
             npm start &>> react.log &
         fi
@@ -29,7 +29,7 @@ function start {
         echo "Starting node (back-end)"
         cd "${PARENT_PATH}/back-end"
         if [ "${ARG1}" == "prod" ]; then
-            npm run-script start-prod 3>&1 2>&1 >> node.log &
+            npm run-script start-prod &>> node.log &
         else
             npm start &>> node.log &
         fi

@@ -22,8 +22,8 @@
         "yup": "^0.29.3"
     },
     "scripts": {
-        "start": "react-scripts start",
-        "start-prod": "REACT_APP_NODE_ENV=production react-scripts start",
+        "start": "BROWSER=none react-scripts start",
+        "start-prod": "BROWSER=none REACT_APP_NODE_ENV=production react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
