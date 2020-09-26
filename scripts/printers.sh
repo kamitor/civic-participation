@@ -28,3 +28,10 @@ function upprint {
     echo "For logs check the temp/* directory for *.log file"
     echo "Also call docker-compose logs"
 }
+
+function printlogs {
+    echo ""
+    echo "Commands:"
+    echo "    logs react     - tail logs for react"
+    
+}

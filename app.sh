@@ -36,6 +36,8 @@ elif [ "${ARG1}" == "reset" ]; then
 elif [ "${ARG1}" == "install" ]; then
     stop
     install
+elif [ "${ARG1}" == "logs" ]; then
+    logs "${ARG2}"
 else
     help
 fi

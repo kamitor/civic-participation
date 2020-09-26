@@ -3,6 +3,10 @@
 function start {
     ARG1=$1
 
+    set +e
+    docker volume create blockchain-data
+    set -e
+
     cd "${PARENT_PATH}"
     docker-compose up -d
 
@@ -61,4 +65,22 @@ function init {
 
 function reset {
     stop
+
+    docker volume rm blockchain-data
+}
+
+function logs {
+    SERVICE=${1}
+
+    if [ "${SERVICE}" == "react" ]; then
+        tail -f -n 20 "${PARENT_PATH}/front-end/react.log"
+    elif [ "${SERVICE}" == "node" ]; then
+        tail -f -n 20 "${PARENT_PATH}/back-end/node.log"
+    elif [ "${SERVICE}" == "dfuse" ]; then
+        docker-compose logs dfuse
+    elif [ "${SERVICE}" == "dfuse" ]; then
+        docker-compose logs mongo
+    else
+        printlogs
+    fi
 }

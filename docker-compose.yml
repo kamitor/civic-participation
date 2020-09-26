@@ -10,7 +10,7 @@ services:
       - 8888:8888
     volumes:
       - ./:/var/repo
-      - ./temp/dfuse:/data
+      - blockchain-data:/data
     command: ["dfuseeos", "start", "--data-dir", "/data"]
   mongo:
     image: mongo:4.2.7
