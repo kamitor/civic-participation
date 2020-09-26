@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function start {
-    ARG1=$1
+    ARG1=${1-}
 
     set +e
     docker volume create blockchain-data
@@ -32,7 +32,10 @@ function start {
 function stop {
     cd "${PARENT_PATH}"
     docker-compose down
+
+    set +e
     pkill node
+    set -e
 }
 
 function install {
@@ -47,12 +50,11 @@ function install {
 }
 
 function init {
-    SUPERFAST=${1}
     reset
     start
 
     cd "${PARENT_PATH}/blockchain"
-    ./init_reset_eosio.sh $SUPERFAST
+    ./init_reset_eosio.sh ${1-}
 
     upprint
 }
@@ -60,7 +62,9 @@ function init {
 function reset {
     stop
 
+    set +e
     docker volume rm blockchain-data
+    set -e
 }
 
 function logs {

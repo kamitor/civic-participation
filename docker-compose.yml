@@ -1,4 +1,10 @@
 version: '3'
+
+volumes:
+  blockchain-data:
+    external:
+      name: blockchain-data
+
 services:
   dfuse:
     build:
