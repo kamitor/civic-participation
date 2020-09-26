@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Grid } from '@material-ui/core';
 import { ExpandMore } from '@material-ui/icons';
 import { Link } from '@material-ui/core';
@@ -6,6 +6,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { AccountCircle, Lock } from '@material-ui/icons';
 import { Typography } from '@material-ui/core';
 import { Button } from '@material-ui/core';
+import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import TextInput from '../../components/TextInput';
 import PasswordInput from '../../components/PasswordInput';
@@ -14,36 +15,16 @@ import {
 	TitleSmallTextTypography,
 	TitleLargeTextTypography,
 	backgroundStyle,
-	ValidatiionString
 } from '../../components/Themes';
 import './Login.scss';
 
 export default function Login() {
 	const history = useHistory();
-	const [username, setUsername] = useState("");
-	const [password, setPassword] = useState("");
-	const [usernameValidation, setUsernameValidation] = useState(false);
-	const [passwordValidation, setPasswordValidation] = useState(false);
-	const handleSubmit = (event) => {
-		event.preventDefault();
-		if (username == "") {
-			setUsernameValidation(true);
-		}
-		if (password == "") {
-			setPasswordValidation(true);
-		}
-	}
 
-	const handleChangePassword = (event) => {
-		setPassword(event.target.value);
-		setPasswordValidation(false);
-	}
-
-	const handleChangeUsername = (e) => {
-		setUsername(e.target.value);
-		setUsernameValidation(false);
-
-	}
+	const { register, errors, handleSubmit } = useForm({
+		criteriaMode: "all"
+	});
+	const onSubmit = data => console.log(data);
 
 	const navigateCreatePage = () => {
 		history.push("/")
@@ -126,34 +107,26 @@ export default function Login() {
 							<TitleLoginTypography>Login</TitleLoginTypography>
 						</Grid>
 					</Grid>
-					<form onSubmit={handleSubmit}>
+					<form onSubmit={handleSubmit(onSubmit)} className="login-form">
 						<Grid container direction="column" justify="center" alignContent="center">
-							<Grid item className="input-login">
+							<div className="form-ele-wrap">
 								<TextInput
 									label="Username"
 									name="username"
-									onChange={handleChangeUsername}
 									color="green"
+									errors={errors}
+									registerRef={register({ required: "Please enter a username." })}
 								/>
-							</Grid>
-							{usernameValidation && (
-								<ValidatiionString>
-									Please enter a username.
-								</ValidatiionString>
-							)}
-							<Grid className="input-login">
+							</div>
+							<div className="form-ele-wrap">
 								<PasswordInput
 									label="Enter your password"
 									name="password"
-									handleChangePassword={handleChangePassword}
 									color="green"
+									errors={errors}
+									registerRef={register({ required: "Please enter a password." })}
 								/>
-							</Grid>
-							{passwordValidation && (
-								<ValidatiionString>
-									Please enter a password.
-								</ValidatiionString>
-							)}
+							</div>
 						</Grid>
 						<Grid container item justify="center" alignContent="center">
 							<Link className="login-account-link" onClick={navigateCreatePage}>

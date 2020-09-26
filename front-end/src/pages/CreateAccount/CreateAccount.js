@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Grid } from '@material-ui/core';
 import { ExpandLess } from '@material-ui/icons';
 import { Link } from '@material-ui/core';
@@ -7,6 +7,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { Button } from '@material-ui/core';
 import { AccountCircle, Lock } from '@material-ui/icons';
 import { useHistory } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import TextInput from '../../components/TextInput';
 import PasswordInput from '../../components/PasswordInput';
 import {
@@ -14,67 +15,17 @@ import {
 	TitleSmallTextTypography,
 	TitleLargeTextTypography,
 	backgroundStyle,
-	ValidatiionString
 } from '../../components/Themes';
 import './CreateAccount.scss'
 
 export default function Login() {
 	const history = useHistory();
-	const [username, setUsername] = useState("");
-	const [password, setPassword] = useState("");
-	const [firstname, setFirstname] = useState("");
-	const [lastname, setLastname] = useState("");
-	const [repassword, setRepassword] = useState("");
-	const [usernameValidation, setUsernameValidation] = useState(false);
-	const [firstnameValidation, setFirstnameValidation] = useState(false)
-	const [lastnameValidation, setLastnameValidation] = useState(false)
-	const [passwordValidation, setPasswordValidation] = useState(false)
-	const [repasswordValidation, setRepasswordValidation] = useState(false)
 
-	const handleSubmit = (event) => {
-		event.preventDefault();
-		if (password.length < 8) {
-			setPasswordValidation(true);
-
-		} else if (password != repassword) {
-			setRepasswordValidation(true)
-		}
-		if (username === "") {
-			setUsernameValidation(true);
-		}
-		if (firstname === "") {
-			setFirstnameValidation(true);
-		}
-		if (lastname === "") {
-			setLastnameValidation(true);
-		}
-	}
-
-	const handleChangeUsername = (event) => {
-		setUsername(event.target.value);
-		setUsernameValidation(false)
-	}
-
-	const handleChangeFirstname = (event) => {
-		setFirstname(event.target.value);
-		setFirstnameValidation(false);
-	}
-
-	const handleChangeLastname = (event) => {
-		setLastname(event.target.value);
-		setLastnameValidation(false);
-	}
-
-	const handleChangePassword = (event) => {
-		setPasswordValidation(false);
-		setRepasswordValidation(false);
-		setPassword(event.target.value);
-	}
-
-	const handleChangeRePassword = (event) => {
-		setRepassword(event.target.value);
-		setRepasswordValidation(false);
-	}
+	const { register, errors, handleSubmit, watch } = useForm({
+		criteriaMode: "all"
+	});
+	
+	const onSubmit = data => console.log(data);
 
 	const navigateLoginPage = () => {
 		history.push("/login")
@@ -157,73 +108,62 @@ export default function Login() {
 							<LogoCreateTitle>Create account</LogoCreateTitle>
 						</Grid>
 					</Grid>
-					<form onSubmit={handleSubmit}>
+					<form onSubmit={handleSubmit(onSubmit)} className="create-form">
 						<Grid container direction="column" justify="center" alignContent="center">
-							<Grid item className="input-create">
+							<div className="form-ele-wrap">
 								<TextInput
 									label="Create username"
 									name="username"
-									onChange={handleChangeUsername}
-									color="blue"
+									color="green"
+									errors={errors}
+									registerRef={register({ required: "Please enter a username." })}
 								/>
-							</Grid>
-							{usernameValidation && (
-								<ValidatiionString>
-									Please enter a username.
-								</ValidatiionString>
-							)}
-							<Grid item className="input-create">
+							</div>
+							<div className="form-ele-wrap">
 								<TextInput
 									label="First name"
 									name="firstname"
-									onChange={handleChangeFirstname}
-									color="blue"
+									color="green"
+									errors={errors}
+									registerRef={register({ required: "Please enter a firstname." })}
 								/>
-							</Grid>
-							{firstnameValidation && (
-								<ValidatiionString>
-									Please enter a firstname.
-								</ValidatiionString>
-							)}
-							<Grid item className="input-create">
+							</div>
+							<div className="form-ele-wrap">
 								<TextInput
 									label="Last name"
 									name="lastname"
-									onChange={handleChangeLastname}
-									color="blue"
+									color="green"
+									errors={errors}
+									registerRef={register({ required: "Please enter a lastname." })}
 								/>
-							</Grid>
-							{lastnameValidation && (
-								<ValidatiionString>
-									Please enter a lastname.
-								</ValidatiionString>
-							)}
-							<Grid className="input-create">
+							</div>
+							<div className="form-ele-wrap">
 								<PasswordInput
 									label="Enter your password"
 									name="password"
-									handleChangePassword={handleChangePassword}
-									color="blue"
+									color="green"
+									errors={errors}
+									registerRef={register({
+										required: "Please enter a password.",
+										minLength: {
+											value: 8,
+											message: "At least 8 characters."
+										}
+									})}
 								/>
-							</Grid>
-							{passwordValidation && (
-								<ValidatiionString>
-									At least 8 characters
-								</ValidatiionString>
-							)}
-							<Grid className="input-create">
+							</div>
+							<div className="form-ele-wrap">
 								<PasswordInput
 									label="Enter your confirm password"
-									name="repassword"
-									handleChangePassword={handleChangeRePassword}
-									color="blue"
+									name="cofirmpassword"
+									color="green"
+									errors={errors}
+									registerRef={register({
+										required: "Please enter a confirm password.",
+										validate: (value) => value != watch('password') && value != "" && "Passwords must match."
+									})}
 								/>
-							</Grid>
-							{repasswordValidation && (
-								<ValidatiionString>
-									Password are not matching.
-								</ValidatiionString>
-							)}
+							</div>
 						</Grid>
 						<Grid container item justify="center" alignContent="center">
 							<Link className="create-account-link" onClick={navigateLoginPage}>

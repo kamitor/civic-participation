@@ -1,6 +1,8 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { Grid } from '@material-ui/core';
 import TextField from "@material-ui/core/TextField";
+import { ErrorMessage } from "@hookform/error-message";
 
 export default function TextInput(props) {
     let color = '#227B3C';
@@ -29,11 +31,27 @@ export default function TextInput(props) {
     const classes = useStyles();
 
     return (
-        <TextField
-            className={classes.margin, classes.commonText}
-            label={props.label}
-            onChange={props.onChange}
-            value={props.value}
-        />
+        <>
+            <Grid className="input-container">
+                <TextField
+                    name={props.name}
+                    className={classes.margin, classes.commonText}
+                    label={props.label}
+                    value={props.value}
+                    inputRef={props.registerRef}
+                />
+            </Grid>
+            <ErrorMessage
+                errors={props.errors}
+                name={props.name}
+                render={({ messages }) => {
+                    return messages
+                        ? Object.entries(messages).map(([type, message]) => (
+                            <p key={type}>{message}</p>
+                        ))
+                        : null;
+                }}
+            />
+        </>
     )
 }
