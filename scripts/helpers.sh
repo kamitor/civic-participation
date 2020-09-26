@@ -23,7 +23,7 @@ function start {
         if [ "${ARG1}" == "prod" ]; then
             npm run-script start-prod 3>&1 2>&1 >> react.log &
         else
-            npm start 3>&1 2>&1 >> react.log &
+            npm start &>> react.log &
         fi
 
         echo "Starting node (back-end)"
@@ -31,7 +31,7 @@ function start {
         if [ "${ARG1}" == "prod" ]; then
             npm run-script start-prod 3>&1 2>&1 >> node.log &
         else
-            npm start 3>&1 2>&1 >> node.log &
+            npm start &>> node.log &
         fi
     fi
 }
@@ -43,7 +43,13 @@ function stop {
 
     echo "Stopping react and node"
     set +e
-    pkill node
+    nodeprocesses=`pidof node`
+    echo "${nodeprocesses}"
+    if [[ ! -z "${nodeprocesses}" ]]; then
+        kill -9  ${nodeprocesses}
+    fi
+    # pkill node
+    # killall node
     set -e
 }
 
