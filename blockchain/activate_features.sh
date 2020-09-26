@@ -1,6 +1,5 @@
 #!/bin/bash
 
-source /var/repo/config.sh
 # docker-compose exec dfuse /bin/bash /var/repo/blockchain/activate_features.sh
 
 # set -o nounset   ## set -u : exit the script if you try to use an uninitialised variable

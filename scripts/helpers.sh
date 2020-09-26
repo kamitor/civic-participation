@@ -1,14 +1,24 @@
 #!/bin/bash
 
 function start {
+    ARG1=$1
+
     cd "${PARENT_PATH}"
     docker-compose up -d
 
     cd "${PARENT_PATH}/front-end"
-    npm start >> react.log &
+    if [ "${ARG1}" == "prod" ]; then
+        npm start-prod >> react.log &
+    else
+        npm start >> react.log &
+    fi
 
     cd "${PARENT_PATH}/back-end"
-    npm start >> node.log &
+    if [ "${ARG1}" == "prod" ]; then
+        npm start-prod >> node.log &
+    else
+        npm start >> node.log &
+    fi
 
     upprint
 }
@@ -37,9 +47,9 @@ function install {
 }
 
 function init {
-    SUPERFAST=${1-}
+    SUPERFAST=${1}
     reset
-    startdocker "docker"
+    start
 
     cd "${PARENT_PATH}/blockchain"
     ./init_reset_eosio.sh $SUPERFAST
@@ -49,14 +59,4 @@ function init {
 
 function reset {
     stop
-    echo "This will reset the blockchain and all databases!!! (sudo required)"
-    read -p "Do you want to continue (y/n)? " CHOICE
-    if [ "$CHOICE" == 'y' ]; then
-        if [ -d "${PARENT_PATH}/temp" ]
-        then
-            sudo rm "${PARENT_PATH}/temp" -R
-        fi
-    else
-        exit 1
-    fi
 }
