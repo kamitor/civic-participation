@@ -3,7 +3,6 @@ services:
   dfuse:
     build:
       context: ./blockchain
-      dockerfile: Dockerfile-dfuse
     container_name: "dfuse"
     ports:
       - 8080:8080

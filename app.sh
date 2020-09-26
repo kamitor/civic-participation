@@ -18,7 +18,7 @@ elif [ "${ARG1}" == "start" ]; then
     start "${ARG2}"
 elif [ "${ARG1}" == "restart" ]; then
     stop
-    start
+    start "${ARG2}"
 elif [ "${ARG1}" == "stop" ]; then
     stop
 elif [ "${ARG1}" == "init" ]; then

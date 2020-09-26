@@ -23,9 +23,6 @@ else
     cd ../eosio.bios
     ./build.sh
 
-    cd ../eosio.token
-    ./build.sh
-    
     cd ../civic
     ./build.sh
 

@@ -6,18 +6,20 @@ function start {
     cd "${PARENT_PATH}"
     docker-compose up -d
 
-    cd "${PARENT_PATH}/front-end"
-    if [ "${ARG1}" == "prod" ]; then
-        npm start-prod >> react.log &
-    else
-        npm start >> react.log &
-    fi
+    if [ "${ARG1}" != "lean" ]; then
+        cd "${PARENT_PATH}/front-end"
+        if [ "${ARG1}" == "prod" ]; then
+            npm start-prod >> react.log &
+        else
+            npm start >> react.log &
+        fi
 
-    cd "${PARENT_PATH}/back-end"
-    if [ "${ARG1}" == "prod" ]; then
-        npm start-prod >> node.log &
-    else
-        npm start >> node.log &
+        cd "${PARENT_PATH}/back-end"
+        if [ "${ARG1}" == "prod" ]; then
+            npm start-prod >> node.log &
+        else
+            npm start >> node.log &
+        fi
     fi
 
     upprint
