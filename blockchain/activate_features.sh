@@ -15,7 +15,7 @@ sleep 0.1
 
 echo "Adding eosio private key"
 PKEY_EOSIO="5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3"
-cleos wallet import --private-key $PKEY_EOSIO
+cleos wallet import --private-key ${PKEY_EOSIO}
 sleep 0.1
 
 echo "Enable protocol feature pre-activation PREACTIVATE_FEATURE for eosio.contract v1.8+"

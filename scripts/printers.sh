@@ -6,14 +6,16 @@ function help {
     echo "    app.sh [commands]"
     echo ""
     echo "Commands:"
-    echo "    init           - installs all containers and packages, starts services, compiles contracts and initalizes the blockchain"
-    echo "    init fast      - starts services, compiles contracts and initalizes the blockchain"
-    echo "    init superfast - starts services and initializes the blockchain"
     echo "    install        - installs all containers and packages"
-    echo "    up             - starts application components"
-    echo "    up prod        - starts application execution on production server"
-    echo "    down           - stops application components gracefully"
+    echo "    init           - compiles contracts, starts services and initalizes the blockchain"
+    echo "    init fast - starts services and initializes the blockchain"
+    echo "    start          - starts application components"
+    echo "    start lean     - starts application execution on production server"
+    echo "    start prod     - starts application execution on production server"
+    echo "    stop           - stops application components gracefully"
+    echo "    restart        - stops and starts"
     echo "    reset          - resets all application data including blockchain history and database"
+    echo "    logs [service] - shows log for service"
 }
 
 function upprint {
@@ -25,13 +27,14 @@ function upprint {
     echo "http://localhost:8081 - Dfuse blockchain dashboard"
     echo "http://localhost:8888 - Nodeos blockchain API"
     echo ""
-    echo "For logs check the temp/* directory for *.log file"
-    echo "Also call docker-compose logs"
 }
 
 function printlogs {
     echo ""
     echo "Commands:"
-    echo "    logs react     - tail logs for react"
+    echo "    logs react     - tail logs for react (front-end)"
+    echo "    logs node      - tail logs for node (back-end)"
+    echo "    logs dfuse     - tail logs for dfuse (blockchain)"
+    echo "    logs mongo     - tail logs for mongo (database)"
     
 }

@@ -28,7 +28,7 @@ else
 
     echo ""
     echo "Smart contracts have been built"
-    echo "You can run './app.sh init superfast' next time (unless contracts are changed)"
+    echo "You can run './app.sh init fast' next time (unless contracts are changed)"
     echo ""
 fi
 
@@ -42,7 +42,9 @@ then
     exit 1
 fi
 
-docker-compose exec back-end npm run-script bootstrap
+cd "${PARENT_PATH}"
+cd ../back-end
+npm run-script bootstrap
 if [ $? -gt 0 ]
 then
     exit 1

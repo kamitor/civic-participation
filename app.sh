@@ -14,6 +14,15 @@ set -o errexit   ## set -e : exit the script if any statement returns a non-true
 
 if [ -z "${ARG1}" ]; then
     help
+elif [ "${ARG1}" == "install" ]; then
+    stop
+    install
+elif [ "${ARG1}" == "init" ]; then
+    if [ "${ARG2}" == "fast" ]; then
+        init "superfast"
+    else
+        init
+    fi
 elif [ "${ARG1}" == "start" ]; then
     start "${ARG2}"
 elif [ "${ARG1}" == "restart" ]; then
@@ -21,21 +30,8 @@ elif [ "${ARG1}" == "restart" ]; then
     start "${ARG2}"
 elif [ "${ARG1}" == "stop" ]; then
     stop
-elif [ "${ARG1}" == "init" ]; then
-    if [ "${ARG2}" == "fast" ]; then
-        init
-    elif [ "${ARG2}" == "superfast" ]; then
-        init "superfast"
-    else
-        stop
-        install
-        init
-    fi
 elif [ "${ARG1}" == "reset" ]; then
     reset
-elif [ "${ARG1}" == "install" ]; then
-    stop
-    install
 elif [ "${ARG1}" == "logs" ]; then
     logs "${ARG2}"
 else
