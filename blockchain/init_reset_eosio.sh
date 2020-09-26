@@ -5,10 +5,6 @@ ARG1=$1
 set -o nounset   ## set -u : exit the script if you try to use an uninitialised variable
 set -o errexit   ## set -e : exit the script if any statement returns a non-true return value
 
-# TODO
-# - turn off state history plugin on Nodeos
-# - change dfuse docker to control init from outside docker, put init in init script
-
 # Make sure working dir is same as this dir, so that script can be excuted from another working directory
 PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$PARENT_PATH"
