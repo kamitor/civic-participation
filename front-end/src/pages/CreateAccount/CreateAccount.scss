@@ -86,6 +86,18 @@
         line-height: 0;
     }
 
+    .encrypt-wrape {
+        display: flex;
+        &:hover {
+            cursor: pointer;
+        }
+    }
+    
+
+}
+
+.read-more-link {
+    cursor: pointer;
 }
 
 .create-button .MuiButton-root:hover {
@@ -107,3 +119,8 @@
 .create-form {
     margin-top: 20px;
 }
+
+.create-inner .form-ele-wrap .createuser-msg {
+    color: grey;
+}
+

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import CreateAccount from './pages/CreateAccount/CreateAccount';
+import Security from './pages/Security/Security';
 
 const Routes = () => (
     <Router >
@@ -15,6 +16,9 @@ const Routes = () => (
             </Route>
             <Route path="/test">
                 <Home />
+            </Route>
+            <Route>
+                <Security />
             </Route>
         </Switch>
     </Router >

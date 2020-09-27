@@ -89,6 +89,13 @@
         line-height: 0;
     }
 
+    .encrypt-wrape {
+        display: flex;
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
 }
 
 .login-button .MuiButton-root:hover {

@@ -6,6 +6,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { AccountCircle, Lock } from '@material-ui/icons';
 import { Typography } from '@material-ui/core';
 import { Button } from '@material-ui/core';
+import Tooltip from '@material-ui/core/Tooltip';
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import TextInput from '../../components/TextInput';
@@ -74,6 +75,26 @@ export default function Login() {
 		}
 	})(Typography);
 
+	const navigateSecurityPage = () => {
+		window.open("security", "_blank")
+	}
+
+	const HtmlTooltip = withStyles((theme) => ({
+		tooltip: {
+			backgroundColor: 'grey',
+			color: 'rgba(0, 0, 0, 0.87)',
+			maxWidth: 400,
+			fontSize: theme.typography.pxToRem(12),
+			border: '1px solid #dadde9',
+		},
+	}))(Tooltip);
+
+	const TitleLock = withStyles({
+		root: {
+			fontSize: "14px"
+		}
+	})(Lock);
+
 	return (
 		<Grid container spacing={0} direction="row">
 			<Grid container item xs={6} spacing={0} className="col-item col-left">
@@ -137,14 +158,32 @@ export default function Login() {
 							<ExpandMore />
 						</Grid>
 						<Grid container direction="row" justify="flex-end" alignItems="center">
-							<Grid item>
-								<GreenSmallTypography>
-									encrypted
+							<HtmlTooltip
+								title={
+									<React.Fragment>
+										<div>{<TitleLock />}Proposals, voting and government actions are stored on the blockchain.
+											This data is secured using cryptography and cannot be forged or tampered
+											with by anyone, including the government.
+											<Link className="read-more-link" onClick={navigateSecurityPage}>
+												Click to learn more
+           									</Link>
+										</div>
+									</React.Fragment>
+								}
+								arrow
+								interactive
+							>
+								<div className="encrypt-wrape">
+									<Grid item>
+										<GreenSmallTypography>
+											tamper proof
              					 </GreenSmallTypography>
-							</Grid>
-							<Grid item>
-								<LoginLock />
-							</Grid>
+									</Grid>
+									<Grid item>
+										<LoginLock />
+									</Grid>
+								</div>
+							</HtmlTooltip>
 							<Grid item className="login-button">
 								<LoginButton type="submit">
 									LOGIN

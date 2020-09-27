@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid } from '@material-ui/core';
 import TextField from "@material-ui/core/TextField";
@@ -29,6 +29,7 @@ export default function TextInput(props) {
     }));
 
     const classes = useStyles();
+    const [defaultText, setDefaultText] = useState(props.defaultText)
 
     return (
         <>
@@ -41,6 +42,7 @@ export default function TextInput(props) {
                     inputRef={props.registerRef}
                 />
             </Grid>
+            <p className="createuser-msg">{defaultText}</p>
             <ErrorMessage
                 errors={props.errors}
                 name={props.name}
