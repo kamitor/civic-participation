@@ -14,14 +14,14 @@ let settings = {
 
 if (process.env.REACT_APP_NODE_ENV === "production") {
     settings.env = "production"
-    settings.eosio.nodeos = "https://d1hxgr8mqh915l.cloudfront.net";
+    settings.eosio.nodeos = "http://ec2-18-133-123-109.eu-west-2.compute.amazonaws.com:8888";
     settings.dfuseOptions.network = "";
-    settings.eosio.blockExplorerUrl = "d1uzqj8k54wt9u.cloudfront.net";
-    settings.dfuseOptions.network = "d1hxgr8mqh915l.cloudfront.net"
-    settings.dfuseOptions.secure = true
+    settings.eosio.blockExplorerUrl = "ec2-18-133-123-109.eu-west-2.compute.amazonaws.com";
+    settings.dfuseOptions.network = "ec2-18-133-123-109.eu-west-2.compute.amazonaws.com"
+    settings.dfuseOptions.secure = false
 }
 
-settings.isLiveEnvironment = function() {
+settings.isLiveEnvironment = function () {
     return settings.env === "production";
 }
 

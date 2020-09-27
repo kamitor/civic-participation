@@ -1,4 +1,4 @@
-class Contract {
+export default class Contract {
     /**
      * @param {string} contractAccount - the name of the account on the network where the smart contract lives
      * @param {Object | Accountability | Eosio} eosio - eosio object
@@ -58,5 +58,3 @@ class Contract {
         }
     }
 }
-
-module.exports = Contract;
