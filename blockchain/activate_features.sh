@@ -1,13 +1,14 @@
 #!/bin/bash
 
-source /var/repo/config.sh
 # docker-compose exec dfuse /bin/bash /var/repo/blockchain/activate_features.sh
 
-# set -o nounset   ## set -u : exit the script if you try to use an uninitialised variable
-# set -o errexit   ## set -e : exit the script if any statement returns a non-true return value
+set -u ## exit the script if you try to use an uninitialised variable
+set -e ## exit the script if any statement returns a non-true return value
 
 echo "Running wallet"
+set +e
 keosd &
+set -e
 sleep 1
 
 echo "Creating key wallet"
@@ -16,7 +17,7 @@ sleep 0.1
 
 echo "Adding eosio private key"
 PKEY_EOSIO="5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3"
-cleos wallet import --private-key $PKEY_EOSIO
+cleos wallet import --private-key ${PKEY_EOSIO}
 sleep 0.1
 
 echo "Enable protocol feature pre-activation PREACTIVATE_FEATURE for eosio.contract v1.8+"
