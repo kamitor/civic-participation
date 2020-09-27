@@ -1,3 +1,7 @@
 #!/bin/bash
 
-REACT_APP_NODE_ENV=development docker-compose run eosio-cdt eosio-cpp -abigen -I /var/repo/contracts/civic/include -R resource -contract civic -o /var/repo/contracts/civic/civic.wasm /var/repo/contracts/civic/src/civic.cpp
+PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+
+WORKING_DIR="/tmp"
+CONTRACT_NAME="civic"
+docker run -v "${PARENT_PATH}:${WORKING_DIR}" eostudio/eosio.cdt:v1.7.0 eosio-cpp -abigen -I ${WORKING_DIR}/include -R resource -contract ${CONTRACT_NAME} -o ${WORKING_DIR}/${CONTRACT_NAME}.wasm ${WORKING_DIR}/src/${CONTRACT_NAME}.cpp
