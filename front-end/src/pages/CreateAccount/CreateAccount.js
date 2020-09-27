@@ -203,7 +203,7 @@ export default function Login() {
 								title={
 									<React.Fragment>
 										<div>{<TitleLock />}Proposals, voting and government actions are stored on the blockchain.
-											This data is secured using cryptography and cannot be forged or tampered
+											This data is cryptographically secured and cannot be forged or tampered
 											with by anyone, including the government.
 											<Link className="read-more-link" onClick={navigateSecurityPage}>
 												Click to learn more
