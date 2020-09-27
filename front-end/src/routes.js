@@ -17,7 +17,7 @@ const Routes = () => (
             <Route path="/test">
                 <Home />
             </Route>
-            <Route>
+            <Route path="/security">
                 <Security />
             </Route>
         </Switch>
