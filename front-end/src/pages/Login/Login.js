@@ -6,7 +6,6 @@ import { withStyles } from "@material-ui/core/styles";
 import { AccountCircle, Lock } from '@material-ui/icons';
 import { Typography } from '@material-ui/core';
 import { Button } from '@material-ui/core';
-import Tooltip from '@material-ui/core/Tooltip';
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import TextInput from '../../components/TextInput';
@@ -16,6 +15,7 @@ import {
 	TitleSmallTextTypography,
 	TitleLargeTextTypography,
 	backgroundStyle,
+	HtmlTooltip
 } from '../../components/Themes';
 import './Login.scss';
 
@@ -78,16 +78,6 @@ export default function Login() {
 	const navigateSecurityPage = () => {
 		window.open("security", "_blank")
 	}
-
-	const HtmlTooltip = withStyles((theme) => ({
-		tooltip: {
-			backgroundColor: 'grey',
-			color: 'rgba(0, 0, 0, 0.87)',
-			maxWidth: 400,
-			fontSize: theme.typography.pxToRem(12),
-			border: '1px solid #dadde9',
-		},
-	}))(Tooltip);
 
 	const TitleLock = withStyles({
 		root: {

@@ -1,6 +1,7 @@
 import { Typography } from '@material-ui/core';
 import { createMuiTheme, withStyles } from "@material-ui/core/styles";
 import background from './../assets/image/background.png';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const theme = createMuiTheme({
     typography: {
@@ -47,6 +48,17 @@ const TitleLargeTextTypography = withStyles({
     }
 })(Typography);
 
+const HtmlTooltip = withStyles((theme) => ({
+    tooltip: {
+        backgroundColor: 'lightgrey',
+        color: 'rgba(0, 0, 0, 0.87)',
+        maxWidth: 400,
+        fontSize: theme.typography.pxToRem(12),
+        border: '1px solid #dadde9',
+    },
+}))(Tooltip);
+
+
 const backgroundStyle = {
     style: {
         backgroundImage: `url(${background})`,
@@ -62,5 +74,6 @@ export {
     TitleSmallTextTypography,
     TitleLargeTextTypography,
     backgroundStyle,
-    ValidatiionString
+    ValidatiionString,
+    HtmlTooltip
 }
