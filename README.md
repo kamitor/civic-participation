@@ -7,6 +7,7 @@ App to ...
 - Linux debian distribution
 - [Docker Compose](http://docs.docker.com/compose/)
 - [Nodejs and npm](https://nodejs.org) - suggested to use [nvm](https://github.com/nvm-sh/nvm)
+- [serve](https://www.npmjs.com/package/serve) - Installed globally
 
 Use install script _should work_ for debian distributions to install prerequesits as needed.
 
