@@ -11,7 +11,7 @@ function Home() {
             let accountLoginRes;
             try {
                 accountLoginRes = await civic.accountLogin('jack', 'Password1234!');
-                console.log('accountLogin() - jack', accountLoginRes);
+                console.log('accountLogin() - jack 1', accountLoginRes);
             } catch (e) {
                 const accountCreateRes = await civic.accountCreate('jack', 'Password1234!', 'Jack Tanner');
                 console.log('accountCreate()', accountCreateRes);
@@ -45,14 +45,14 @@ function Home() {
             console.log('proposalUpdate()', proposalUpdateRes);
 
             accountLoginRes = await civic.accountLogin('jack', 'Password1234!');
-            console.log('accountLogin() - jack 3', accountLoginRes);
+            console.log('accountLogin() - jack 2', accountLoginRes);
             const proposalVoteRes = await civic.proposalVote(proposalId, true);
             console.log('proposalVote', proposalVoteRes);
 
             let proposals = await civic.proposalList();
-            console.log('proposalList() - 1', proposals);
+            console.log('proposalList()', proposals);
             proposals = await civic.proposalList(ProposalStatus.Approved);
-            console.log('proposalList() - 2', proposals);
+            console.log('proposalList(Approved)', proposals);
 
             const proposalDetails = await civic.proposalGet(proposalId);
             console.log('proposalGet()', proposalDetails);
