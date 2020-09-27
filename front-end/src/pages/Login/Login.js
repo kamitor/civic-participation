@@ -15,6 +15,7 @@ import {
 	TitleSmallTextTypography,
 	TitleLargeTextTypography,
 	backgroundStyle,
+	HtmlTooltip
 } from '../../components/Themes';
 import './Login.scss';
 
@@ -73,6 +74,16 @@ export default function Login() {
 			lineHeight: '35px'
 		}
 	})(Typography);
+
+	const navigateSecurityPage = () => {
+		window.open("security", "_blank")
+	}
+
+	const TitleLock = withStyles({
+		root: {
+			fontSize: "14px"
+		}
+	})(Lock);
 
 	return (
 		<Grid container spacing={0} direction="row">
@@ -137,14 +148,32 @@ export default function Login() {
 							<ExpandMore />
 						</Grid>
 						<Grid container direction="row" justify="flex-end" alignItems="center">
-							<Grid item>
-								<GreenSmallTypography>
-									encrypted
+							<HtmlTooltip
+								title={
+									<React.Fragment>
+										<div>{<TitleLock />}Proposals, voting and government actions are stored on the blockchain.
+											This data is cryptographically secured and cannot be forged or tampered
+											with by anyone, including the government.&nbsp;
+											<Link className="read-more-link" onClick={navigateSecurityPage}>
+												Click to learn more
+           									</Link>
+										</div>
+									</React.Fragment>
+								}
+								arrow
+								interactive
+							>
+								<div className="encrypt-wrape">
+									<Grid item>
+										<GreenSmallTypography>
+											tamper proof
              					 </GreenSmallTypography>
-							</Grid>
-							<Grid item>
-								<LoginLock />
-							</Grid>
+									</Grid>
+									<Grid item>
+										<LoginLock />
+									</Grid>
+								</div>
+							</HtmlTooltip>
 							<Grid item className="login-button">
 								<LoginButton type="submit">
 									LOGIN
