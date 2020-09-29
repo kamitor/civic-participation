@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import Civic from '../services/Civic';
-import { ProposalCategory, ProposalType, ProposalStatus } from '../types/civic';
+import Civic from '../../services/Civic';
+import { ProposalCategory, ProposalType, ProposalStatus } from '../../types/civic';
 
 function Home() {
 
@@ -8,15 +8,14 @@ function Home() {
         async function main() {
             let civic = new Civic(); // put this in context API, or use singleton
 
+            let accountLoginRes;
             try {
-                const accountLoginRes = await civic.accountLogin('jack', 'Password1234!');
+                accountLoginRes = await civic.accountLogin('jack', 'Password1234!');
                 console.log('accountLogin() - jack', accountLoginRes);
             } catch (e) {
                 const accountCreateRes = await civic.accountCreate('jack', 'Password1234!', 'Jack Tanner');
                 console.log('accountCreate()', accountCreateRes);
             }
-            let accountLoginRes = await civic.accountLogin('jack', 'Password1234!');
-            console.log('accountLogin() - jack 2', accountLoginRes);
 
             const proposal = {
                 title: 'Build a flowerbed next to John\'s tacos',
