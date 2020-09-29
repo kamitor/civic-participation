@@ -136,4 +136,34 @@ export default class Accountability {
         }
     }
 
+    /** 
+     * Sends a transaction to the blockchain
+     * @param {obj} txData - transaction data
+     * @param {Object} [options] - configuration parameters (optional)
+     * @param {string} [options.status] - throw error if tx status is not this
+     * @returns {Object} transaction object
+     */
+    async transact2(txData, options) {
+        try {
+            const tx = await this.api.transact(txData, {
+                blocksBehind: 3,
+                expireSeconds: 30,
+            })
+            if (options) {
+                if (tx.processed.error_code) throw Error("Failed with error code: " + tx.processed.error_code);
+                if (options.status && tx.processed.receipt.status !== options.status) throw Error("Tx status is " + tx.processed.receipt.status);
+            }
+            return tx;
+        } catch (e) {
+            console.log('transact', txData)
+            console.log('\nCaught exception: ' + e);
+            if (e instanceof RpcError)
+                console.error(JSON.stringify(e.json, null, 2));
+            else {
+                console.error(e)
+                throw Error(e);
+            }
+        }
+    }
+
 }

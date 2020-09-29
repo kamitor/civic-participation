@@ -29,8 +29,9 @@ ACTION civic::propcreate(name creator, string title, string description, uint8_t
 ACTION civic::propupdate(name updater, uint64_t proposal_id, string title, string description, uint8_t category,
                          float budget, uint8_t type, string location, uint8_t new_status, string regulations, string comment)
 {
-    check(updater == eosio::name("gov"), "Only government can update proposals");
+    // check(updater == eosio::name("gov"), "Only government can update proposals"); // do not use, otherwise the human account cannot be used
     require_auth(updater);
+    require_auth(eosio::name("gov")); // updater must be authorized as a member of gov
 
     // Check that it is an appropriate status to update to, else throw error
     switch (new_status)

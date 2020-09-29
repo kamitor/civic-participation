@@ -139,18 +139,34 @@ export default class Civic {
      * @returns {ProposalDetailed}
      */
     async proposalUpdate(proposal) {
-        const tx = await this.civicContract.propupdate(
-            this.account.accountName,
-            proposal.proposalId,
-            proposal.title,
-            proposal.description,
-            proposal.category,
-            proposal.budget,
-            proposal.type,
-            proposal.location,
-            proposal.status,
-            proposal.regulations,
-            proposal.comment);
+        const txData = {
+            actions: [{
+                account: 'civic',
+                name: 'propupdate',
+                authorization: [{
+                    actor: this.account.accountName,
+                    permission: this.accountability.account.permission,
+                }, {
+                    actor: 'gov', // need to sign as gov as well
+                    permission: 'active'
+                }],
+                data: {
+                    updater: this.account.accountName,
+                    proposal_id: proposal.proposalId,
+                    title: proposal.title,
+                    description: proposal.description,
+                    category: proposal.category,
+                    budget: proposal.budget,
+                    type: proposal.type,
+                    location: proposal.location,
+                    new_status: proposal.status,
+                    regulations: proposal.regulations,
+                    comment: proposal.comment
+                },
+            }]
+        }
+
+        const tx = await this.accountability.transact2(txData);
 
         await wait(1000);
         const txDetailed = await this.accountability.dfuseClient.fetchTransaction(tx.transaction_id);
