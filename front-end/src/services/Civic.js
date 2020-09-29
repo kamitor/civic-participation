@@ -139,7 +139,8 @@ export default class Civic {
      * @returns {ProposalDetailed}
      */
     async proposalUpdate(proposal) {
-        const tx = await this.civicContract.propupdate(this.account.accountName,
+        const tx = await this.civicContract.propupdate(
+            this.account.accountName,
             proposal.proposalId,
             proposal.title,
             proposal.description,

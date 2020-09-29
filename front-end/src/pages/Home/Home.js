@@ -33,7 +33,7 @@ function Home() {
             accountLoginRes = await civic.accountLogin('tijn', 'Password123');
             console.log('accountLogin() - tijn', accountLoginRes);
             proposal.proposalId = proposalId;
-            proposal.staus = ProposalStatus.Reviewing;
+            proposal.status = ProposalStatus.Reviewing;
             let proposalUpdateRes = await civic.proposalUpdate(proposal);
             console.log('proposalUpdate()', proposalUpdateRes);
 
@@ -69,10 +69,11 @@ function Home() {
     )
 }
 
-const description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis imperdiet consectetur convallis. Fusce elementum urna at velit venenatis malesuada a eu libero. Fusce sed nisl tempus, ultrices quam sit amet, ultrices nulla. Fusce vulputate vestibulum lacinia. Phasellus ultrices justo dolor, sit amet tempus nisl semper feugiat. Suspendisse imperdiet nec urna sed pulvinar. Sed sit amet leo sollicitudin, blandit massa at, lacinia quam. Aenean dapibus euismod tortor, id pharetra libero. Sed tempus vulputate ullamcorper. Curabitur porttitor, ex eget lobortis venenatis, metus sapien scelerisque metus, sed laoreet lacus odio non turpis. Donec hendrerit efficitur ornare. Pellentesque molestie neque elit, vitae porttitor tellus posuere non. Nulla lobortis, turpis non suscipit imperdiet, magna metus scelerisque lacus, id feugiat tortor tellus eu orci. \
-    \
-    Morbi ultricies nibh nisi, vel rutrum elit consequat vel. Sed pretium purus eu ipsum hendrerit dapibus. Ut nulla leo, tincidunt et aliquam venenatis, porttitor vitae tortor. Donec eget tortor lobortis, auctor mi pharetra, rhoncus massa. Phasellus eget augue non lectus suscipit gravida a eu orci. Phasellus mollis purus ligula, non tempor ligula imperdiet eu. Nulla imperdiet pharetra orci, non commodo lorem luctus eu. Suspendisse at laoreet tortor. In fringilla cursus dictum. Integer molestie vestibulum fringilla. Sed id tincidunt magna. \
-    \
-    Duis vehicula tortor at ex pretium, in lacinia libero porta. Pellentesque risus dolor, viverra id molestie ut, ornare nec nulla. Phasellus tincidunt nisl eget lorem bibendum malesuada. Maecenas commodo imperdiet malesuada. Phasellus porttitor convallis nisi non porttitor. Nullam eleifend sem in quam placerat, quis semper augue dictum. Donec ultrices quam non lorem varius tristique eget a erat. Pellentesque vel imperdiet nisi. Sed turpis justo, mattis a ex in, pharetra dictum mauris. Duis eget tincidunt est. Praesent ut commodo magna. Maecenas imperdiet consequat mattis. Donec dignissim orci ac venenatis eleifend.'
+const description = 'Lorem ipsum dolor sit amet';
+// const description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis imperdiet consectetur convallis. Fusce elementum urna at velit venenatis malesuada a eu libero. Fusce sed nisl tempus, ultrices quam sit amet, ultrices nulla. Fusce vulputate vestibulum lacinia. Phasellus ultrices justo dolor, sit amet tempus nisl semper feugiat. Suspendisse imperdiet nec urna sed pulvinar. Sed sit amet leo sollicitudin, blandit massa at, lacinia quam. Aenean dapibus euismod tortor, id pharetra libero. Sed tempus vulputate ullamcorper. Curabitur porttitor, ex eget lobortis venenatis, metus sapien scelerisque metus, sed laoreet lacus odio non turpis. Donec hendrerit efficitur ornare. Pellentesque molestie neque elit, vitae porttitor tellus posuere non. Nulla lobortis, turpis non suscipit imperdiet, magna metus scelerisque lacus, id feugiat tortor tellus eu orci. \
+//     \
+//     Morbi ultricies nibh nisi, vel rutrum elit consequat vel. Sed pretium purus eu ipsum hendrerit dapibus. Ut nulla leo, tincidunt et aliquam venenatis, porttitor vitae tortor. Donec eget tortor lobortis, auctor mi pharetra, rhoncus massa. Phasellus eget augue non lectus suscipit gravida a eu orci. Phasellus mollis purus ligula, non tempor ligula imperdiet eu. Nulla imperdiet pharetra orci, non commodo lorem luctus eu. Suspendisse at laoreet tortor. In fringilla cursus dictum. Integer molestie vestibulum fringilla. Sed id tincidunt magna. \
+//     \
+//     Duis vehicula tortor at ex pretium, in lacinia libero porta. Pellentesque risus dolor, viverra id molestie ut, ornare nec nulla. Phasellus tincidunt nisl eget lorem bibendum malesuada. Maecenas commodo imperdiet malesuada. Phasellus porttitor convallis nisi non porttitor. Nullam eleifend sem in quam placerat, quis semper augue dictum. Donec ultrices quam non lorem varius tristique eget a erat. Pellentesque vel imperdiet nisi. Sed turpis justo, mattis a ex in, pharetra dictum mauris. Duis eget tincidunt est. Praesent ut commodo magna. Maecenas imperdiet consequat mattis. Donec dignissim orci ac venenatis eleifend.'
 
 export default Home;
