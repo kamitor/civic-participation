@@ -101,39 +101,18 @@ export default class Accountability {
      * @returns {Object} transaction object
      */
     async transact(receiver, action, data, options) {
-        let txData;
-        try {
-            txData = {
-                actions: [{
-                    account: receiver,
-                    name: action,
-                    authorization: [{
-                        actor: this.account.accountName,
-                        permission: this.account.permission,
-                    }],
-                    data: data,
-                }]
-            }
-
-            const tx = await this.api.transact(txData, {
-                blocksBehind: 3,
-                expireSeconds: 30,
-            })
-            if (options) {
-                if (tx.processed.error_code) throw Error("Failed with error code: " + tx.processed.error_code);
-                if (options.status && tx.processed.receipt.status !== options.status) throw Error("Tx status is " + tx.processed.receipt.status);
-            }
-            return tx;
-        } catch (e) {
-            console.log('transact', txData)
-            console.log('\nCaught exception: ' + e);
-            if (e instanceof RpcError)
-                console.error(JSON.stringify(e.json, null, 2));
-            else {
-                console.error(e)
-                throw Error(e);
-            }
+        const txData = {
+            actions: [{
+                account: receiver,
+                name: action,
+                authorization: [{
+                    actor: this.account.accountName,
+                    permission: this.account.permission,
+                }],
+                data: data,
+            }]
         }
+        return await this.transact2(txData, options);
     }
 
     /** 
