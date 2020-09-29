@@ -40,7 +40,7 @@ function Home() {
             proposal.regulation = 'RM 3212';
             proposal.budget = 2300.00;
             proposal.comment = 'Regulations checked and budget added'
-            proposal.staus = ProposalStatus.Approved;
+            proposal.status = ProposalStatus.Approved;
             proposalUpdateRes = await civic.proposalUpdate(proposal);
             console.log('proposalUpdate()', proposalUpdateRes);
 
