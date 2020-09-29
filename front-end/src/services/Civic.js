@@ -49,7 +49,7 @@ export default class Civic {
 
         return {
             ...response.data,
-            common_name: response.data.commonName,
+            commonName: response.data.commonName,
             type: response.data.type
         }
     };
@@ -83,7 +83,7 @@ export default class Civic {
 
         return {
             ...response.data,
-            common_name: response.data.commonName,
+            commonName: response.data.commonName,
             type: response.data.type
         }
     };
@@ -167,7 +167,8 @@ export default class Civic {
             proposalId: proposal.proposalId,
             status: ProposalStatus.Proposed,
             created: new Date(decodedRow.created),
-            updated: new Date(decodedRow.last_updated),
+            updated: new Date(decodedRow.updated),
+            approved: new Date(decodedRow.approved),
             status: proposal.status,
         }
         if (proposal.budget) { proposalDetailed.budget = proposal.budget }
