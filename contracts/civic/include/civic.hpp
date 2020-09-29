@@ -13,7 +13,8 @@ public:
 
   ACTION propcreate(name creator, string title, string description, uint8_t category, float budget, uint8_t type, string location);
 
-  ACTION propupdate(name updater, uint64_t proposal_id, string title, string description, uint8_t category, float budget, uint8_t type, string location, uint8_t new_status, string regulations, string comment);
+  ACTION propupdate(name updater, uint64_t proposal_id, string title, string description, uint8_t category, float budget,
+    uint8_t type, string location, uint8_t new_status, string regulations, string comment);
 
   // ACTION propvote(name voter, uint64_t proposal_id, bool vote);
 

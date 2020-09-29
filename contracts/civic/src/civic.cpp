@@ -21,6 +21,7 @@ ACTION civic::propcreate(name creator, string title, string description, uint8_t
         proposal.budget = budget;
         proposal.type = type;
         proposal.location = location;
+        proposal.status = ProposalStatus::Proposed;
         proposal.created = now;
     });
 }
@@ -28,6 +29,7 @@ ACTION civic::propcreate(name creator, string title, string description, uint8_t
 ACTION civic::propupdate(name updater, uint64_t proposal_id, string title, string description, uint8_t category,
                          float budget, uint8_t type, string location, uint8_t new_status, string regulations, string comment)
 {
+    check(updater == eosio::name("gov"), "Only government can update proposals");
     require_auth(updater);
 
     // Check that it is an appropriate status to update to, else throw error
@@ -47,9 +49,9 @@ ACTION civic::propupdate(name updater, uint64_t proposal_id, string title, strin
 
     time_point now = current_time_point();
 
-    auto msg_itr = _proposals.get(proposal_id); // will throw error if not found
+    const auto &proposal_itr = _proposals.get(proposal_id); // will throw error if not found
 
-    _proposals.modify(msg_itr, updater, [&](auto &proposal) {
+    _proposals.modify(proposal_itr, updater, [&](auto &proposal) {
         proposal.title = title;
         proposal.description = description;
         proposal.category = category;
@@ -60,8 +62,8 @@ ACTION civic::propupdate(name updater, uint64_t proposal_id, string title, strin
         proposal.regulations = regulations;
         proposal.updated = now;
 
-        // if (new_status == civic::ProposalStatus.Approved)
-        //     proposal.approved = now;
+        if (new_status == ProposalStatus::Approved)
+            proposal.approved = now;
     });
 }
 // Default Action hi
