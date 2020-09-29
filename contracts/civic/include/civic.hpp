@@ -3,35 +3,6 @@
 using namespace std;
 using namespace eosio;
 
-// STILL A DRAFT
-// WE WILL IMPLEMENT PAGE BY PAGE, AND THEREFORE VOTING STRUCTURES MAY NOT BE PRESENT TILL THE END
-
-enum ProposalCategory
-{
-  Green,
-  Kids,
-  Road
-};
-
-enum ProposalType
-{
-  Create,
-  Remove,
-  Update
-};
-
-enum ProposalStatus
-{
-  Proposed,
-  Reviewing,
-  Approved,
-  Rejected,
-  VotePassed,
-  VoteFailed,
-  Actioned,
-  Closed
-};
-
 CONTRACT civic : public contract
 {
 public:
@@ -40,11 +11,11 @@ public:
   // microseconds vote_period = eosio::days(30);
   // static constexpr uint32_t vote_yes_pass_count = 5; // 5 yes votes
 
-  ACTION propcreate(name creator, string title, string description, string category, float budget, uint8_t type, string location);
+  ACTION propcreate(name creator, string title, string description, uint8_t category, float budget, uint8_t type, string location);
 
-  // ACTION propupdate(name updater, uint32_t proposal_id, string title, string description, ProposalCategory category, float budget, ProposalType type, vector<string> photos, string location, ProposalStatus new_status, string regulations, string comment);
+  ACTION propupdate(name updater, uint64_t proposal_id, string title, string description, uint8_t category, float budget, uint8_t type, string location, uint8_t new_status, string regulations, string comment);
 
-  // ACTION propvote(name voter, uint32_t proposal_id, bool vote);
+  // ACTION propvote(name voter, uint64_t proposal_id, bool vote);
 
   // Updates votes passed the voting period that have not passed to status = Rejected
 
@@ -57,25 +28,51 @@ public:
   ACTION clear();
 
 private:
+  enum ProposalCategory
+  {
+    Green,
+    Kids,
+    Road
+  };
+
+  enum ProposalType
+  {
+    Create,
+    Remove,
+    Update
+  };
+
+  enum ProposalStatus
+  {
+    Proposed,
+    Reviewing,
+    Approved,
+    Rejected,
+    VotePassed,
+    VoteFailed,
+    Actioned,
+    Closed
+  };
+
   TABLE proposal
   {
     // primary key automatically added by EOSIO method
     uint64_t proposal_id;
     string title;
     string description;
-    string category;
+    uint8_t category;
     float budget;
     // Since the enums are not accepted in eosio we are using uint8_t
     uint8_t type;
     // vector<string> photos;
     // Since the enums are not accepted in eosio we are using uint8_t
     uint8_t status;
-    // string regulations;
+    string regulations;
     string location;
     // automatically added by EOSIO method
     time_point created;
-    // time_point approved;
-    // time_point last_updated;
+    time_point approved;
+    time_point updated;
     // vector<eosio::name> voted;
     // uint8_t yes_vote_count;
 

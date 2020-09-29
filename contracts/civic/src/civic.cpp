@@ -3,7 +3,7 @@
 
 #include <civic.hpp>
 
-ACTION civic::propcreate(name creator, string title, string description, string category, float budget, uint8_t type, string location)
+ACTION civic::propcreate(name creator, string title, string description, uint8_t category, float budget, uint8_t type, string location)
 {
     require_auth(creator);
     // Init the _message table
@@ -22,6 +22,46 @@ ACTION civic::propcreate(name creator, string title, string description, string 
         proposal.type = type;
         proposal.location = location;
         proposal.created = now;
+    });
+}
+
+ACTION civic::propupdate(name updater, uint64_t proposal_id, string title, string description, uint8_t category,
+                         float budget, uint8_t type, string location, uint8_t new_status, string regulations, string comment)
+{
+    require_auth(updater);
+
+    // Check that it is an appropriate status to update to, else throw error
+    switch (new_status)
+    {
+    case ProposalStatus::Reviewing:
+    case ProposalStatus::Approved:
+    case ProposalStatus::Rejected:
+    case ProposalStatus::Actioned:
+    case ProposalStatus::Closed:
+        break;
+    default:
+        eosio::check(false, "You cannot update to this proposal status");
+    }
+
+    proposals_table _proposals(get_self(), get_self().value);
+
+    time_point now = current_time_point();
+
+    auto msg_itr = _proposals.get(proposal_id); // will throw error if not found
+
+    _proposals.modify(msg_itr, updater, [&](auto &proposal) {
+        proposal.title = title;
+        proposal.description = description;
+        proposal.category = category;
+        proposal.budget = budget;
+        proposal.type = type;
+        proposal.location = location;
+        proposal.status = new_status;
+        proposal.regulations = regulations;
+        proposal.updated = now;
+
+        // if (new_status == civic::ProposalStatus.Approved)
+        //     proposal.approved = now;
     });
 }
 // Default Action hi
