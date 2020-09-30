@@ -101,20 +101,29 @@ export default class Accountability {
      * @returns {Object} transaction object
      */
     async transact(receiver, action, data, options) {
-        let txData;
-        try {
-            txData = {
-                actions: [{
-                    account: receiver,
-                    name: action,
-                    authorization: [{
-                        actor: this.account.accountName,
-                        permission: this.account.permission,
-                    }],
-                    data: data,
-                }]
-            }
+        const txData = {
+            actions: [{
+                account: receiver,
+                name: action,
+                authorization: [{
+                    actor: this.account.accountName,
+                    permission: this.account.permission,
+                }],
+                data: data,
+            }]
+        }
+        return await this.transact2(txData, options);
+    }
 
+    /** 
+     * Sends a transaction to the blockchain
+     * @param {obj} txData - transaction data
+     * @param {Object} [options] - configuration parameters (optional)
+     * @param {string} [options.status] - throw error if tx status is not this
+     * @returns {Object} transaction object
+     */
+    async transact2(txData, options) {
+        try {
             const tx = await this.api.transact(txData, {
                 blocksBehind: 3,
                 expireSeconds: 30,
