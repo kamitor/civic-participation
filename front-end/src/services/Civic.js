@@ -183,9 +183,9 @@ export default class Civic {
             location: proposal.location,
             proposalId: proposal.proposalId,
             status: ProposalStatus.Proposed,
-            created: new Date(decodedRow.created),
-            updated: new Date(decodedRow.updated),
-            approved: new Date(decodedRow.approved),
+            created: Accountability.timePointToDate(decodedRow.created),
+            updated: Accountability.timePointToDate(decodedRow.updated),
+            approved: Accountability.timePointToDate(decodedRow.approved),
             status: proposal.status,
         }
         if (proposal.budget) { proposalDetailed.budget = proposal.budget }
@@ -215,37 +215,38 @@ export default class Civic {
         // filter per status if not null
         const proposals = status ? proposalsQuery.rows.filter(x => {
             return x.json.status === status
-        }) : proposalsQuery.rows
-
-        // sort by created date
-        proposals.sort((a, b) => {
-            if (a.json.created > b.json.created) {
-                return 1;
-            }
-            if (a.json.created < b.json.created) {
-                return -1;
-            }
-            return 0;
-        })
+        }) : proposalsQuery.rows;
 
         // return ProposalDetailed[] type
-        const response = proposals.map(x =>  ({
+        const response = proposals.map(x => ({
+            proposalId: x.json.proposal_id,
             title: x.json.title,
             description: x.json.description,
             category: x.json.category,
             budget: x.json.budget,
             type: x.json.type,
             location: x.json.location,
-            proposalId: x.json.proposal_id,
             status: x.json.status,
-            created_time: x.json.created,
             photos: x.json.photos,
             regulations: x.json.regulations,
             comment: x.json.comment,
-            approved_time: x.json.approved_time,
+            created: Accountability.timePointToDate(x.json.approved),
+            approved: Accountability.timePointToDate(x.json.approved),
+            updated: Accountability.timePointToDate(x.json.updated),
             voted: x.json.voted,
-            yes_vote_count: x.json.yes_vote_count,
+            yesVoteCount: x.json.yes_vote_count,
         }))
+
+        // sort by created date
+        response.sort((a, b) => {
+            if (a.created > b.created) {
+                return 1;
+            }
+            if (a.created < b.created) {
+                return -1;
+            }
+            return 0;
+        })
 
         return response
     }

@@ -145,4 +145,13 @@ export default class Accountability {
         }
     }
 
+    /** 
+     * Casts an eosio time_point type to a Date
+     * @param {string} timePoint - time_point
+     * @returns {Date} date
+     */
+    static timePointToDate(timePoint) {
+        return new Date(timePoint + 'Z')
+    }
+
 }
