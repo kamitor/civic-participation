@@ -183,9 +183,9 @@ export default class Civic {
             location: proposal.location,
             proposalId: proposal.proposalId,
             status: ProposalStatus.Proposed,
-            created: new Date(decodedRow.created),
-            updated: new Date(decodedRow.updated),
-            approved: new Date(decodedRow.approved),
+            created: Accountability.timePointToDate(decodedRow.created),
+            updated: Accountability.timePointToDate(decodedRow.updated),
+            approved: Accountability.timePointToDate(decodedRow.approved),
             status: proposal.status,
         }
         if (proposal.budget) { proposalDetailed.budget = proposal.budget }
@@ -209,7 +209,47 @@ export default class Civic {
      * @param {ProposalStatus} [status] - filter to use on proposals (optional)
      * @returns {ProposalDetailed[]}
      */
-    async proposalList(status) { }
+    async proposalList(status = null) {
+        const proposalsQuery = await this.civicContract.proposals(this.civicContract.contractAccount)
+
+        // filter per status if not null
+        const proposals = status ? proposalsQuery.rows.filter(x => {
+            return x.json.status === status
+        }) : proposalsQuery.rows;
+
+        // return ProposalDetailed[] type
+        const response = proposals.map(x => ({
+            proposalId: x.json.proposal_id,
+            title: x.json.title,
+            description: x.json.description,
+            category: x.json.category,
+            budget: x.json.budget,
+            type: x.json.type,
+            location: x.json.location,
+            status: x.json.status,
+            photos: x.json.photos,
+            regulations: x.json.regulations,
+            comment: x.json.comment,
+            created: Accountability.timePointToDate(x.json.approved),
+            approved: Accountability.timePointToDate(x.json.approved),
+            updated: Accountability.timePointToDate(x.json.updated),
+            voted: x.json.voted,
+            yesVoteCount: x.json.yes_vote_count,
+        }))
+
+        // sort by created date
+        response.sort((a, b) => {
+            if (a.created > b.created) {
+                return 1;
+            }
+            if (a.created < b.created) {
+                return -1;
+            }
+            return 0;
+        })
+
+        return response
+    }
 
     /** 
      * Returns a proposals 
