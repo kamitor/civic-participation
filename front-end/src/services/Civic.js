@@ -47,11 +47,7 @@ export default class Civic {
         await this.accountability.login({ accountName, permission: 'active', privKey })
         await this.civicContract.initializeContract()
 
-        return {
-            ...response.data,
-            commonName: response.data.commonName,
-            type: response.data.type
-        }
+        return parseAccountRes(response.data);
     };
 
     /** 
@@ -81,11 +77,7 @@ export default class Civic {
         await this.accountability.login({ accountName, permission: 'active', privKey })
         await this.civicContract.initializeContract()
 
-        return {
-            ...response.data,
-            commonName: response.data.commonName,
-            type: response.data.type
-        }
+        return parseAccountRes(response.data);
     };
 
     /** 
@@ -94,7 +86,8 @@ export default class Civic {
      * @returns {AccountExtended}
      */
     async accountGet(accountName) {
-        return await this.accountability.get_account(accountName);
+        const response = await this.accountability.get_account(accountName);
+        return parseAccountRes(response.data);
     };
 
     /** 
@@ -264,4 +257,19 @@ export default class Civic {
      * @returns {ProposalHistory}
      */
     async proposalHistory(proposalId) { }
+}
+
+function parseAccountRes(data) {
+    const val = {
+        accountName: data.account_name,
+        commonName: data.commonName,
+        type: data.type,
+        created: Accountability.timePointToDate(data.created),
+        permissions: data.permissions,
+        contractDeployed: data.last_code_update !== "1970-01-01T00:00:00.000",
+    }
+    if (val.contractDeployed) {
+        val.lastContractUpdate = Accountability.timePointToDate(data.last_code_update);
+    }
+    return val;
 }
