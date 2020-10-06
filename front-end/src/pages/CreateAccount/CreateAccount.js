@@ -5,8 +5,7 @@ import { Link } from '@material-ui/core';
 import { Typography } from '@material-ui/core';
 import { Button } from '@material-ui/core';
 import { AccountCircle, Lock } from '@material-ui/icons';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import Tooltip from '@material-ui/core/Tooltip';
+import { withStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import TextInput from '../../components/TextInput';
@@ -16,6 +15,7 @@ import {
 	TitleSmallTextTypography,
 	TitleLargeTextTypography,
 	backgroundStyle,
+	HtmlTooltip
 } from '../../components/Themes';
 import './CreateAccount.scss'
 
@@ -85,16 +85,6 @@ export default function Login() {
 			lineHeight: '35px'
 		}
 	})(Typography);
-
-	const HtmlTooltip = withStyles((theme) => ({
-		tooltip: {
-			backgroundColor: 'grey',
-			color: 'rgba(0, 0, 0, 0.87)',
-			maxWidth: 400,
-			fontSize: theme.typography.pxToRem(12),
-			border: '1px solid #dadde9',
-		},
-	}))(Tooltip);
 
 	return (
 		<Grid container spacing={0} direction="row">
@@ -204,7 +194,7 @@ export default function Login() {
 									<React.Fragment>
 										<div>{<TitleLock />}Proposals, voting and government actions are stored on the blockchain.
 											This data is cryptographically secured and cannot be forged or tampered
-											with by anyone, including the government.
+											with by anyone, including the government.&nbsp;
 											<Link className="read-more-link" onClick={navigateSecurityPage}>
 												Click to learn more
            									</Link>

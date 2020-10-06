@@ -21,10 +21,11 @@ export class ProposalExtended extends Proposal {
 }
 
 export class ProposalDetailed extends ProposalExtended {
-    created_time: Date;
-    approved_time: Date;
+    created: Date;
+    approved: Date;
+    updated: Date;
     voted: string[];
-    yes_vote_count: number;
+    yesVoteCount: number;
 }
 
 export class ProposalHistory {
