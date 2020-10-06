@@ -208,7 +208,7 @@ export default function Login() {
 									<Grid item>
 										<GreenSmallTypographyCreate>
 											tamper proof
-									</GreenSmallTypographyCreate>
+										</GreenSmallTypographyCreate>
 									</Grid>
 									<Grid item>
 										<CreateLock />

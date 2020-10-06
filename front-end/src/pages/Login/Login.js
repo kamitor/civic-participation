@@ -25,7 +25,7 @@ export default function Login() {
 	const { register, errors, handleSubmit } = useForm({
 		criteriaMode: "all"
 	});
-	const onSubmit = data => console.log(data);
+	const onSubmit = data => history.push("/proposal-create");
 
 	const navigateCreatePage = () => {
 		history.push("/")
@@ -167,7 +167,7 @@ export default function Login() {
 									<Grid item>
 										<GreenSmallTypography>
 											tamper proof
-             					 </GreenSmallTypography>
+             							</GreenSmallTypography>
 									</Grid>
 									<Grid item>
 										<LoginLock />
