@@ -164,6 +164,58 @@ export default class Civic {
         return proposalDetailed;
     }
 
+    // TODO: proposalCreateWithPhoto will be merged into proposalCreate function
+    /** 
+     * Creates a new proposal with photo as the logged in user
+     * @param {Proposal} proposal
+     * @returns {ProposalDetailed}
+     */
+    async proposalCreateWithPhoto(proposal) {
+        let proposalDetails = [
+            this.account.accountName,
+            proposal.title,
+            proposal.description,
+            proposal.category,
+            proposal.budget,
+            proposal.type,
+            proposal.location            
+        ];
+        
+        
+        // proposal.photo is base64 string of an image.
+        if(proposal.photo){
+            // 1. get sha256 of imageString
+            // await Api.post('/image')
+            // then we will get SHA256 of base64 string which we can pass to propcreate smart contract.
+            // if we have photo in proposal let us push that data as well. But we will only get this data from /image API response.
+            // proposal.photoSHA256 we will get from /image API.
+            proposalDetails.push(photoSHA256);
+        }
+        
+        const tx = await this.civicContract.propcreate(...proposalDetails);
+
+        await wait(1000);
+        const txDetailed = await this.accountability.dfuseClient.fetchTransaction(tx.transaction_id);
+
+        const blockNum = txDetailed.execution_trace.action_traces[0].block_num;
+        const decodedRows = await this.accountability.dfuseClient.stateAbiBinToJson('civic', 'proposals', [txDetailed.dbops[0].new.hex], blockNum)
+        const decodedRow = decodedRows.rows[0]
+
+        const proposalDetailed = {
+            title: proposal.title,
+            description: proposal.description,
+            category: proposal.category,
+            type: proposal.type,
+            location: proposal.location,
+            proposalId: decodedRow.proposal_id,
+            status: ProposalStatus.Proposed,
+            created: new Date(decodedRow.created),
+        }
+        if (proposal.budget) { proposalDetailed.budget = proposal.budget }
+        if (proposal.photos) { proposalDetailed.photos = proposal.photos }
+        return proposalDetailed;
+    }
+
     /** 
      * Updates a proposal as the logged in user
      * @param {ProposalExtended} proposal
@@ -196,7 +248,7 @@ export default class Civic {
                 },
             }]
         }
-
+       
         const tx = await this.accountability.transact2(txData);
 
         await wait(1000);
@@ -221,6 +273,82 @@ export default class Civic {
         if (proposal.budget) { proposalDetailed.budget = proposal.budget }
         if (proposal.photos) { proposalDetailed.photos = proposal.photos }
         if (proposal.regulations) { proposalDetailed.regulations = proposal.regulations }
+
+        return proposalDetailed;
+    }
+
+    // TODO: proposalUpdateWithPhoto will be merged into proposalUpdate function
+    /** 
+     * Updates a proposal with photo as the logged in user
+     * @param {ProposalExtended} proposal
+     * @returns {ProposalDetailed}
+     */
+    async proposalUpdateWithPhoto(proposal) {
+        const txData = {
+            actions: [{
+                account: 'civic',
+                name: 'propupdate',
+                authorization: [{
+                    actor: this.account.accountName,
+                    permission: this.accountability.account.permission,
+                }, {
+                    actor: 'gov', // need to sign as gov as well
+                    permission: 'active'
+                }],
+                data: {
+                    updater: this.account.accountName,
+                    proposal_id: proposal.proposalId,
+                    title: proposal.title,
+                    description: proposal.description,
+                    category: proposal.category,
+                    budget: proposal.budget,
+                    type: proposal.type,
+                    location: proposal.location,
+                    new_status: proposal.status,
+                    regulations: proposal.regulations,
+                    comment: proposal.comment
+                },
+            }]
+        }
+
+        // proposal.photo is base64 string of an image.
+        if(proposal.photo){
+        // 1. get sha256 of imageString
+        // await Api.post('/image')
+        // then we will get SHA256 of base64 string which we can pass to propcreate smart contract.
+        // if we have photo in proposal let us push that data as well. But we will only get this data from /image API response.
+        // proposal.photoSHA256 we will get from /image API.
+        txData.actions[0].data.photoSHA256 = photoSHA256;
+        }
+        
+        const tx = await this.accountability.transact2(txData);
+
+        await wait(1000);
+        const txDetailed = await this.accountability.dfuseClient.fetchTransaction(tx.transaction_id);
+
+        const blockNum = txDetailed.execution_trace.action_traces[0].block_num;
+        const decodedRows = await this.accountability.dfuseClient.stateAbiBinToJson('civic', 'proposals', [txDetailed.dbops[0].new.hex], blockNum)
+        const decodedRow = decodedRows.rows[0];
+
+        const proposalDetailed = {
+            title: proposal.title,
+            description: proposal.description,
+            category: proposal.category,
+            type: proposal.type,
+            location: proposal.location,
+            proposalId: proposal.proposalId,
+            status: ProposalStatus.Proposed,
+            created: Accountability.timePointToDate(decodedRow.created),
+            updated: Accountability.timePointToDate(decodedRow.updated),
+            approved: Accountability.timePointToDate(decodedRow.approved),
+            status: proposal.status,
+            ...(proposal.photo && { photo = proposal.photo}),
+        }
+        
+        if (proposal.budget) { proposalDetailed.budget = proposal.budget }
+        if (proposal.photo) { proposalDetailed.photo = proposal.photo }
+        if (proposal.regulations) { proposalDetailed.regulations = proposal.regulations }
+        if (proposal.comment) { proposalDetailed.comment = proposal.comment }
 
         return proposalDetailed;
     }
