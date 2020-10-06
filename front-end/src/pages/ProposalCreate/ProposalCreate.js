@@ -279,7 +279,7 @@ export default function ProposalCreate() {
                         <Grid container direction="row" className="hearder-title" alignItems="center">
                             <HearderCustomizeStar />
                             <TextField
-                                label="Name your ida"
+                                label="Name your idea"
                                 className={classes.margin, classes.commonText}
                                 InputProps={{
                                     className: classes.inputTitle
@@ -294,7 +294,7 @@ export default function ProposalCreate() {
                         </Grid>
                     </Grid>
                     <div className="main-container">
-                        <Grid container spacing={3}>
+                        <Grid container spacing={2}>
                             <Grid item xs={7} className="left-wrap">
                                 <Grid container item xs={12} spacing={4}>
                                     <Grid item>
@@ -349,7 +349,7 @@ export default function ProposalCreate() {
                                                         onChange={handleChangeCheckboxs}
                                                         name="checkedA" />
                                                 }
-                                                label="Item 1"
+                                                label="Green space"
                                             />
                                             <FormControlLabel
                                                 control={
@@ -358,7 +358,7 @@ export default function ProposalCreate() {
                                                         onChange={handleChangeCheckboxs}
                                                         name="checkedB" />
                                                 }
-                                                label="Item 2"
+                                                label="Kids"
                                             />
                                             <FormControlLabel
                                                 control={
@@ -367,7 +367,7 @@ export default function ProposalCreate() {
                                                         onChange={handleChangeCheckboxs}
                                                         name="checkedC" />
                                                 }
-                                                label="Item 3"
+                                                label="Safety"
                                             />
                                             <FormControlLabel
                                                 control={
@@ -376,7 +376,7 @@ export default function ProposalCreate() {
                                                         onChange={handleChangeCheckboxs}
                                                         name="checkedD" />
                                                 }
-                                                label="Item 4"
+                                                label="Accessibility"
                                             />
                                         </Grid>
                                         <Grid item xs={12}>
@@ -387,7 +387,7 @@ export default function ProposalCreate() {
                                                         onChange={handleChangeCheckboxs}
                                                         name="checkedE" />
                                                 }
-                                                label="Item 1"
+                                                label="Art"
                                             />
                                             <FormControlLabel
                                                 control={
@@ -396,7 +396,7 @@ export default function ProposalCreate() {
                                                         onChange={handleChangeCheckboxs}
                                                         name="checkedF" />
                                                 }
-                                                label="Item 2"
+                                                label="Health"
                                             />
                                             <FormControlLabel
                                                 control={
@@ -405,7 +405,7 @@ export default function ProposalCreate() {
                                                         onChange={handleChangeCheckboxs}
                                                         name="checkedG" />
                                                 }
-                                                label="Item 3"
+                                                label="Roads"
                                             />
                                             <FormControlLabel
                                                 control={
@@ -414,14 +414,14 @@ export default function ProposalCreate() {
                                                         onChange={handleChangeCheckboxs}
                                                         name="checkedH" />
                                                 }
-                                                label="Item 4"
+                                                label="Residential"
                                             />
                                         </Grid>
                                         <Grid item xs={12} className="checkbox-helper">
                                             {hasErrorCateory && <FormHelperText>Please select a type.</FormHelperText>}
                                         </Grid>
                                     </Grid>
-                                    <Grid item xs={12}>
+                                    <Grid item xs={11}>
                                         <TextField
                                             label="Description"
                                             inputProps={{
@@ -445,7 +445,7 @@ export default function ProposalCreate() {
                                 <Grid item xs={12}>
                                     <ImageDragTypography>Images</ImageDragTypography>
                                     <DropzoneArea
-                                        dropzoneText="drag files here or"
+                                        dropzoneText="drag files here or click to upload"
                                         onChange={() => handleDropDownImage(files)}
                                     />
                                 </Grid>
