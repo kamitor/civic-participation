@@ -248,7 +248,7 @@ export default class Civic {
      * @returns {ProposalDetailed}
      */
     async proposalGet(proposalId) {
-        const proposalsQuery = await this.civicContract.proposals(this.civicContract.contractAccount, proposalId)
+        const proposalsQuery = await this.civicContract.proposalsRow(this.civicContract.contractAccount, proposalId, 'uint64')
 
         const proposal = proposalsQuery.row.json
 
@@ -276,7 +276,12 @@ export default class Civic {
      * @param {number} proposalId
      * @returns {ProposalHistory}
      */
-    async proposalHistory(proposalId) { }
+    async proposalHistory(proposalId) {
+        let q = `receiver:${this.civicContract.contractAccount} action:propupdate data.proposal_id:${proposalId}`
+        const proposalUpdateQuery = await this.accountability.dfuseClient.searchTransactions(q);
+
+        console.log(proposalUpdateQuery);
+    }
 }
 
 function parseAccountRes(data) {

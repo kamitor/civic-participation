@@ -52,12 +52,11 @@ export default class Contract {
         // Create table getters
         for (let table of abi.abi.tables) {
             const name = table.name;
-            c[name] = async function (scope, primaryKey = null) {
-                if (primaryKey) {
-                    return await this.eosio.dfuseClient.stateTableRow(contractAccount, scope, name, primaryKey)
-                } else {
-                    return await this.eosio.dfuseClient.stateTable(contractAccount, scope, name);
-                }
+            c[name] = async function (scope) {
+                return await this.eosio.dfuseClient.stateTable(contractAccount, scope, name);
+            }
+            c[name + 'Row'] = async function (scope, primaryKey, keyType) {
+                return await this.eosio.dfuseClient.stateTableRow(contractAccount, scope, name, primaryKey, { keyType })
             }
         }
     }
