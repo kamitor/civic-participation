@@ -28,6 +28,11 @@ function Home() {
             }
             
 
+            // TODO: Change needs from FE:
+            // 1. Create a file input and add a React ref onto it.
+            // 2. call encodeImageFileAsURL from utils.js to get base64 string. This method returns promise.
+            // 3. call civic.proposalCreate with encodeImageFileAsURL result as proposal photo property.
+            // const accountCreateRes = await civic.proposalCreateWithPhoto(proposal);
             const proposalData = await civic.proposalCreate(proposal);
             console.log('proposalCreate()', proposalData)
             const proposalId = proposalData.proposalId;
@@ -36,6 +41,12 @@ function Home() {
             console.log('accountLogin() - tijn', accountLoginRes);
             proposal.proposalId = proposalId;
             proposal.status = ProposalStatus.Reviewing;
+            
+            // TODO: Change needs from FE:
+            // 1. Create a file input and add a React ref onto it.
+            // 2. call encodeImageFileAsURL from utils.js to get base64 string. This method returns promise.
+            // 3. call civic.proposalUpdate with encodeImageFileAsURL result as proposal photo property.
+            // const accountCreateRes = await civic.proposalUpdateWithPhoto(proposal);
             let proposalUpdateRes = await civic.proposalUpdate(proposal);
             console.log('proposalUpdate()', proposalUpdateRes);
 
