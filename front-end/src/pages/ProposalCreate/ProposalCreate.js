@@ -166,37 +166,37 @@ export default function ProposalCreate() {
         checkedG: false,
         checkedH: false,
     });
-    
+
     const [valueBudget, setValueBudget] = useState();
-    
+
     const [state, setState] = useState({
         type: '',
     });
-    
+
     const [description, setDescription] = useState({
         content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna wirl Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna wirl Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna wirl Lorem ipsum dolor sit amet, consectetur adipisicing rl Lorem ipsum Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna wirl Lorem ipsum dolor sit ame"
     });
-    
+
     const [files, setFiles] = useState([])
-    
+
     const [hasErrorType, setHasError] = useState(false)
-    
+
     const [hasErrorCateory, setHasErrorCategory] = useState(false)
-    
+
     const [hasErrorDescription, setHasErrorDescription] = useState(false)
-    
+
     const [hasErrorTitle, setHasErrorTitle] = useState(false)
-    
+
     const [title, setTitle] = useState("")
-    
+
     const handleDropDownImage = (files) => {
         setFiles(files)
     }
-    
+
     const { errors, handleSubmit } = useForm({
         criteriaMode: "all"
     });
-    
+
     const onSubmit = data => {
         // Title validation
         if (title == "") {
@@ -227,7 +227,7 @@ export default function ProposalCreate() {
         }
 
     };
-    
+
     const handleChange = (event) => {
         const name = event.target.name;
         if (event.target.value == "") {
@@ -240,7 +240,7 @@ export default function ProposalCreate() {
             [name]: event.target.value,
         });
     };
-    
+
     const handleChangeCheckboxs = (event) => {
         if (event.target.checked) {
             setHasErrorCategory(false);
@@ -249,7 +249,7 @@ export default function ProposalCreate() {
         }
         setStateCheckBox({ ...stateCheckBox, [event.target.name]: event.target.checked });
     };
-    
+
     const CHARACTER_LIMIT = 580;
 
     const handleChangeDescription = content => event => {
