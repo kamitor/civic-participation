@@ -249,7 +249,36 @@ export default class Civic {
      * @param {number} proposalId
      * @returns {ProposalDetailed}
      */
-    async proposalGet(proposalId) { }
+    async proposalGet(proposalId) {
+        const proposalsQuery = await this.civicContract.proposals(this.civicContract.contractAccount, proposalId)
+
+        // filter per status if not null
+        // const proposals = status ? proposalsQuery.rows.filter(x => {
+        //     return x.json.status === status
+        // }) : proposalsQuery.rows;
+
+        // // return ProposalDetailed[] type
+        // const response = proposals.map(x => ({
+        //     proposalId: x.json.proposal_id,
+        //     title: x.json.title,
+        //     description: x.json.description,
+        //     category: x.json.category,
+        //     budget: x.json.budget,
+        //     type: x.json.type,
+        //     location: x.json.location,
+        //     status: x.json.status,
+        //     photos: x.json.photos,
+        //     regulations: x.json.regulations,
+        //     comment: x.json.comment,
+        //     created: Accountability.timePointToDate(x.json.approved),
+        //     approved: Accountability.timePointToDate(x.json.approved),
+        //     updated: Accountability.timePointToDate(x.json.updated),
+        //     voted: x.json.voted,
+        //     yesVoteCount: x.json.yes_vote_count,
+        // }))
+
+        // return response
+    }
 
     /** 
      * Returns a proposals history of who has done what actions
