@@ -1,4 +1,4 @@
-class Contract {
+export default class Contract {
     /**
      * @param {string} contractAccount - the name of the account on the network where the smart contract lives
      * @param {Object | Accountability | Eosio} eosio - eosio object
@@ -53,10 +53,8 @@ class Contract {
         for (let table of abi.abi.tables) {
             const name = table.name;
             c[name] = async function (scope) {
-                // return await this.eosio.dfuseClient.stateTable(contractAccount, scope, name);
+                return await this.eosio.dfuseClient.stateTable(contractAccount, scope, name);
             }
         }
     }
 }
-
-module.exports = Contract;

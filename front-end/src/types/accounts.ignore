@@ -100,9 +100,14 @@ class Account {
     }
 }
 
-export class AccountExtended extends Account {
-    common_name: string;
+export class AccountSimple extends Account {
+    accountName: string;
+    commonName: string;
     type: AccountTypeEnum;
+    created: Date;
+    permissions: [];
+    contractDeployed: boolean;
+    lastContractUpdate?: Date;
 }
 
 enum AccountTypeEnum { Human, Org }
