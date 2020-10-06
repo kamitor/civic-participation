@@ -277,7 +277,9 @@ export default class Civic {
      * @returns {ProposalHistory}
      */
     async proposalHistory(proposalId) {
-        let q = `receiver:${this.civicContract.contractAccount} action:propupdate data.proposal_id:${proposalId}`
+        // let q = `receiver:${this.civicContract.contractAccount} action:propupdate data.proposal_id:${proposalId}`
+        // let q = `event.proposal_id:${proposalId}`
+        let q = `event.proposalid:0`
         const proposalUpdateQuery = await this.accountability.dfuseClient.searchTransactions(q);
 
         console.log(proposalUpdateQuery);

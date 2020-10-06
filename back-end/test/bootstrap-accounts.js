@@ -35,6 +35,7 @@ async function main() {
     // Create some new orgs
     await createNewOrg("gov", "The Ministry of The Hague", ["hidde", "tijn", "yvo"], 0.66);
     await createNewOrg("civic", "Civic Participation Tool", ["gov"], 1);
+    await createNewOrg('dfuseiohooks', "System event indexer", ["gov"], 1);
 
     // Update the system contract to be controlled by the government
     await updateEosioAuth();

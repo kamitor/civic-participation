@@ -13,8 +13,9 @@ ACTION civic::propcreate(name creator, string title, string description, uint8_t
     time_point now = current_time_point();
 
     // Create a proposal with proposal id.
+    uint64_t proposal_id = _proposals.available_primary_key();
     _proposals.emplace(creator, [&](auto &proposal) {
-        proposal.proposal_id = _proposals.available_primary_key();
+        proposal.proposal_id = proposal_id;
         proposal.title = title;
         proposal.description = description;
         proposal.category = category;
@@ -24,6 +25,19 @@ ACTION civic::propcreate(name creator, string title, string description, uint8_t
         proposal.status = ProposalStatus::Proposed;
         proposal.created = now;
     });
+
+    eosio::print(std::string("proposalid=" + std::to_string(proposal_id)));
+
+    eosio::action(
+        std::vector<permission_level>(),
+        "dfuseiohooks"_n,
+        "event"_n,
+        std::make_tuple(
+            // Parameter `auth_key`
+            std::string(""),
+            // Parameter `data`
+            std::string("proposalid=" + std::to_string(proposal_id))))
+        .send_context_free();
 }
 
 ACTION civic::propupdate(name updater, uint64_t proposal_id, string title, string description, uint8_t category,
