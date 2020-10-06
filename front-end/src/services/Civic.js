@@ -184,7 +184,6 @@ export default class Civic {
         if (proposal.budget) { proposalDetailed.budget = proposal.budget }
         if (proposal.photos) { proposalDetailed.photos = proposal.photos }
         if (proposal.regulations) { proposalDetailed.regulations = proposal.regulations }
-        if (proposal.comment) { proposalDetailed.comment = proposal.comment }
 
         return proposalDetailed;
     }
@@ -222,7 +221,6 @@ export default class Civic {
             status: x.json.status,
             photos: x.json.photos,
             regulations: x.json.regulations,
-            comment: x.json.comment,
             created: Accountability.timePointToDate(x.json.approved),
             approved: Accountability.timePointToDate(x.json.approved),
             updated: Accountability.timePointToDate(x.json.updated),
@@ -252,32 +250,25 @@ export default class Civic {
     async proposalGet(proposalId) {
         const proposalsQuery = await this.civicContract.proposals(this.civicContract.contractAccount, proposalId)
 
-        // filter per status if not null
-        // const proposals = status ? proposalsQuery.rows.filter(x => {
-        //     return x.json.status === status
-        // }) : proposalsQuery.rows;
+        const proposal = proposalsQuery.row.json
 
-        // // return ProposalDetailed[] type
-        // const response = proposals.map(x => ({
-        //     proposalId: x.json.proposal_id,
-        //     title: x.json.title,
-        //     description: x.json.description,
-        //     category: x.json.category,
-        //     budget: x.json.budget,
-        //     type: x.json.type,
-        //     location: x.json.location,
-        //     status: x.json.status,
-        //     photos: x.json.photos,
-        //     regulations: x.json.regulations,
-        //     comment: x.json.comment,
-        //     created: Accountability.timePointToDate(x.json.approved),
-        //     approved: Accountability.timePointToDate(x.json.approved),
-        //     updated: Accountability.timePointToDate(x.json.updated),
-        //     voted: x.json.voted,
-        //     yesVoteCount: x.json.yes_vote_count,
-        // }))
-
-        // return response
+        return {
+            proposalId: proposal.proposal_id,
+            title: proposal.title,
+            description: proposal.description,
+            category: proposal.category,
+            budget: proposal.budget,
+            type: proposal.type,
+            location: proposal.location,
+            status: proposal.status,
+            photos: proposal.photos,
+            regulations: proposal.regulations,
+            created: Accountability.timePointToDate(proposal.approved),
+            approved: Accountability.timePointToDate(proposal.approved),
+            updated: Accountability.timePointToDate(proposal.updated),
+            voted: proposal.voted,
+            yesVoteCount: proposal.yes_vote_count,
+        }
     }
 
     /** 

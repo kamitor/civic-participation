@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import Civic from '../../services/Civic';
 import { ProposalCategory, ProposalType, ProposalStatus } from '../../types/civic';
+import { wait } from '../../services/objects';
 
 function Home() {
 
@@ -54,6 +55,7 @@ function Home() {
             proposals = await civic.proposalList(ProposalStatus.Approved);
             console.log('proposalList(Approved)', proposals);
 
+            await wait(10000);
             const proposalDetails = await civic.proposalGet(proposalId);
             console.log('proposalGet()', proposalDetails);
             const proposalHistory = await civic.proposalHistory(proposalId);
