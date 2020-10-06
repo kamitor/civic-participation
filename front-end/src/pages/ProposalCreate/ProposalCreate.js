@@ -166,37 +166,37 @@ export default function ProposalCreate() {
         checkedG: false,
         checkedH: false,
     });
-    
+
     const [valueBudget, setValueBudget] = useState();
-    
+
     const [state, setState] = useState({
         type: '',
     });
-    
+
     const [description, setDescription] = useState({
         content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna wirl Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna wirl Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna wirl Lorem ipsum dolor sit amet, consectetur adipisicing rl Lorem ipsum Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna wirl Lorem ipsum dolor sit ame"
     });
-    
+
     const [files, setFiles] = useState([])
-    
+
     const [hasErrorType, setHasError] = useState(false)
-    
+
     const [hasErrorCateory, setHasErrorCategory] = useState(false)
-    
+
     const [hasErrorDescription, setHasErrorDescription] = useState(false)
-    
+
     const [hasErrorTitle, setHasErrorTitle] = useState(false)
-    
+
     const [title, setTitle] = useState("")
-    
+
     const handleDropDownImage = (files) => {
         setFiles(files)
     }
-    
+
     const { errors, handleSubmit } = useForm({
         criteriaMode: "all"
     });
-    
+
     const onSubmit = data => {
         // Title validation
         if (title == "") {
@@ -227,7 +227,7 @@ export default function ProposalCreate() {
         }
 
     };
-    
+
     const handleChange = (event) => {
         const name = event.target.name;
         if (event.target.value == "") {
@@ -240,7 +240,7 @@ export default function ProposalCreate() {
             [name]: event.target.value,
         });
     };
-    
+
     const handleChangeCheckboxs = (event) => {
         if (event.target.checked) {
             setHasErrorCategory(false);
@@ -249,7 +249,7 @@ export default function ProposalCreate() {
         }
         setStateCheckBox({ ...stateCheckBox, [event.target.name]: event.target.checked });
     };
-    
+
     const CHARACTER_LIMIT = 580;
 
     const handleChangeDescription = content => event => {
@@ -279,7 +279,7 @@ export default function ProposalCreate() {
                         <Grid container direction="row" className="hearder-title" alignItems="center">
                             <HearderCustomizeStar />
                             <TextField
-                                label="Name your ida"
+                                label="Name your idea"
                                 className={classes.margin, classes.commonText}
                                 InputProps={{
                                     className: classes.inputTitle
@@ -349,7 +349,7 @@ export default function ProposalCreate() {
                                                         onChange={handleChangeCheckboxs}
                                                         name="checkedA" />
                                                 }
-                                                label="Item 1"
+                                                label="Green space"
                                             />
                                             <FormControlLabel
                                                 control={
@@ -358,7 +358,7 @@ export default function ProposalCreate() {
                                                         onChange={handleChangeCheckboxs}
                                                         name="checkedB" />
                                                 }
-                                                label="Item 2"
+                                                label="Kids"
                                             />
                                             <FormControlLabel
                                                 control={
@@ -367,7 +367,7 @@ export default function ProposalCreate() {
                                                         onChange={handleChangeCheckboxs}
                                                         name="checkedC" />
                                                 }
-                                                label="Item 3"
+                                                label="Safety"
                                             />
                                             <FormControlLabel
                                                 control={
@@ -376,7 +376,7 @@ export default function ProposalCreate() {
                                                         onChange={handleChangeCheckboxs}
                                                         name="checkedD" />
                                                 }
-                                                label="Item 4"
+                                                label="Accessibility"
                                             />
                                         </Grid>
                                         <Grid item xs={12}>
@@ -387,7 +387,7 @@ export default function ProposalCreate() {
                                                         onChange={handleChangeCheckboxs}
                                                         name="checkedE" />
                                                 }
-                                                label="Item 1"
+                                                label="Art"
                                             />
                                             <FormControlLabel
                                                 control={
@@ -396,7 +396,7 @@ export default function ProposalCreate() {
                                                         onChange={handleChangeCheckboxs}
                                                         name="checkedF" />
                                                 }
-                                                label="Item 2"
+                                                label="Health"
                                             />
                                             <FormControlLabel
                                                 control={
@@ -405,7 +405,7 @@ export default function ProposalCreate() {
                                                         onChange={handleChangeCheckboxs}
                                                         name="checkedG" />
                                                 }
-                                                label="Item 3"
+                                                label="Roads"
                                             />
                                             <FormControlLabel
                                                 control={
@@ -414,7 +414,7 @@ export default function ProposalCreate() {
                                                         onChange={handleChangeCheckboxs}
                                                         name="checkedH" />
                                                 }
-                                                label="Item 4"
+                                                label="Residential"
                                             />
                                         </Grid>
                                         <Grid item xs={12} className="checkbox-helper">
@@ -445,7 +445,7 @@ export default function ProposalCreate() {
                                 <Grid item xs={12}>
                                     <ImageDragTypography>Images</ImageDragTypography>
                                     <DropzoneArea
-                                        dropzoneText="drag files here or"
+                                        dropzoneText="drag files here or click to upload"
                                         onChange={() => handleDropDownImage(files)}
                                     />
                                 </Grid>
