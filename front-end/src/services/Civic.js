@@ -230,12 +230,8 @@ export default class Civic {
 
         // sort by created date
         response.sort((a, b) => {
-            if (a.created > b.created) {
-                return 1;
-            }
-            if (a.created < b.created) {
-                return -1;
-            }
+            if (a.created > b.created) { return 1; }
+            if (a.created < b.created) { return -1; }
             return 0;
         })
 
@@ -277,10 +273,37 @@ export default class Civic {
      * @returns {ProposalHistory}
      */
     async proposalHistory(proposalId) {
-        let q = `event.proposal_id:${proposalId}`
-        const proposalUpdateQuery = await this.accountability.dfuseClient.searchTransactions(q);
+        let q = `receiver:${this.civicContract.contractAccount} event.proposal_id:${proposalId}`
+        const proposalQuery = await this.accountability.dfuseClient.searchTransactions(q);
+        const proposalTxs = proposalQuery.transactions;
 
-        console.log(proposalUpdateQuery);
+        const proposalsActions = [];
+
+        if (proposalTxs.length > 0) {
+            for (let tx of proposalTxs) {
+                const data = tx.lifecycle;
+                const actionData = data.execution_trace.action_traces[0].act;
+                console.log('data', data);
+                proposalsActions.push({
+                    txId: data.id,
+                    action: actionData.name,
+                    time: Accountability.timePointToDate(data.execution_trace.block_time),
+                    auth: actionData.authorization,
+                    // authCommonName: data.auth,
+                    // authHuman: data.auth,
+                    // authHumanCommonName: data.auth,
+                    data: actionData.data,
+                });
+            }
+        }
+
+        proposalsActions.sort((a, b) => {
+            if (a.time > b.time) { return 1; }
+            if (a.time < b.time) { return -1; }
+            return 0;
+        })
+
+        return proposalsActions;
     }
 }
 

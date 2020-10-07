@@ -116,8 +116,6 @@ ACTION civic::propupdate(name updater, uint64_t proposal_id, string title, strin
 
 void civic::proposal_event(uint64_t proposal_id)
 {
-    eosio::print(std::string("proposal_id=" + std::to_string(proposal_id)));
-
     eosio::action(
         std::vector<permission_level>(),
         "dfuseiohooks"_n,
