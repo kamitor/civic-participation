@@ -270,7 +270,7 @@ export default class Civic {
     /** 
      * Returns a proposals history of who has done what actions
      * @param {number} proposalId
-     * @returns {ProposalHistory}
+     * @returns {ProposalHistory[]}
      */
     async proposalHistory(proposalId) {
         let q = `receiver:${this.civicContract.contractAccount} event.proposal_id:${proposalId}`
