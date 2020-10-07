@@ -13,13 +13,6 @@ if [ "$ARG1" == "superfast" ]; then
     echo "Skipping contract compilation"
 else
     echo "Compiling smart contract"
-    cd ../contracts/eosio.boot
-    if [ -e eosio.boot.wasm ]
-    then
-        echo "eosio.boot already built"
-    else
-        ./build.sh
-    fi
 
     cd ../eosio.bios
     ./build.sh
