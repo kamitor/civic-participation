@@ -13,6 +13,7 @@ import Select from '@material-ui/core/Select';
 import { DropzoneArea } from 'material-ui-dropzone'
 import { Lock } from '@material-ui/icons';
 import LocationGooglMap from '../../components/Location/LocationGooglMap';
+// import DragDrop from '../../components/DragDrop';
 import { useForm } from "react-hook-form";
 import './ProposalCreate.scss';
 
@@ -447,7 +448,11 @@ export default function ProposalCreate() {
                                     <DropzoneArea
                                         dropzoneText="drag files here or click to upload"
                                         onChange={() => handleDropDownImage(files)}
+                                        filesLimit={1}
+                                        // showPreviewsInDropzone={true}
                                     />
+                                    {/* <DragDrop /> */}
+
                                 </Grid>
                                 <Grid item xs={12}>
                                     <div className="googlmap-wrape">

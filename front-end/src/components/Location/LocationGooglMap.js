@@ -123,7 +123,7 @@ class LocationGooglMap extends Component {
                     onChildMouseMove={this.onMarkerInteraction}
                     onClick={this._onClick}
                     bootstrapURLKeys={{
-                        key: 'AIzaSyAyaRroGXXw-zWic_BrM7JPLzyTM2cc0V0',
+                        key: 'AIzaSyDMa6KMn669HY33Qrdu5gd0ggyf5C8G4WQ',
                         libraries: ['places', 'geometry'],
                     }}
                     yesIWantToUseGoogleMapApiInternals
