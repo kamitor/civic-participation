@@ -47,6 +47,14 @@ async function main() {
     });
     await deployCivicContract();
 
+    // Set the abi of dfuseiohooks event handler account
+    await accountability.login({
+        privKey: keyFromName('yvo', 'Password123').privKey,
+        name: 'dfuseiohooks',
+        permission: 'active'
+    });
+    await deployDfuseiohooks();
+
     console.log("fin")
     process.exit(0)
 }
@@ -70,6 +78,11 @@ async function deploySystemContract() {
 async function deployCivicContract() {
     await accountability.deploy("civic", "../contracts/civic");
     console.log("civic contract deployed");
+}
+
+async function deployDfuseiohooks() {
+    await accountability.setabi("dfuseiohooks", "../contracts/dfuseiohooks");
+    console.log("dfuseiohooks abi set");
 }
 
 async function updateEosioAuth() {
