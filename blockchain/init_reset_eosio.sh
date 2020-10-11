@@ -14,7 +14,8 @@ if [ "$ARG1" == "superfast" ]; then
 else
     echo "Compiling smart contract"
 
-    cd ../eosio.bios
+    cd "${PARENT_PATH}"
+    cd ../contracts/eosio.bios
     ./build.sh
 
     cd ../civic
@@ -22,7 +23,7 @@ else
 
     echo ""
     echo "Smart contracts have been compiled"
-    echo "You can run './app.sh init fast' next time (unless contracts are changed)"
+    echo "You can run './app.sh init fast' next time to skip contract compilation (unless contracts have changed)"
     echo ""
 fi
 
