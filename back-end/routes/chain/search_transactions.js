@@ -1,5 +1,6 @@
 const Accountability = require('../../services/Accountability');
 const accountability = new Accountability();
+const accountController = require('../../controllers/accounts.controller');
 
 /* GET acounts listing. */
 module.exports = async function(req, res) {
@@ -19,20 +20,18 @@ module.exports = async function(req, res) {
 };
 
 // adds 'auth' property to the tx based on the signing key
-async function getAuth(trx, index, transactionArray) {
+async function getAuth(trx) {
     // TODO should check ALL public keys, not only first one
     const pubKey = trx.pub_keys[0];
     const blockNum = trx.execution_trace.action_traces[0].block_num;
 
     if (!pubKey) throw new Error("No public key found on trx" + trx.id);
 
-    try {
-        const keyRes = await accountability.dfuseClient.stateKeyAccounts(pubKey, { block_num: blockNum });
-        if (!keyRes || !keyRes.account_names) throw new Error(`Accounts for public key ${pubKey} could not be found at block height ${blockNum}`)
-        trx.account_authorizers = keyRes.account_names;
+    const keyRes = await accountability.dfuseClient.stateKeyAccounts(pubKey, { block_num: blockNum });
+    if (!keyRes || !keyRes.account_names) throw new Error(`Accounts for public key ${pubKey} could not be found at block height ${blockNum}`)
+    trx.account_authorizers = keyRes.account_names;
 
-        // Get the common name as well
-    } catch (err) {
-        console.error(err)
-    }
+    const accountName = keyRes.account_names[0]
+    const accountDoc = await accountController.findOne({ accountName });
+    trx.account_authorizers_common_names = [accountDoc.commonName];
 }

@@ -279,41 +279,31 @@ export default class Civic {
 
         const proposalsActions = [];
 
-        function mapActionToStatus(actionName) {
-            switch (actionName) {
-                case "propcreate":
-                    return ProposalStatus.Proposed
-                case "propupdate":
-                    return ProposalStatus.Reviewing
-                default:
-                    throw new Error("Invalid action name");
-            }
-        }
-
-        if (proposalTxs.length > 0) {
+        if (proposalTxs && proposalTxs.length > 0) {
             for (let tx of proposalTxs) {
                 const data = tx.lifecycle;
                 const actionData = data.execution_trace.action_traces[0].act;
-                console.log('data', data);
 
                 // TODO needs to handle txs with multiple signatures and authorities (also in BE)
-                proposalData = {
+                const proposalData = {
                     txId: data.id,
                     action: actionData.name,
                     timestamp: Accountability.timePointToDate(data.execution_trace.block_time),
                     authHuman: data.account_authorizers[0],
-                    // authHumanCommonName: data.auth,
+                    authHumanCommonName: data.account_authorizers_common_names[0],
                     data: actionData.data,
                     status: mapActionToStatus(actionData.name)
                 }
+                if (actionData.name === "propupdate") proposalData.status = actionData.data.new_status;
                 if (actionData.data.comment) proposalData.comment = actionData.data.comment;
+
                 proposalsActions.push(proposalData);
             }
         }
 
         proposalsActions.sort((a, b) => {
-            if (a.time > b.time) { return 1; }
-            if (a.time < b.time) { return -1; }
+            if (a.timestamp > b.timestamp) { return 1; }
+            if (a.timestamp < b.timestamp) { return -1; }
             return 0;
         })
 
@@ -334,4 +324,15 @@ function parseAccountRes(data) {
         val.lastContractUpdate = Accountability.timePointToDate(data.last_code_update);
     }
     return val;
+}
+
+function mapActionToStatus(actionName) {
+    switch (actionName) {
+        case "propcreate":
+            return ProposalStatus.Proposed;
+        case "propupdate":
+            return ProposalStatus.Reviewing;
+        default:
+            throw new Error("Invalid action name");
+    }
 }
