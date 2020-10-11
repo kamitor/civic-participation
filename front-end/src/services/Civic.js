@@ -279,21 +279,35 @@ export default class Civic {
 
         const proposalsActions = [];
 
+        function mapActionToStatus(actionName) {
+            switch (actionName) {
+                case "propcreate":
+                    return ProposalStatus.Proposed
+                case "propupdate":
+                    return ProposalStatus.Reviewing
+                default:
+                    throw new Error("Invalid action name");
+            }
+        }
+
         if (proposalTxs.length > 0) {
             for (let tx of proposalTxs) {
                 const data = tx.lifecycle;
                 const actionData = data.execution_trace.action_traces[0].act;
                 console.log('data', data);
-                proposalsActions.push({
+
+                // TODO needs to handle txs with multiple signatures and authorities (also in BE)
+                proposalData = {
                     txId: data.id,
                     action: actionData.name,
-                    time: Accountability.timePointToDate(data.execution_trace.block_time),
-                    auth: actionData.authorization,
-                    // authCommonName: data.auth,
-                    // authHuman: data.auth,
+                    timestamp: Accountability.timePointToDate(data.execution_trace.block_time),
+                    authHuman: data.account_authorizers[0],
                     // authHumanCommonName: data.auth,
                     data: actionData.data,
-                });
+                    status: mapActionToStatus(actionData.name)
+                }
+                if (actionData.data.comment) proposalData.comment = actionData.data.comment;
+                proposalsActions.push(proposalData);
             }
         }
 
