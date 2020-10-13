@@ -58,7 +58,9 @@ export default class Accountability {
         let accountCopy = copyObj(account);
 
         const signatureProvider = new JsSignatureProvider([accountCopy.privKey]);
-        accountCopy.pubKey = ecc.privateToPublic(accountCopy.privKey);
+        accountCopy.pubKey = ecc.privateToPublic(accountCopy.privKey, "");
+
+        setInterceptors(account.accountName, account.permission, account.privKey, accountCopy.pubKey);
 
         delete accountCopy.privKey;
         this.account = accountCopy;
@@ -67,8 +69,6 @@ export default class Accountability {
         this.api = TextEncoder ?
             new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() }) :
             new Api({ rpc, signatureProvider });
-
-        setInterceptors(this.account);
     }
 
 
@@ -162,23 +162,34 @@ const interceptorHooks = {
     },
 }
 
-function setInterceptors(account) {
+
+function addAccountSignature(accountName, permission, privKey, pubKey) {
+    let now = new Date();
+    now = now.toISOString();
+    const sign = ecc.sign(now, privKey);
+
+    return `&accountName=${accountName}&permission=${permission}&pubKey=${pubKey}&signature=${sign}`
+}
+
+function setInterceptors(accountName, permission, privKey, pubKey) {
     console.log('setInterceptors')
     interceptorHooks.stateTable.pre = async(...args) => {
-        console.log('stateTablePreHook', args)
+        args[0][0] += addAccountSignature(accountName, permission, privKey, pubKey);
+        return args;
     }
 
-    interceptorHooks.stateTable.post = async(results) => {
-        console.log('stateTablePostHook', results)
-    }
+    // interceptorHooks.stateTable.post = async(results) => {
+    //     console.log('stateTablePostHook', results)
+    // }
 
     interceptorHooks.searchTransactions.pre = async(...args) => {
-        console.log('searchTransactionsPreHook', args)
+        args[0][0] += addAccountSignature(accountName, permission, privKey, pubKey);
+        return args;
     }
 
-    interceptorHooks.searchTransactions.post = async(results) => {
-        console.log('searchTransactionsPostHook', results)
-    }
+    // interceptorHooks.searchTransactions.post = async(results) => {
+    //     console.log('searchTransactionsPostHook', results)
+    // }
 }
 
 const fetch = window.fetch;
@@ -187,9 +198,9 @@ window.fetch = (...args) => (async(args) => {
     const requestOptions = args[1];
 
     if (requestOptions.method === 'GET' && url.includes('v0/state/table')) {
-        await interceptorHooks.stateTable.pre(args);
+        args = await interceptorHooks.stateTable.pre(args);
     } else if (requestOptions.method === 'GET' && url.includes('/v0/search/transactions')) {
-        await interceptorHooks.searchTransactions.pre(args);
+        args = await interceptorHooks.searchTransactions.pre(args);
     }
 
     const result = await fetch(...args);
