@@ -42,8 +42,8 @@ async function checkAuthorized(accountName, permission, pubKey, signature, signa
 
     const signDate = new Date(signatureData);
     const now = new Date();
-    if (now.getSeconds() - signDate.getSeconds() > 15) {
-        throw new Error("Signature is no longer valid");
+    if (now.getTime() - signDate.getTime() > 15 * 1000) {
+        throw new Error("Signature has expired");
     }
     console.log(signatureData, signDate)
     console.log('ecc.verify', signature, signatureData, pubKey);

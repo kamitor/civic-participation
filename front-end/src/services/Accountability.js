@@ -153,26 +153,28 @@ export default class Accountability {
 
 const interceptorHooks = {
     stateTable: {
-        pre: () => {},
-        post: () => {}
+        pre: () => { },
+        post: () => { }
     },
     searchTransactions: {
-        pre: () => {},
-        post: () => {}
+        pre: () => { },
+        post: () => { }
     },
 }
 
 
-function addAccountSignature(accountName, permission, privKey, pubKey) {
+function addSignatureToUrl(accountName, permission, privKey, pubKey) {
     let now = new Date();
     now = now.toISOString();
     const sign = ecc.sign(now, privKey);
+
+    // TODO add this to the header instead of query params
     return `&accountName=${accountName}&permission=${permission}&pubKey=${pubKey}&signature=${sign}&signedData=${now}`
 }
 
 function setInterceptors(accountName, permission, privKey, pubKey) {
-    interceptorHooks.stateTable.pre = async(...args) => {
-        args[0][0] += addAccountSignature(accountName, permission, privKey, pubKey);
+    interceptorHooks.stateTable.pre = async (...args) => {
+        args[0] += addSignatureToUrl(accountName, permission, privKey, pubKey);
         return args;
     }
 
@@ -180,8 +182,8 @@ function setInterceptors(accountName, permission, privKey, pubKey) {
     //     console.log('stateTablePostHook', results)
     // }
 
-    interceptorHooks.searchTransactions.pre = async(...args) => {
-        args[0][0] += addAccountSignature(accountName, permission, privKey, pubKey);
+    interceptorHooks.searchTransactions.pre = async (...args) => {
+        args[0] += addSignatureToUrl(accountName, permission, privKey, pubKey);
         return args;
     }
 
@@ -190,15 +192,16 @@ function setInterceptors(accountName, permission, privKey, pubKey) {
     // }
 }
 
+// https://stackoverflow.com/questions/45425169/intercept-fetch-api-responses-and-request-in-javascript
 const fetch = window.fetch;
-window.fetch = (...args) => (async(args) => {
+window.fetch = async function (...args) {
     const url = args[0];
     const requestOptions = args[1];
 
     if (requestOptions.method === 'GET' && url.includes('v0/state/table')) {
-        args = await interceptorHooks.stateTable.pre(args);
+        args = await interceptorHooks.stateTable.pre(...args);
     } else if (requestOptions.method === 'GET' && url.includes('/v0/search/transactions')) {
-        args = await interceptorHooks.searchTransactions.pre(args);
+        args = await interceptorHooks.searchTransactions.pre(...args);
     }
 
     const result = await fetch(...args);
@@ -210,4 +213,4 @@ window.fetch = (...args) => (async(args) => {
     }
 
     return result;
-})(args);
+}
