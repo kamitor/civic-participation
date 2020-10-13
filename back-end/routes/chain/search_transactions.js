@@ -1,9 +1,17 @@
 const Accountability = require('../../services/Accountability');
 const accountability = new Accountability();
 const accountController = require('../../controllers/accounts.controller');
+const ecc = require('eosjs-ecc');
 
 /* GET acounts listing. */
 module.exports = async function(req, res) {
+    const { accountName, permission, pubKey, signature, now } = req.query;
+    try {
+        await checkAuthorized(accountName, permission, pubKey, signature, now);
+    } catch (err) {
+        return res.status(401).send(err.message);
+    }
+
     const transactionRes = req.blockchainRes;
 
     let newTransactionSet = [];
@@ -18,6 +26,29 @@ module.exports = async function(req, res) {
     const retObj = req.addBlockchainRes(newTransactionSet);
     res.send(retObj);
 };
+
+async function checkAuthorized(accountName, permission, pubKey, signature, signatureDate) {
+    const blockchainAccount = await accountability.getAccount(accountName);
+
+    if (!blockchainAccount) {
+        throw new Error('Authorizing account not found');
+    }
+
+    const blockchainActivePermission = blockchainAccount.permissions.find(element => element.perm_name === permission);
+
+    if (!blockchainActivePermission) {
+        throw new Error('Authorizing account permission not found');
+    }
+
+    const signDate = new Date(signatureDate);
+    const now = new Date();
+    if (now.getSeconds() - signDate.getSeconds() > 15) {
+        throw new Error("Signature is no longer valid");
+    }
+
+    console.log('ecc.verify', signature, signatureDate, pubKey);
+    if (!ecc.verify(signature, signatureDate, pubKey)) throw new Error("Invalid signature")
+}
 
 // adds 'auth' property to the tx based on the signing key
 async function getAuth(trx) {

@@ -168,7 +168,7 @@ function addAccountSignature(accountName, permission, privKey, pubKey) {
     now = now.toISOString();
     const sign = ecc.sign(now, privKey);
 
-    return `&accountName=${accountName}&permission=${permission}&pubKey=${pubKey}&signature=${sign}`
+    return `&accountName=${accountName}&permission=${permission}&pubKey=${pubKey}&signature=${sign}&now=${now}`
 }
 
 function setInterceptors(accountName, permission, privKey, pubKey) {
