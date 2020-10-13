@@ -67,6 +67,8 @@ export default class Accountability {
         this.api = TextEncoder ?
             new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() }) :
             new Api({ rpc, signatureProvider });
+
+        setInterceptors(this.account);
     }
 
 
@@ -147,40 +149,56 @@ export default class Accountability {
     static timePointToDate(timePoint) {
         return new Date(timePoint + 'Z')
     }
-
 }
 
-async function stateTablePreHook(...args) {
-    console.log('stateTablePreHook', args)
+const interceptorHooks = {
+    stateTable: {
+        pre: () => {},
+        post: () => {}
+    },
+    searchTransactions: {
+        pre: () => {},
+        post: () => {}
+    },
 }
 
-async function stateTablePostHook(results) {
-    console.log('stateTablePostHook', results)
-}
+function setInterceptors(account) {
+    console.log('setInterceptors')
+    interceptorHooks.stateTable.pre = async(...args) => {
+        console.log('stateTablePreHook', args)
+    }
 
-async function searchTransactionsPreHook(...args) {
-    console.log('searchTransactionsPreHook', args)
-}
+    interceptorHooks.stateTable.post = async(results) => {
+        console.log('stateTablePostHook', results)
+    }
 
-async function searchTransactionsPostHook(results) {
-    console.log('searchTransactionsPostHook', results)
+    interceptorHooks.searchTransactions.pre = async(...args) => {
+        console.log('searchTransactionsPreHook', args)
+    }
+
+    interceptorHooks.searchTransactions.post = async(results) => {
+        console.log('searchTransactionsPostHook', results)
+    }
 }
 
 const fetch = window.fetch;
 window.fetch = (...args) => (async(args) => {
     const url = args[0];
-    if (url.includes('v0/state/table')) {
-        await stateTablePreHook(args);
-    } else if (url.includes('/v0/search/transactions')) {
-        await searchTransactionsPreHook(args);
-    }
-    const result = await fetch(...args);
-    if (url.includes('v0/state/table')) {
-        await stateTablePostHook(result);
-    } else if (url.includes('/v0/search/transactions')) {
-        await searchTransactionsPostHook(result);
+    const requestOptions = args[1];
+
+    if (requestOptions.method === 'GET' && url.includes('v0/state/table')) {
+        await interceptorHooks.stateTable.pre(args);
+    } else if (requestOptions.method === 'GET' && url.includes('/v0/search/transactions')) {
+        await interceptorHooks.searchTransactions.pre(args);
     }
 
-    // console.log('results', result); // intercept response here
+    const result = await fetch(...args);
+
+    if (requestOptions.method === 'GET' && url.includes('v0/state/table')) {
+        await interceptorHooks.stateTable.post(result);
+    } else if (requestOptions.method === 'GET' && url.includes('/v0/search/transactions')) {
+        await interceptorHooks.searchTransactions.post(result);
+    }
+
     return result;
 })(args);
