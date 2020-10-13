@@ -5,9 +5,8 @@ const ecc = require('eosjs-ecc');
 
 /* GET acounts listing. */
 module.exports = async function(req, res) {
-    const { accountName, permission, pubKey, signature, signedData } = req.query;
     try {
-        await checkAuthorized(accountName, permission, pubKey, signature, signedData);
+        await checkAuthorized(req);
     } catch (err) {
         return res.status(401).send(err.message);
     }
@@ -27,27 +26,28 @@ module.exports = async function(req, res) {
     res.send(retObj);
 };
 
-async function checkAuthorized(accountName, permission, pubKey, signature, signatureData) {
-    const blockchainAccount = await accountability.getAccount(accountName);
+async function checkAuthorized(req) {
+    const { authname, authperm, authkey, authsignature, authdata } = req.headers;
+
+    const blockchainAccount = await accountability.getAccount(authname);
 
     if (!blockchainAccount) {
         throw new Error('Authorizing account not found');
     }
 
-    const blockchainActivePermission = blockchainAccount.permissions.find(element => element.perm_name === permission);
+    const blockchainActivePermission = blockchainAccount.permissions.find(element => element.perm_name === authperm);
 
     if (!blockchainActivePermission) {
         throw new Error('Authorizing account permission not found');
     }
 
-    const signDate = new Date(signatureData);
+    const signDate = new Date(authdata);
     const now = new Date();
     if (now.getTime() - signDate.getTime() > 15 * 1000) {
         throw new Error("Signature has expired");
     }
-    console.log(signatureData, signDate)
-    console.log('ecc.verify', signature, signatureData, pubKey);
-    if (!ecc.verify(signature, signatureData, pubKey)) throw new Error("Invalid signature")
+
+    if (!ecc.verify(authsignature, authdata, authkey)) throw new Error("Invalid signature")
 }
 
 // adds 'auth' property to the tx based on the signing key

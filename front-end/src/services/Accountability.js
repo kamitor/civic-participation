@@ -162,20 +162,38 @@ const interceptorHooks = {
     },
 }
 
-
-function addSignatureToUrl(accountName, permission, privKey, pubKey) {
+function authHeader(accountName, permission, privKey, pubKey) {
     let now = new Date();
     now = now.toISOString();
     const sign = ecc.sign(now, privKey);
 
-    // TODO add this to the header instead of query params
-    return `&accountName=${accountName}&permission=${permission}&pubKey=${pubKey}&signature=${sign}&signedData=${now}`
+    return {
+        AuthName: accountName,
+        AuthPerm: permission,
+        AuthKey: pubKey,
+        AuthSignature: sign,
+        AuthData: now
+    }
+}
+
+function addAuthHeader(accountName, permission, privKey, pubKey) {
+    return (...args) => {
+        const url = args[0];
+        const requestOptions = args[1];
+
+        requestOptions.headers = {
+            ...requestOptions.headers,
+            ...authHeader(accountName, permission, privKey, pubKey)
+        }
+
+        args[1] = requestOptions;
+        return args;
+    }
 }
 
 function setInterceptors(accountName, permission, privKey, pubKey) {
     interceptorHooks.stateTable.pre = async (...args) => {
-        args[0] += addSignatureToUrl(accountName, permission, privKey, pubKey);
-        return args;
+        return addAuthHeader(accountName, permission, privKey, pubKey)(...args);
     }
 
     // interceptorHooks.stateTable.post = async(results) => {
@@ -183,8 +201,7 @@ function setInterceptors(accountName, permission, privKey, pubKey) {
     // }
 
     interceptorHooks.searchTransactions.pre = async (...args) => {
-        args[0] += addSignatureToUrl(accountName, permission, privKey, pubKey);
-        return args;
+        return addAuthHeader(accountName, permission, privKey, pubKey)(...args);
     }
 
     // interceptorHooks.searchTransactions.post = async(results) => {
