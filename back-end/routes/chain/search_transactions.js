@@ -1,12 +1,12 @@
 const Accountability = require('../../services/Accountability');
 const accountability = new Accountability();
 const accountController = require('../../controllers/accounts.controller');
-const ecc = require('eosjs-ecc');
+const { getAuthorizor } = require('../../services/auth');
 
 /* GET acounts listing. */
 module.exports = async function(req, res) {
     try {
-        await checkAuthorized(req);
+        await getAuthorizor(req);
     } catch (err) {
         return res.status(401).send(err.message);
     }
@@ -25,30 +25,6 @@ module.exports = async function(req, res) {
     const retObj = req.addBlockchainRes(newTransactionSet);
     res.send(retObj);
 };
-
-async function checkAuthorized(req) {
-    const { authname, authperm, authkey, authsignature, authdata } = req.headers;
-
-    const blockchainAccount = await accountability.getAccount(authname);
-
-    if (!blockchainAccount) {
-        throw new Error('Authorizing account not found');
-    }
-
-    const blockchainActivePermission = blockchainAccount.permissions.find(element => element.perm_name === authperm);
-
-    if (!blockchainActivePermission) {
-        throw new Error('Authorizing account permission not found');
-    }
-
-    const signDate = new Date(authdata);
-    const now = new Date();
-    if (now.getTime() - signDate.getTime() > 15 * 1000) {
-        throw new Error("Signature has expired");
-    }
-
-    if (!ecc.verify(authsignature, authdata, authkey)) throw new Error("Invalid signature")
-}
 
 // adds 'auth' property to the tx based on the signing key
 async function getAuth(trx) {
