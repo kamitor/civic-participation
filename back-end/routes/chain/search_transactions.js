@@ -5,9 +5,9 @@ const ecc = require('eosjs-ecc');
 
 /* GET acounts listing. */
 module.exports = async function(req, res) {
-    const { accountName, permission, pubKey, signature, now } = req.query;
+    const { accountName, permission, pubKey, signature, signedData } = req.query;
     try {
-        await checkAuthorized(accountName, permission, pubKey, signature, now);
+        await checkAuthorized(accountName, permission, pubKey, signature, signedData);
     } catch (err) {
         return res.status(401).send(err.message);
     }
@@ -27,7 +27,7 @@ module.exports = async function(req, res) {
     res.send(retObj);
 };
 
-async function checkAuthorized(accountName, permission, pubKey, signature, signatureDate) {
+async function checkAuthorized(accountName, permission, pubKey, signature, signatureData) {
     const blockchainAccount = await accountability.getAccount(accountName);
 
     if (!blockchainAccount) {
@@ -40,14 +40,14 @@ async function checkAuthorized(accountName, permission, pubKey, signature, signa
         throw new Error('Authorizing account permission not found');
     }
 
-    const signDate = new Date(signatureDate);
+    const signDate = new Date(signatureData);
     const now = new Date();
     if (now.getSeconds() - signDate.getSeconds() > 15) {
         throw new Error("Signature is no longer valid");
     }
-
-    console.log('ecc.verify', signature, signatureDate, pubKey);
-    if (!ecc.verify(signature, signatureDate, pubKey)) throw new Error("Invalid signature")
+    console.log(signatureData, signDate)
+    console.log('ecc.verify', signature, signatureData, pubKey);
+    if (!ecc.verify(signature, signatureData, pubKey)) throw new Error("Invalid signature")
 }
 
 // adds 'auth' property to the tx based on the signing key

@@ -167,12 +167,10 @@ function addAccountSignature(accountName, permission, privKey, pubKey) {
     let now = new Date();
     now = now.toISOString();
     const sign = ecc.sign(now, privKey);
-
-    return `&accountName=${accountName}&permission=${permission}&pubKey=${pubKey}&signature=${sign}&now=${now}`
+    return `&accountName=${accountName}&permission=${permission}&pubKey=${pubKey}&signature=${sign}&signedData=${now}`
 }
 
 function setInterceptors(accountName, permission, privKey, pubKey) {
-    console.log('setInterceptors')
     interceptorHooks.stateTable.pre = async(...args) => {
         args[0][0] += addAccountSignature(accountName, permission, privKey, pubKey);
         return args;
