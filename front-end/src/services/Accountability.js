@@ -149,3 +149,38 @@ export default class Accountability {
     }
 
 }
+
+async function stateTablePreHook(...args) {
+    console.log('stateTablePreHook', args)
+}
+
+async function stateTablePostHook(results) {
+    console.log('stateTablePostHook', results)
+}
+
+async function searchTransactionsPreHook(...args) {
+    console.log('searchTransactionsPreHook', args)
+}
+
+async function searchTransactionsPostHook(results) {
+    console.log('searchTransactionsPostHook', results)
+}
+
+const fetch = window.fetch;
+window.fetch = (...args) => (async(args) => {
+    const url = args[0];
+    if (url.includes('v0/state/table')) {
+        await stateTablePreHook(args);
+    } else if (url.includes('/v0/search/transactions')) {
+        await searchTransactionsPreHook(args);
+    }
+    const result = await fetch(...args);
+    if (url.includes('v0/state/table')) {
+        await stateTablePostHook(result);
+    } else if (url.includes('/v0/search/transactions')) {
+        await searchTransactionsPostHook(result);
+    }
+
+    // console.log('results', result); // intercept response here
+    return result;
+})(args);
