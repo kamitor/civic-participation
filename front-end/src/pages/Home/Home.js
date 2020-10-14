@@ -26,14 +26,10 @@ function Home() {
                 photos: [],
                 location: createLocation()
             }
-            
-
             // TODO: Change needs from FE:
+            const photo = '';
             // 1. Create a file input and add a React ref onto it.
-            // 2. call encodeImageFileAsURL from utils.js to get base64 string. This method returns promise.
-            // 3. call civic.proposalCreate with encodeImageFileAsURL result as proposal photo property.
-            // const accountCreateRes = await civic.proposalCreateWithPhoto(proposal);
-            const proposalData = await civic.proposalCreate(proposal);
+            const proposalData = await civic.proposalCreateWithPhoto(proposal, photo);
             console.log('proposalCreate()', proposalData)
             const proposalId = proposalData.proposalId;
 
@@ -42,12 +38,7 @@ function Home() {
             proposal.proposalId = proposalId;
             proposal.status = ProposalStatus.Reviewing;
             
-            // TODO: Change needs from FE:
-            // 1. Create a file input and add a React ref onto it.
-            // 2. call encodeImageFileAsURL from utils.js to get base64 string. This method returns promise.
-            // 3. call civic.proposalUpdate with encodeImageFileAsURL result as proposal photo property.
-            // const accountCreateRes = await civic.proposalUpdateWithPhoto(proposal);
-            let proposalUpdateRes = await civic.proposalUpdate(proposal);
+            let proposalUpdateRes = await civic.proposalUpdateWithPhoto(proposal, photo);
             console.log('proposalUpdate()', proposalUpdateRes);
 
             proposal.regulation = 'RM 3212';

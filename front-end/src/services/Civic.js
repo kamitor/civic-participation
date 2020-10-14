@@ -6,6 +6,8 @@ import ecc from 'eosjs-ecc';
 import crypto from 'crypto'
 import { wait } from './objects';
 
+import encodeImageFileAsURL from '../utils';
+
 export default class Civic {
     // SEE civic AND accounts FOR TYPES!!!
     // import { ProposalCategory, ProposalStatus, ProposalType,
@@ -168,9 +170,10 @@ export default class Civic {
     /** 
      * Creates a new proposal with photo as the logged in user
      * @param {Proposal} proposal
+     * @param {photo} HTMLElement - File input
      * @returns {ProposalDetailed}
      */
-    async proposalCreateWithPhoto(proposal) {
+    async proposalCreateWithPhoto(proposal, photo) {
         let proposalDetails = [
             this.account.accountName,
             proposal.title,
@@ -181,15 +184,20 @@ export default class Civic {
             proposal.location            
         ];
         
+        if(photo){
+            const imageBase64 = await encodeImageFileAsURL(photo);
         
-        // proposal.photo is base64 string of an image.
-        if(proposal.photo){
             // 1. get sha256 of imageString
             // await Api.post('/image')
             // then we will get SHA256 of base64 string which we can pass to propcreate smart contract.
             // if we have photo in proposal let us push that data as well. But we will only get this data from /image API response.
             // proposal.photoSHA256 we will get from /image API.
-            proposalDetails.push(photoSHA256);
+
+            const response = await Api.post('/image', {
+                photoString: imageBase64 
+            })
+
+            proposalDetails.push(response.data.imageSha256);
         }
         
         const tx = await this.civicContract.propcreate(...proposalDetails);
@@ -212,7 +220,6 @@ export default class Civic {
             created: new Date(decodedRow.created),
         }
         if (proposal.budget) { proposalDetailed.budget = proposal.budget }
-        if (proposal.photos) { proposalDetailed.photos = proposal.photos }
         return proposalDetailed;
     }
 
@@ -281,9 +288,10 @@ export default class Civic {
     /** 
      * Updates a proposal with photo as the logged in user
      * @param {ProposalExtended} proposal
+     * @param {photo} HTMLElement - File input
      * @returns {ProposalDetailed}
      */
-    async proposalUpdateWithPhoto(proposal) {
+    async proposalUpdateWithPhoto(proposal, photo) {
         const txData = {
             actions: [{
                 account: 'civic',
@@ -311,16 +319,22 @@ export default class Civic {
             }]
         }
 
-        // proposal.photo is base64 string of an image.
-        if(proposal.photo){
-        // 1. get sha256 of imageString
-        // await Api.post('/image')
-        // then we will get SHA256 of base64 string which we can pass to propcreate smart contract.
-        // if we have photo in proposal let us push that data as well. But we will only get this data from /image API response.
-        // proposal.photoSHA256 we will get from /image API.
-        txData.actions[0].data.photoSHA256 = photoSHA256;
-        }
+        if(photo){
+            const imageBase64 = await encodeImageFileAsURL(photo);
         
+            // 1. get sha256 of imageString
+            // await Api.post('/image')
+            // then we will get SHA256 of base64 string which we can pass to propcreate smart contract.
+            // if we have photo in proposal let us push that data as well. But we will only get this data from /image API response.
+            // proposal.photoSHA256 we will get from /image API.
+
+            const response = await Api.post('/image', {
+                photoString: imageBase64 
+            })
+
+            txData.actions[0].data.photo = response.data.imageSha256;
+        }
+
         const tx = await this.accountability.transact2(txData);
 
         await wait(1000);
@@ -346,7 +360,6 @@ export default class Civic {
         }
         
         if (proposal.budget) { proposalDetailed.budget = proposal.budget }
-        if (proposal.photo) { proposalDetailed.photo = proposal.photo }
         if (proposal.regulations) { proposalDetailed.regulations = proposal.regulations }
         if (proposal.comment) { proposalDetailed.comment = proposal.comment }
 

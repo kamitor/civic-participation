@@ -4,7 +4,7 @@
  * @param {HTMLFileInputElement} element - File input which allows user to select file in our case it is iamge.
  * @returns {Promise} - Base64 string of given image.
  */
-function encodeImageFileAsURL(element) {
+export default function encodeImageFileAsURL(element) {
   return new Promise((resolve, reject) => {
     var file = element.files[0];
     var reader = new FileReader();
