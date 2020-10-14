@@ -3,7 +3,7 @@
 
 #include <civic.hpp>
 
-ACTION civic::propcreate(name creator, string title, string description, uint8_t category, float budget, uint8_t type, string location)
+ACTION civic::propcreate(name creator, string title, string description, uint8_t category, float budget, uint8_t type, string location, eosio::checksum256 photo)
 {
     require_auth(creator);
     // Init the _message table
@@ -24,13 +24,14 @@ ACTION civic::propcreate(name creator, string title, string description, uint8_t
         proposal.location = location;
         proposal.status = ProposalStatus::Proposed;
         proposal.created = now;
+        proposal.photo = photo;
     });
 
     proposal_event(proposal_id);
 }
 
 ACTION civic::propupdate(name updater, uint64_t proposal_id, string title, string description, uint8_t category,
-                         float budget, uint8_t type, string location, uint8_t new_status, string regulations, string comment)
+                         float budget, uint8_t type, string location, uint8_t new_status, string regulations, string comment, eosio::checksum256 photo)
 {
     // check(updater == eosio::name("gov"), "Only government can update proposals"); // do not use, otherwise the human account cannot be used
     require_auth(updater);
@@ -65,6 +66,7 @@ ACTION civic::propupdate(name updater, uint64_t proposal_id, string title, strin
         proposal.status = new_status;
         proposal.regulations = regulations;
         proposal.updated = now;
+        proposal.photo = photo;
 
         if (new_status == ProposalStatus::Approved)
             proposal.approved = now;
