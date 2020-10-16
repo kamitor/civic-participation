@@ -5,6 +5,7 @@ import Login from './pages/Login/Login';
 import CreateAccount from './pages/CreateAccount/CreateAccount';
 import Security from './pages/Security/Security';
 import PropsalCreate from './pages/ProposalCreate/ProposalCreate';
+import Dashboard from './pages/Dashboard/Dashboard';
 
 const Routes = () => (
     <Router >
@@ -23,6 +24,9 @@ const Routes = () => (
             </Route>
             <Route path="/proposal-create">
                 <PropsalCreate />
+            </Route>
+            <Route path="/dashboard">
+                <Dashboard />
             </Route>
         </Switch>
     </Router >
