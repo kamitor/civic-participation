@@ -24,8 +24,9 @@ function Home() {
                 budget: 0,
                 type: ProposalType.Create,
                 photos: [],
-                location: '52.1135031,4.2829047'
+                location: createLocation()
             }
+
             const proposalData = await civic.proposalCreate(proposal);
             console.log('proposalCreate()', proposalData)
             const proposalId = proposalData.proposalId;
@@ -67,6 +68,12 @@ function Home() {
             Here is the app!
         </div>
     )
+}
+
+function createLocation() {
+    const lng = 52.1135031 + Math.random() * 0.01;
+    const lat = 4.2829047 + Math.random() * 0.01;
+    return `${lng},${lat}`;
 }
 
 const description = 'Lorem ipsum dolor sit amet';
