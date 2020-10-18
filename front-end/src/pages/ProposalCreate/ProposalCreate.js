@@ -458,7 +458,7 @@ export default function ProposalCreate() {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <div className="googlmap-wrape">
-                                        <LocationGooglMap location={{lat: 52.1135031, lng: 4.2829047}} zoom={9} />
+                                        <LocationGooglMap location={{lat: 52.1135031, lng: 4.2829047}} zoom={15} />
                                     </div>
                                 </Grid>
                             </Grid>

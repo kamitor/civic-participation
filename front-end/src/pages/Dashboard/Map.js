@@ -18,7 +18,6 @@ const MapContainer = (props) => {
     }
 
     useEffect(() => {
-        console.log(selected)
         if (props.location.lat && props.location.lng) {
             setCurrentPosition(props.location);
             setCurrentTitle(props.title);

@@ -8,14 +8,14 @@ class LocationGooglMap extends Component {
     constructor(props) {
         super(props);
     }
-    
+
     state = {
         mapApiLoaded: false,
         mapInstance: null,
         mapApi: null,
         geoCoder: null,
-        places: [],
-        center: [],
+        places: [this.props.location.lat, this.props.location.lng],
+        center: [this.props.location.lat, this.props.location.lng],
         zoom: this.props.zoom,
         address: '',
         draggable: true,
@@ -135,8 +135,8 @@ class LocationGooglMap extends Component {
                 >
                     <Marker
                         text={this.state.address}
-                        lat={this.state.lat}
-                        lng={this.state.lng}
+                        lat={this.props.lat}
+                        lng={this.props.lng}
                     />
                 </GoogleMapReact>
             </ >
