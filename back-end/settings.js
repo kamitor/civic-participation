@@ -17,7 +17,7 @@ const settings = {
         network: "localhost:8080"
     },
     mongodb: {
-        url: "mongodb://localhost:27017/conscious_dev"
+        url: "mongodb://localhost:27017/conscious"
     },
     port: 4000,
     env: "development"
@@ -25,7 +25,7 @@ const settings = {
 
 if (process.env.REACT_APP_NODE_ENV === "production") {
     settings.env = "production";
-    settings.mongodb.url = "mongodb://localhost:27017/conscious_prod";
+    settings.mongodb.url = "mongodb://localhost:27017/conscious";
 }
 
 settings.isLiveEnvironment = function() {
