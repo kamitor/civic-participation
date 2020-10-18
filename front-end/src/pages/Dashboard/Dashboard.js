@@ -37,6 +37,7 @@ function Dashboard(props) {
                 return;
             }
             const proposals = await authContext.civic.proposalList();
+            console.log('proposals', proposals)
             setProposalList(proposals);
         }
 
@@ -58,11 +59,12 @@ function Dashboard(props) {
                     <Grid item container xs={6}>
                         <Grid item container className={classes.cardWrap}>
                             {proposalList.map(proposal =>
-                                <Grid item xs={6} key={proposal["proposalId"]}>
+                                <Grid item xs={6} key={proposal.proposalId}>
                                     <Card
-                                        title={proposal["title"]}
-                                        description={proposal["description"]}
-                                        onClick={() => _handleCard(proposal["location"])}
+                                        title={proposal.title}
+                                        description={proposal.description}
+                                        imageUrl={proposal.photos}
+                                        onClick={() => _handleCard(proposal.location)}
                                     />
                                 </Grid>
                             )}

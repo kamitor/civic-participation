@@ -2,6 +2,7 @@ import React from 'react'
 import { Grid, Typography, Button, Paper, ButtonBase } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { withStyles } from "@material-ui/core/styles";
+import Logo from '../../assets/image/logo.png';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -90,7 +91,12 @@ export default function Card(props) {
                 <Grid container direction="column">
                     <Grid item>
                         <ButtonBase className={classes.image}>
-                            <img className={classes.img} alt="card" src="" />
+                            {props.imageUrl &&
+                                <img className={classes.img} alt={props.title} src={props.imageUrl} />
+                            }
+                            {!props.imageUrl &&
+                                <img className={classes.img} src={Logo} />
+                            }
                         </ButtonBase>
                     </Grid>
                     <Grid item container className={classes.cardContent} direction="column">
