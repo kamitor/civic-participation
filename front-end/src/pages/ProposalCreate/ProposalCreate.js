@@ -15,6 +15,7 @@ import { Lock } from '@material-ui/icons';
 import LocationGooglMap from '../../components/Location/LocationGooglMap';
 // import DragDrop from '../../components/DragDrop';
 import { useForm } from "react-hook-form";
+import Navbar from '../../components/Navbar/Navbar';
 import './ProposalCreate.scss';
 
 const useStyles = makeStyles((theme) => ({
@@ -273,6 +274,7 @@ export default function ProposalCreate() {
 
     return (
         <div className={classes.root}>
+            <Navbar />
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid container direction="column">
                     <Grid className="hearder-wrap">
@@ -456,7 +458,7 @@ export default function ProposalCreate() {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <div className="googlmap-wrape">
-                                        <LocationGooglMap />
+                                        <LocationGooglMap location={{lat: 52.1135031, lng: 4.2829047}} zoom={15} />
                                     </div>
                                 </Grid>
                             </Grid>
