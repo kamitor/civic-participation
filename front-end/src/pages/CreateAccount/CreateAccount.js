@@ -26,7 +26,7 @@ import './CreateAccount.scss'
 
 export default function CreateAccount() {
 	const history = useHistory();
-	const authContext = ConsumeAuth()
+	const authContext = ConsumeAuth();
 
 	const [loading, setLoading] = React.useState(false)
 	const [open, setOpen] = React.useState(false);
@@ -43,7 +43,7 @@ export default function CreateAccount() {
 		criteriaMode: "all"
 	});
 
-	const onSubmit = async ({username, password, firstname, lastname}) => {
+	const onSubmit = async ({ username, password, firstname, lastname }) => {
 		setLoading(true)
 
 		try {
@@ -113,14 +113,14 @@ export default function CreateAccount() {
 				onClose={handleClose}
 				message={message}
 				action={
-				<React.Fragment>
-					<Button color="secondary" size="small" onClick={handleClose}>
-						UNDO
+					<React.Fragment>
+						<Button color="secondary" size="small" onClick={handleClose}>
+							UNDO
 					</Button>
-					<IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
-					<CloseIcon fontSize="small" />
-					</IconButton>
-				</React.Fragment>
+						<IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+							<CloseIcon fontSize="small" />
+						</IconButton>
+					</React.Fragment>
 				}
 			/>
 			<Grid container spacing={0} direction="row">

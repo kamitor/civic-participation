@@ -4,7 +4,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Navbar from '../../components/Navbar/Navbar';
 import Card from './Card';
 import Map from './Map';
-import { dummyData } from './DummyData';
+// import { dummyData } from './DummyData';
+import { ConsumeAuth } from '../../hooks/authContext';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,9 +27,15 @@ function Dashboard(props) {
     const [proposalList, setProposalList] = useState([]);
     const [latitude, setLatitude] = useState();
     const [longitude, setLongitude] = useState();
+    const authContext = ConsumeAuth();
 
     useEffect(() => {
-        setProposalList(dummyData);
+        async function main() {
+            const proposals = await authContext.civic.proposalList();
+            setProposalList(proposals);
+        }
+
+        main();
     });
 
     const _handleCard = (location) => {
@@ -57,7 +64,7 @@ function Dashboard(props) {
                         </Grid>
                     </Grid>
                     <Grid item container xs={6}>
-                        <Map location={{lat: latitude, lng: longitude}} proposalList={proposalList} />
+                        <Map location={{ lat: latitude, lng: longitude }} proposalList={proposalList} />
                     </Grid>
                 </Grid>
             </Grid>
