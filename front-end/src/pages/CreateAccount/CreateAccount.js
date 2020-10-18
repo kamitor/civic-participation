@@ -26,7 +26,7 @@ import './CreateAccount.scss'
 
 export default function CreateAccount() {
 	const history = useHistory();
-	const authContext = ConsumeAuth()
+	const authContext = ConsumeAuth();
 
 	const [loading, setLoading] = React.useState(false)
 	const [open, setOpen] = React.useState(false);

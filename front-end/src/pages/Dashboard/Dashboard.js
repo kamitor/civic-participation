@@ -4,7 +4,15 @@ import { makeStyles } from '@material-ui/core/styles';
 import Navbar from '../../components/Navbar/Navbar';
 import Card from './Card';
 import Map from './Map';
-import { dummyData } from './DummyData';
+import { ConsumeAuth } from '../../hooks/authContext';
+import { useHistory } from "react-router-dom";
+
+function parseLocation(location) {
+    return {
+        lat: parseFloat(location.split(",")[0]),
+        lng: parseFloat(location.split(",")[1])
+    }
+}
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,16 +32,30 @@ const useStyles = makeStyles((theme) => ({
 function Dashboard(props) {
     const classes = useStyles();
     const [proposalList, setProposalList] = useState([]);
-    const [latitude, setLatitude] = useState();
-    const [longitude, setLongitude] = useState();
+    const authContext = ConsumeAuth();
+    const history = useHistory();
+
+    const [selected, setSelected] = useState({});
 
     useEffect(() => {
-        setProposalList(dummyData);
-    });
+        async function main() {
+            if (!await authContext.isLoggedIn()) {
+                history.push('/login');
+                return;
+            }
+            let proposals = await authContext.civic.proposalList();
+            proposals = proposals.map(item => {
+                item.position = parseLocation(item.location)
+                return item;
+            });
+            setProposalList(proposals);
+        }
 
-    const _handleCard = (location) => {
-        setLatitude(parseFloat(location.split(",")[0]))
-        setLongitude(parseFloat(location.split(",")[1]))
+        main();
+    }, []);
+
+    const navigateToProposal = (proposalId) => {
+        history.push(`/proposals/${proposalId}`);
     }
 
     return (
@@ -44,24 +66,32 @@ function Dashboard(props) {
                 </Grid>
                 <Grid item container className={classes.mainContainer}>
                     <Grid item container xs={6}>
-                        <Grid item container className={classes.cardWrap}>
-                            {proposalList.map(proposal =>
-                                <Grid item xs={6} key={proposal["proposalId"]}>
-                                    <Card
-                                        title={proposal["title"]}
-                                        description={proposal["description"]}
-                                        onClick={() => _handleCard(proposal["location"])}
-                                    />
-                                </Grid>
-                            )}
-                        </Grid>
+                        {proposalList.length === 0 &&
+                            <div style={{ margin: 'auto' }} > No proposal were found</div>
+                        }
+                        {proposalList.length > 0 &&
+                            <Grid item container className={classes.cardWrap}>
+                                {proposalList.map(proposal =>
+                                    <Grid item xs={6} key={proposal.proposalId}>
+                                        <Card
+                                            title={proposal.title}
+                                            description={proposal.description}
+                                            imageUrl={proposal.photos}
+                                            selected={selected.proposalId === proposal.proposalId}
+                                            onClick={() => setSelected(proposal)}
+                                            onButtonClick={() => navigateToProposal(proposal.proposalId)}
+                                        />
+                                    </Grid>
+                                )}
+                            </Grid>
+                        }
                     </Grid>
                     <Grid item container xs={6}>
-                        <Map location={{lat: latitude, lng: longitude}} proposalList={proposalList} zoom={15} />
+                        <Map selected={selected} onSelect={(item) => setSelected(item)} proposalList={proposalList} zoom={15} />
                     </Grid>
                 </Grid>
             </Grid>
-        </div>
+        </div >
     );
 }
 

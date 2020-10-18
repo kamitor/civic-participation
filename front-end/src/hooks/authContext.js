@@ -8,24 +8,27 @@ let civic = new Civic();
 const authContext = createContext();
 
 function useProvideAuth() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoggedInValue, setIsLoggedIn] = useState(false);
 
-    useEffect(() => {
-        async function main() {
-            const user = getUserStorage();
-            if (user) {
-                await civic.accountLoginWithKey(user.accountName, user.commonName, user.privKey)
+    async function isLoggedIn() {
+        if (isLoggedInValue === true) return true;
+
+        const user = getUserStorage();
+        if (user) {
+            await civic.accountLoginWithKey(user.accountName, user.commonName, user.privKey)
+            setIsLoggedIn(true);
+            return true;
+        } else {
+            if (!settings.isLiveEnvironment()) {
+                await civic.accountLogin('tijn', 'Password123');
+                setUserStorage('tijn', civic.account.commonName, civic.account.privateKey);
                 setIsLoggedIn(true);
+                return true;
             } else {
-                if (!settings.isLiveEnvironment()) {
-                    await civic.accountLogin('tijn', 'Password123');
-                    setUserStorage('tijn', civic.account.commonName, civic.account.privateKey);
-                    setIsLoggedIn(true);
-                }
+                return isLoggedInValue;
             }
         }
-        main();
-    }, [])
+    }
 
     async function login(accountName, password) {
         await civic.accountLogin(accountName, password);
