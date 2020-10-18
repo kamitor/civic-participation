@@ -95,7 +95,7 @@ export default function Card(props) {
                                 <img className={classes.img} alt={props.title} src={props.imageUrl} />
                             }
                             {!props.imageUrl &&
-                                <img className={classes.img} src={Logo} />
+                                <img className={classes.img} style={{ opacity: 0.1 }} src={Logo} />
                             }
                         </ButtonBase>
                     </Grid>
@@ -104,7 +104,7 @@ export default function Card(props) {
                             <Grid item xs>
                                 <CardTitle onClick={props.onClick}>{(props.title).slice(0, 30)}</CardTitle>
                             </Grid>
-                            <ReadmoreButton>READ MORE</ReadmoreButton>
+                            <ReadmoreButton onClick={props.onButtonClick}>READ MORE</ReadmoreButton>
                         </Grid>
                         <Grid item>
                             <CardContentDescription>

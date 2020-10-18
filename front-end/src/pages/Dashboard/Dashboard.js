@@ -44,9 +44,13 @@ function Dashboard(props) {
         main();
     }, []);
 
-    const _handleCard = (location) => {
+    const setMapToProposal = (location) => {
         setLatitude(parseFloat(location.split(",")[0]))
         setLongitude(parseFloat(location.split(",")[1]))
+    }
+
+    const navigateToProposal = (proposalId) => {
+        history.push(`/proposals/${proposalId}`);
     }
 
     return (
@@ -64,7 +68,8 @@ function Dashboard(props) {
                                         title={proposal.title}
                                         description={proposal.description}
                                         imageUrl={proposal.photos}
-                                        onClick={() => _handleCard(proposal.location)}
+                                        onClick={() => setMapToProposal(proposal.location)}
+                                        onButtonClick={() => navigateToProposal(proposal.proposalId)}
                                     />
                                 </Grid>
                             )}
