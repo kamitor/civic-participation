@@ -73,6 +73,7 @@ function Dashboard(props) {
                                         title={proposal.title}
                                         description={proposal.description}
                                         imageUrl={proposal.photos}
+                                        selected={selected.proposalId === proposal.proposalId}
                                         onClick={() => setSelected(proposal)}
                                         onButtonClick={() => navigateToProposal(proposal.proposalId)}
                                     />

@@ -14,7 +14,6 @@ const MapContainer = (props) => {
     const [currentPosition, setCurrentPosition] = useState(defaultCenter);
 
     useEffect(() => {
-        console.log('MapContainer', props)
         if (selected && selected.proposalId) {
             setCurrentPosition(selected.position);
         }
