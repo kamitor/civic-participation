@@ -7,6 +7,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import { makeStyles } from '@material-ui/core/styles';
 import { withStyles } from "@material-ui/core/styles";
 import logo from '../../assets/image/logo.png';
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -133,6 +134,7 @@ const DashboardButton = withStyles({
 export default function Navbar() {
     const classes = useStyles();
     const [selectedProposal, setSelectedProposal] = useState('');
+    const history = useHistory();
 
     const handleChange = (event) => {
         setSelectedProposal(event.target.value);
@@ -179,8 +181,8 @@ export default function Navbar() {
                 </Grid>
                 <Grid item container xs={4} alignItems="center">
                     <Grid item container className={classes.buttonContainer}>
-                        <DashboardButton>Dashboard</DashboardButton>
-                        <CreateButton>CREATE</CreateButton>
+                        <DashboardButton onClick={() => history.push('/dashboard')}>Dashboard</DashboardButton>
+                        <CreateButton onClick={() => history.push('/proposal-create')}>CREATE</CreateButton>
                     </Grid>
                 </Grid>
             </Grid>
