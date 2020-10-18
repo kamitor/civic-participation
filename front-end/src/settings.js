@@ -9,6 +9,9 @@ let settings = {
         secure: false,
         network: "localhost:4000"
     },
+    google: {
+        apiKey: "AIzaSyDMa6KMn669HY33Qrdu5gd0ggyf5C8G4WQ"
+    },
     env: 'development'
 };
 

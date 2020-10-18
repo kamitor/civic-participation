@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { GoogleMap, LoadScript, Marker, InfoWindow } from "@react-google-maps/api";
+import settings from '../../settings';
 
 const MapContainer = (props) => {
+    const { selected } = props;
     const mapStyles = {
         height: "86vh",
         width: "100%"
@@ -10,23 +12,17 @@ const MapContainer = (props) => {
         lat: 52.1135031, lng: 4.2829047
     }
     const [currentPosition, setCurrentPosition] = useState(defaultCenter);
-    const [currentTitle, setCurrentTitle] = useState();
-    const [selected, setSelected] = useState(false);
-
-    const onSelect = (item) => {
-        setSelected(item)
-    }
 
     useEffect(() => {
-        if (props.location.lat && props.location.lng) {
-            setCurrentPosition(props.location);
-            setCurrentTitle(props.title);
+        console.log('MapContainer', props)
+        if (selected && selected.proposalId) {
+            setCurrentPosition(selected.position);
         }
     })
 
     return (
         <LoadScript
-            googleMapsApiKey='AIzaSyDMa6KMn669HY33Qrdu5gd0ggyf5C8G4WQ'>
+            googleMapsApiKey={settings.google.apiKey}>
             <GoogleMap
                 mapContainerStyle={mapStyles}
                 zoom={props.zoom}
@@ -36,21 +32,15 @@ const MapContainer = (props) => {
                         return (
                             <Marker
                                 key={item.proposalId}
-                                position={{
-                                    lat: parseFloat((item.location).split(",")[0]),
-                                    lng: parseFloat((item.location).split(",")[1])
-                                }}
-                                onClick={() => onSelect({ location: item.location })}
+                                position={item.position}
+                                onClick={() => props.onSelect(item)}
                             >
                                 {
-                                    (selected.location == item.location) &&
+                                    (selected && selected.proposalId === item.proposalId) &&
                                     (
                                         <InfoWindow
-                                            position={{
-                                                lat: parseFloat((item.location).split(",")[0]),
-                                                lng: parseFloat((item.location).split(",")[1])
-                                            }}
-                                            onCloseClick={() => setSelected({})}
+                                            position={item.position}
+                                            onCloseClick={() => props.onSelect({})}
                                         >
                                             <p>{item.title}</p>
                                         </InfoWindow>

@@ -7,6 +7,13 @@ import Map from './Map';
 import { ConsumeAuth } from '../../hooks/authContext';
 import { useHistory } from "react-router-dom";
 
+function parseLocation(location) {
+    return {
+        lat: parseFloat(location.split(",")[0]),
+        lng: parseFloat(location.split(",")[1])
+    }
+}
+
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -25,11 +32,10 @@ const useStyles = makeStyles((theme) => ({
 function Dashboard(props) {
     const classes = useStyles();
     const [proposalList, setProposalList] = useState([]);
-    // const [latitude, setLatitude] = useState();
-    // const [longitude, setLongitude] = useState();
-    const [location, setLocation] = useState({ lat: null, lng: null, title: null });
     const authContext = ConsumeAuth();
     const history = useHistory();
+
+    const [selected, setSelected] = useState({});
 
     useEffect(() => {
         async function main() {
@@ -37,23 +43,16 @@ function Dashboard(props) {
                 history.push('/login');
                 return;
             }
-            const proposals = await authContext.civic.proposalList();
+            let proposals = await authContext.civic.proposalList();
+            proposals = proposals.map(item => {
+                item.position = parseLocation(item.location)
+                return item;
+            });
             setProposalList(proposals);
         }
 
         main();
     }, []);
-
-    const setMapToProposal = (title, location) => {
-        console.log('setMapToProposal')
-        // setLatitude(parseFloat(location.split(",")[0]))
-        // setLongitude(parseFloat(location.split(",")[1]))
-        setLocation({
-            lat: parseFloat(location.split(",")[0]),
-            lng: parseFloat(location.split(",")[1]),
-            title: title
-        })
-    }
 
     const navigateToProposal = (proposalId) => {
         history.push(`/proposals/${proposalId}`);
@@ -74,7 +73,7 @@ function Dashboard(props) {
                                         title={proposal.title}
                                         description={proposal.description}
                                         imageUrl={proposal.photos}
-                                        onClick={() => setMapToProposal(proposal.title, proposal.location)}
+                                        onClick={() => setSelected(proposal)}
                                         onButtonClick={() => navigateToProposal(proposal.proposalId)}
                                     />
                                 </Grid>
@@ -82,7 +81,7 @@ function Dashboard(props) {
                         </Grid>
                     </Grid>
                     <Grid item container xs={6}>
-                        <Map location={{ lat: location.lat, lng: location.lng }} title={location.title} proposalList={proposalList} zoom={15} />
+                        <Map selected={selected} onSelect={(item) => setSelected(item)} proposalList={proposalList} zoom={15} />
                     </Grid>
                 </Grid>
             </Grid>
