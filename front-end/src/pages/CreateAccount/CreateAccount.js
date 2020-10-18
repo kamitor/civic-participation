@@ -47,8 +47,7 @@ export default function CreateAccount() {
 		setLoading(true)
 
 		try {
-			await authContext.civic.accountCreate(username, password, `${firstname} ${lastname}`)
-			authContext.setIsLoggedIn(true)
+			await authContext.createAccount(username, password, `${firstname} ${lastname}`)
 			history.push('/dashboard')
 		} catch (err) {
 			setMessage(err.message)
