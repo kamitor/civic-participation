@@ -4,7 +4,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Navbar from '../../components/Navbar/Navbar';
 import Card from './Card';
 import Map from './Map';
-// import { dummyData } from './DummyData';
 import { ConsumeAuth } from '../../hooks/authContext';
 import { useHistory } from "react-router-dom";
 
@@ -33,8 +32,7 @@ function Dashboard(props) {
 
     useEffect(() => {
         async function main() {
-            const isLoggedIn = await authContext.isLoggedIn();
-            if (!isLoggedIn) {
+            if (!await authContext.isLoggedIn()) {
                 history.push('/login');
                 return;
             }
