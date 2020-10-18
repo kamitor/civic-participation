@@ -8,7 +8,6 @@ const settings = {
                 pubKey: "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
             }
         }
-
     },
     dfuseOptions: dfuseOptions = {
         apiKey: "web_abcdef123456789",

@@ -10,14 +10,18 @@ const cors = require('cors');
 
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+    allowedHeaders: 'Content-Type,authname,authperm,authkey,authsignature,authdata,authorization'
+}
+app.options('*', cors(corsOptions));
+app.use(cors(corsOptions));
 app.use(logger('dev'));
 app.use(express.json());
 // app.use(express.urlencoded({ extended: false })); // unsure if still needed, as using body-parser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.text()); // needed to parse eosjs api into req.body
-app.use(cookieParser());
+// app.use(cookieParser()); // this not needed. Delete me later
 
 app.use(blockchainProxy.pre);
 
@@ -28,28 +32,28 @@ app.use(blockchainProxy.post);
 
 // Error handler
 app.use(function(err, req, res, next) {
-  console.error(err);
-  res.status(err.status || 500);
-  res.send(err.toString());
+    console.error(err);
+    res.status(err.status || 500);
+    res.send(err.toString());
 });
 
 try {
-  // mongoose.Promise = global.Promise;
-  mongoose.connect(settings.mongodb.url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  }, (rej) => {
-    if (rej) {
-      console.error(rej.message);
-      process.exit();
-    }
-    console.log("Connected to database");
-    
-    app.listen(settings.port, () => {
-      console.log("Server listening on port " + settings.port);
+    // mongoose.Promise = global.Promise;
+    mongoose.connect(settings.mongodb.url, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    }, (rej) => {
+        if (rej) {
+            console.error(rej.message);
+            process.exit();
+        }
+        console.log("Connected to database");
+
+        app.listen(settings.port, () => {
+            console.log("Server listening on port " + settings.port);
+        });
     });
-  });
 } catch (err) {
-  console.error(err)
-  process.exit();
+    console.error(err)
+    process.exit();
 }
