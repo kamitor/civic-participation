@@ -5,6 +5,10 @@ import AutoComplete from './Autocomplete';
 import Marker from './Marker';
 
 class LocationGooglMap extends Component {
+    constructor(props) {
+        super(props);
+    }
+    
     state = {
         mapApiLoaded: false,
         mapInstance: null,
@@ -12,11 +16,11 @@ class LocationGooglMap extends Component {
         geoCoder: null,
         places: [],
         center: [],
-        zoom: 9,
+        zoom: this.props.zoom,
         address: '',
         draggable: true,
-        lat: null,
-        lng: null
+        lat: this.props.location.lat,
+        lng: this.props.location.lng
     };
 
     componentWillMount() {

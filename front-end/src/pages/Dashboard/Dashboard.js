@@ -57,7 +57,7 @@ function Dashboard(props) {
                         </Grid>
                     </Grid>
                     <Grid item container xs={6}>
-                        <Map location={{lat: latitude, lng: longitude}} proposalList={proposalList} />
+                        <Map location={{lat: latitude, lng: longitude}} proposalList={proposalList} zoom={17} />
                     </Grid>
                 </Grid>
             </Grid>
