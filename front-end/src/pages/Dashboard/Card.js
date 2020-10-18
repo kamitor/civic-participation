@@ -90,7 +90,7 @@ export default function Card(props) {
             <Paper className={classes.paper}>
                 <Grid container direction="column">
                     <Grid item>
-                        <ButtonBase className={classes.image}>
+                        <ButtonBase className={classes.image} onClick={props.onClick}>
                             {props.imageUrl &&
                                 <img className={classes.img} alt={props.title} src={props.imageUrl} />
                             }

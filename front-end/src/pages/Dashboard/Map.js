@@ -10,7 +10,7 @@ const MapContainer = (props) => {
         lat: 52.1135031, lng: 4.2829047
     }
     const [currentPosition, setCurrentPosition] = useState(defaultCenter);
-    const [currentTitle, setCurrentTitle] = useState()
+    const [currentTitle, setCurrentTitle] = useState();
     const [selected, setSelected] = useState(false);
 
     const onSelect = (item) => {
@@ -35,24 +35,24 @@ const MapContainer = (props) => {
                     props.proposalList.map(item => {
                         return (
                             <Marker
-                                key={item["proposalId"]}
+                                key={item.proposalId}
                                 position={{
-                                    lat: parseFloat((item["location"]).split(",")[0]),
-                                    lng: parseFloat((item["location"]).split(",")[1])
+                                    lat: parseFloat((item.location).split(",")[0]),
+                                    lng: parseFloat((item.location).split(",")[1])
                                 }}
-                                onClick={() => onSelect({location: item["location"]})}
+                                onClick={() => onSelect({ location: item.location })}
                             >
                                 {
-                                    (selected.location == item["location"]) &&
+                                    (selected.location == item.location) &&
                                     (
                                         <InfoWindow
                                             position={{
-                                                lat: parseFloat((item["location"]).split(",")[0]),
-                                                lng: parseFloat((item["location"]).split(",")[1])
+                                                lat: parseFloat((item.location).split(",")[0]),
+                                                lng: parseFloat((item.location).split(",")[1])
                                             }}
                                             onCloseClick={() => setSelected({})}
                                         >
-                                            <p>{item["title"]}</p>
+                                            <p>{item.title}</p>
                                         </InfoWindow>
                                     )
                                 }

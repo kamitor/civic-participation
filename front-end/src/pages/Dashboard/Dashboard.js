@@ -25,8 +25,9 @@ const useStyles = makeStyles((theme) => ({
 function Dashboard(props) {
     const classes = useStyles();
     const [proposalList, setProposalList] = useState([]);
-    const [latitude, setLatitude] = useState();
-    const [longitude, setLongitude] = useState();
+    // const [latitude, setLatitude] = useState();
+    // const [longitude, setLongitude] = useState();
+    const [location, setLocation] = useState({ lat: null, lng: null, title: null });
     const authContext = ConsumeAuth();
     const history = useHistory();
 
@@ -37,16 +38,21 @@ function Dashboard(props) {
                 return;
             }
             const proposals = await authContext.civic.proposalList();
-            console.log('proposals', proposals)
             setProposalList(proposals);
         }
 
         main();
     }, []);
 
-    const setMapToProposal = (location) => {
-        setLatitude(parseFloat(location.split(",")[0]))
-        setLongitude(parseFloat(location.split(",")[1]))
+    const setMapToProposal = (title, location) => {
+        console.log('setMapToProposal')
+        // setLatitude(parseFloat(location.split(",")[0]))
+        // setLongitude(parseFloat(location.split(",")[1]))
+        setLocation({
+            lat: parseFloat(location.split(",")[0]),
+            lng: parseFloat(location.split(",")[1]),
+            title: title
+        })
     }
 
     const navigateToProposal = (proposalId) => {
@@ -68,7 +74,7 @@ function Dashboard(props) {
                                         title={proposal.title}
                                         description={proposal.description}
                                         imageUrl={proposal.photos}
-                                        onClick={() => setMapToProposal(proposal.location)}
+                                        onClick={() => setMapToProposal(proposal.title, proposal.location)}
                                         onButtonClick={() => navigateToProposal(proposal.proposalId)}
                                     />
                                 </Grid>
@@ -76,7 +82,7 @@ function Dashboard(props) {
                         </Grid>
                     </Grid>
                     <Grid item container xs={6}>
-                        <Map location={{ lat: latitude, lng: longitude }} proposalList={proposalList} zoom={15} />
+                        <Map location={{ lat: location.lat, lng: location.lng }} title={location.title} proposalList={proposalList} zoom={15} />
                     </Grid>
                 </Grid>
             </Grid>
