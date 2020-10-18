@@ -19,8 +19,7 @@ const pre = async function(req, res, next) {
         timeout: 10000
     }
     if (req.method === "POST" || req.method === "PUT") {
-        let body = typeof req.body === "string" ? JSON.parse(req.body) : req.body
-            // body = JSON.stringify(body);
+        let body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
         options.body = JSON.stringify(body);
         req.body = body;
     }
