@@ -5,18 +5,22 @@ import AutoComplete from './Autocomplete';
 import Marker from './Marker';
 
 class LocationGooglMap extends Component {
+    constructor(props) {
+        super(props);
+    }
+
     state = {
         mapApiLoaded: false,
         mapInstance: null,
         mapApi: null,
         geoCoder: null,
-        places: [],
-        center: [],
-        zoom: 9,
+        places: [this.props.location.lat, this.props.location.lng],
+        center: [this.props.location.lat, this.props.location.lng],
+        zoom: this.props.zoom,
         address: '',
         draggable: true,
-        lat: null,
-        lng: null
+        lat: this.props.location.lat,
+        lng: this.props.location.lng
     };
 
     componentWillMount() {
@@ -131,8 +135,8 @@ class LocationGooglMap extends Component {
                 >
                     <Marker
                         text={this.state.address}
-                        lat={this.state.lat}
-                        lng={this.state.lng}
+                        lat={this.props.lat}
+                        lng={this.props.lng}
                     />
                 </GoogleMapReact>
             </ >

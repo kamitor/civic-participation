@@ -18,7 +18,6 @@ const MapContainer = (props) => {
     }
 
     useEffect(() => {
-        console.log(selected)
         if (props.location.lat && props.location.lng) {
             setCurrentPosition(props.location);
             setCurrentTitle(props.title);
@@ -30,7 +29,7 @@ const MapContainer = (props) => {
             googleMapsApiKey='AIzaSyDMa6KMn669HY33Qrdu5gd0ggyf5C8G4WQ'>
             <GoogleMap
                 mapContainerStyle={mapStyles}
-                zoom={17}
+                zoom={props.zoom}
                 center={currentPosition}>
                 {
                     props.proposalList.map(item => {
@@ -61,25 +60,6 @@ const MapContainer = (props) => {
                         )
                     })
                 }
-                {/* {
-                    currentPosition.lat ?
-                        <Marker
-                            position={currentPosition}
-                            onClick={() => onSelect()}
-                        /> :
-                        null
-                }
-                {
-                    props.location.lat && selected  &&
-                    (
-                        <InfoWindow
-                            position={currentPosition}
-                            onCloseClick={() => setSelected({})}
-                        >
-                            <p>{currentTitle}</p>
-                        </InfoWindow>
-                    )
-                } */}
 
             </GoogleMap>
         </LoadScript>
