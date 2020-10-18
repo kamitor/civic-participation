@@ -66,27 +66,32 @@ function Dashboard(props) {
                 </Grid>
                 <Grid item container className={classes.mainContainer}>
                     <Grid item container xs={6}>
-                        <Grid item container className={classes.cardWrap}>
-                            {proposalList.map(proposal =>
-                                <Grid item xs={6} key={proposal.proposalId}>
-                                    <Card
-                                        title={proposal.title}
-                                        description={proposal.description}
-                                        imageUrl={proposal.photos}
-                                        selected={selected.proposalId === proposal.proposalId}
-                                        onClick={() => setSelected(proposal)}
-                                        onButtonClick={() => navigateToProposal(proposal.proposalId)}
-                                    />
-                                </Grid>
-                            )}
-                        </Grid>
+                        {proposalList.length === 0 &&
+                            <div style={{ margin: 'auto' }} > No proposal were found</div>
+                        }
+                        {proposalList.length > 0 &&
+                            <Grid item container className={classes.cardWrap}>
+                                {proposalList.map(proposal =>
+                                    <Grid item xs={6} key={proposal.proposalId}>
+                                        <Card
+                                            title={proposal.title}
+                                            description={proposal.description}
+                                            imageUrl={proposal.photos}
+                                            selected={selected.proposalId === proposal.proposalId}
+                                            onClick={() => setSelected(proposal)}
+                                            onButtonClick={() => navigateToProposal(proposal.proposalId)}
+                                        />
+                                    </Grid>
+                                )}
+                            </Grid>
+                        }
                     </Grid>
                     <Grid item container xs={6}>
                         <Map selected={selected} onSelect={(item) => setSelected(item)} proposalList={proposalList} zoom={15} />
                     </Grid>
                 </Grid>
             </Grid>
-        </div>
+        </div >
     );
 }
 
