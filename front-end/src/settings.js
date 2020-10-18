@@ -17,11 +17,12 @@ let settings = {
 
 if (process.env.REACT_APP_NODE_ENV === "production") {
     settings.env = "production"
-    settings.eosio.nodeos = "http://ec2-18-133-123-109.eu-west-2.compute.amazonaws.com:8888";
+    settings.eosio.nodeos = "https://server-civic.conscious-cities.com";
     settings.dfuseOptions.network = "";
-    settings.eosio.blockExplorerUrl = "ec2-18-133-123-109.eu-west-2.compute.amazonaws.com";
-    settings.dfuseOptions.network = "ec2-18-133-123-109.eu-west-2.compute.amazonaws.com"
-    settings.dfuseOptions.secure = false
+    settings.eosio.blockExplorerUrl = "ec2-18-133-123-109.eu-west-2.compute.amazonaws.com:8888";
+    settings.dfuseOptions.network = "https://server-civic.conscious-cities.com"
+    settings.dfuseOptions.secure = false;
+    settings.google.apiKey = ""
 }
 
 settings.isLiveEnvironment = function () {
