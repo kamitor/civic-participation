@@ -6,6 +6,7 @@ import Card from './Card';
 import Map from './Map';
 // import { dummyData } from './DummyData';
 import { ConsumeAuth } from '../../hooks/authContext';
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -28,15 +29,21 @@ function Dashboard(props) {
     const [latitude, setLatitude] = useState();
     const [longitude, setLongitude] = useState();
     const authContext = ConsumeAuth();
+    const history = useHistory();
 
     useEffect(() => {
         async function main() {
+            const isLoggedIn = await authContext.isLoggedIn();
+            if (!isLoggedIn) {
+                history.push('/login');
+                return;
+            }
             const proposals = await authContext.civic.proposalList();
             setProposalList(proposals);
         }
 
         main();
-    });
+    }, []);
 
     const _handleCard = (location) => {
         setLatitude(parseFloat(location.split(",")[0]))
