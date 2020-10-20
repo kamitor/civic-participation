@@ -170,23 +170,26 @@ export default class Civic {
     /** 
      * Creates a new proposal with photo as the logged in user
      * @param {Proposal} proposal
-     * @param {photo} HTMLElement - File input
      * @returns {ProposalDetailed}
      */
-    async proposalCreateWithPhoto(proposal, photo) {
-        let proposalDetails = [
-            this.account.accountName,
-            proposal.title,
-            proposal.description,
-            proposal.category,
-            proposal.budget,
-            proposal.type,
-            proposal.location            
-        ];
-        
-        if(photo){
-            const imageBase64 = await encodeImageFileAsURL(photo);
-        
+    async proposalCreateWithPhoto(proposal) {
+        try {
+            if (!proposal.photo) {
+                throw new Error('Photo is mandatory while creating proposal');
+            }
+
+            let proposalDetails = [
+                this.account.accountName,
+                proposal.title,
+                proposal.description,
+                proposal.category,
+                proposal.budget,
+                proposal.type,
+                proposal.location
+            ];
+
+            const imageBase64 = await encodeImageFileAsURL(proposal.photo);
+
             // 1. get sha256 of imageString
             // await Api.post('/image')
             // then we will get SHA256 of base64 string which we can pass to propcreate smart contract.
@@ -194,33 +197,36 @@ export default class Civic {
             // proposal.photoSHA256 we will get from /image API.
 
             const response = await Api.post('/image', {
-                photoString: imageBase64 
-            })
-
+                photoString: imageBase64
+            });
             proposalDetails.push(response.data.imageSha256);
+
+            const tx = await this.civicContract.propcreate(...proposalDetails);
+
+            await wait(1000);
+            const txDetailed = await this.accountability.dfuseClient.fetchTransaction(tx.transaction_id);
+
+            const blockNum = txDetailed.execution_trace.action_traces[0].block_num;
+            const decodedRows = await this.accountability.dfuseClient.stateAbiBinToJson('civic', 'proposals', [txDetailed.dbops[0].new.hex], blockNum)
+            const decodedRow = decodedRows.rows[0]
+
+            const proposalDetailed = {
+                title: proposal.title,
+                description: proposal.description,
+                category: proposal.category,
+                type: proposal.type,
+                location: proposal.location,
+                proposalId: decodedRow.proposal_id,
+                status: ProposalStatus.Proposed,
+                created: new Date(decodedRow.created),
+            }
+            if (proposal.budget) { proposalDetailed.budget = proposal.budget }
+            if (proposal.photo) { proposalDetailed.photo = proposal.photo }
+            return proposalDetailed;
+        } catch (e) {
+            console.log(e);
+            return {};
         }
-        
-        const tx = await this.civicContract.propcreate(...proposalDetails);
-
-        await wait(1000);
-        const txDetailed = await this.accountability.dfuseClient.fetchTransaction(tx.transaction_id);
-
-        const blockNum = txDetailed.execution_trace.action_traces[0].block_num;
-        const decodedRows = await this.accountability.dfuseClient.stateAbiBinToJson('civic', 'proposals', [txDetailed.dbops[0].new.hex], blockNum)
-        const decodedRow = decodedRows.rows[0]
-
-        const proposalDetailed = {
-            title: proposal.title,
-            description: proposal.description,
-            category: proposal.category,
-            type: proposal.type,
-            location: proposal.location,
-            proposalId: decodedRow.proposal_id,
-            status: ProposalStatus.Proposed,
-            created: new Date(decodedRow.created),
-        }
-        if (proposal.budget) { proposalDetailed.budget = proposal.budget }
-        return proposalDetailed;
     }
 
     /** 
@@ -251,11 +257,11 @@ export default class Civic {
                     location: proposal.location,
                     new_status: proposal.status,
                     regulations: proposal.regulations,
-                    comment: proposal.comment
+                    comment: proposal.comment                    
                 },
             }]
         }
-       
+
         const tx = await this.accountability.transact2(txData);
 
         await wait(1000);
@@ -288,10 +294,9 @@ export default class Civic {
     /** 
      * Updates a proposal with photo as the logged in user
      * @param {ProposalExtended} proposal
-     * @param {photo} HTMLElement - File input
      * @returns {ProposalDetailed}
      */
-    async proposalUpdateWithPhoto(proposal, photo) {
+    async proposalUpdateWithPhoto(proposal) {
         const txData = {
             actions: [{
                 account: 'civic',
@@ -314,14 +319,16 @@ export default class Civic {
                     location: proposal.location,
                     new_status: proposal.status,
                     regulations: proposal.regulations,
-                    comment: proposal.comment
+                    comment: proposal.comment, 
+                    // sha256 of ''
+                    photo: '6f49cdbd80e1b95d5e6427e1501fc217790daee87055fa5b4e71064288bddede'
                 },
             }]
         }
 
-        if(photo){
-            const imageBase64 = await encodeImageFileAsURL(photo);
-        
+        if (proposal.photo) {
+            const imageBase64 = await encodeImageFileAsURL(proposal.photo);
+
             // 1. get sha256 of imageString
             // await Api.post('/image')
             // then we will get SHA256 of base64 string which we can pass to propcreate smart contract.
@@ -329,8 +336,8 @@ export default class Civic {
             // proposal.photoSHA256 we will get from /image API.
 
             const response = await Api.post('/image', {
-                photoString: imageBase64 
-            })
+                photoString: imageBase64
+            });
 
             txData.actions[0].data.photo = response.data.imageSha256;
         }
@@ -356,9 +363,9 @@ export default class Civic {
             updated: Accountability.timePointToDate(decodedRow.updated),
             approved: Accountability.timePointToDate(decodedRow.approved),
             status: proposal.status,
-            ...(proposal.photo && { photo = proposal.photo}),
+            ...(proposal.photo && { photo: proposal.photo }),
         }
-        
+
         if (proposal.budget) { proposalDetailed.budget = proposal.budget }
         if (proposal.regulations) { proposalDetailed.regulations = proposal.regulations }
         if (proposal.comment) { proposalDetailed.comment = proposal.comment }
