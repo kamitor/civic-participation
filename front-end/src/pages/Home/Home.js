@@ -1,11 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Civic from '../../services/Civic';
 import { ProposalCategory, ProposalType, ProposalStatus } from '../../types/civic';
 
 function Home() {
+    const [selectedFile, setSelectedFile] = useState('');
 
     useEffect(() => {
         async function main() {
+            console.log(selectedFile);
             let civic = new Civic(); // put this in context API, or use singleton
 
             let accountLoginRes;
@@ -23,13 +25,15 @@ function Home() {
                 category: ProposalCategory.Green,
                 budget: 0,
                 type: ProposalType.Create,
-                photos: [],
                 location: createLocation()
+            };
+
+            if (selectedFile) {
+                proposal.photo = selectedFile;
             }
-            // TODO: Change needs from FE:
-            const photo = '';
+
             // 1. Create a file input and add a React ref onto it.
-            const proposalData = await civic.proposalCreateWithPhoto(proposal, photo);
+            const proposalData = await civic.proposalCreateWithPhoto(proposal);
             console.log('proposalCreate()', proposalData)
             const proposalId = proposalData.proposalId;
 
@@ -38,14 +42,18 @@ function Home() {
             proposal.proposalId = proposalId;
             proposal.status = ProposalStatus.Reviewing;
             
-            let proposalUpdateRes = await civic.proposalUpdateWithPhoto(proposal, photo);
+            if(!proposal.proposalId){
+                throw new Error('We can not update proposal without proposal id');
+            }
+            
+            let proposalUpdateRes = await civic.proposalUpdateWithPhoto(proposal);
             console.log('proposalUpdate()', proposalUpdateRes);
 
             proposal.regulation = 'RM 3212';
             proposal.budget = 2300.00;
             proposal.comment = 'Regulations checked and budget added'
             proposal.status = ProposalStatus.Approved;
-            proposalUpdateRes = await civic.proposalUpdate(proposal);
+            proposalUpdateRes = await civic.proposalUpdateWithPhoto(proposal);
             console.log('proposalUpdate()', proposalUpdateRes);
 
             accountLoginRes = await civic.accountLogin('jack', 'Password1234!');
@@ -69,6 +77,9 @@ function Home() {
     return (
         <div>
             Here is the app!
+            <form>
+                <input type="file" name="photo" id="photo" onChange={(e) => setSelectedFile(e.target.files[0])} />
+            </form>
         </div>
     )
 }
