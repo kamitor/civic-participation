@@ -18,11 +18,7 @@ elif [ "${ARG1}" == "install" ]; then
     stop
     install
 elif [ "${ARG1}" == "init" ]; then
-    if [ "${ARG2}" == "fast" ]; then
-        init "superfast"
-    else
-        init
-    fi
+    init ${ARG2}
     printservices
 elif [ "${ARG1}" == "start" ]; then
     stop

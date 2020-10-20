@@ -17,6 +17,8 @@ services:
       - 8080:8080
       - 8081:8081
       - 8888:8888
+    environment:
+      - EOSQ_ENDPOINT_URL=$EOSQ_ENDPOINT_URL
     volumes:
       - ./:/var/repo
       - blockchain-data:/data

@@ -9,7 +9,7 @@ set -e ## exit the script if any statement returns a non-true return value
 PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$PARENT_PATH"
 
-if [ "$ARG1" == "superfast" ]; then
+if [ "$ARG1" == "fast" ]; then
     echo "Skipping contract compilation"
 else
     echo "Compiling smart contract"

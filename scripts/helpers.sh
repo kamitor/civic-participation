@@ -10,7 +10,11 @@ function start {
 
     echo "Starting dfuse and mongodb"
     cd "${PARENT_PATH}"
-    docker-compose up -d
+    if [ "${ARG1}" == "prod" ]; then
+        EOSQ_ENDPOINT_URL="https://blockchain-civic.conscious-cities.com" docker-compose up -d
+    else
+        EOSQ_ENDPOINT_URL="localhost:8888" docker-compose up -d
+    fi
 
     if [ "${ARG1}" == "lean" ]; then
         echo ""
@@ -69,7 +73,7 @@ function install {
 
 function init {
     reset
-    start
+    start ${1-}
 
     echo "Initializing blockchain"
     cd "${PARENT_PATH}/blockchain"

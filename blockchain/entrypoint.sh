@@ -3,8 +3,12 @@
 # cat dfuse.yaml
 # cat producer/config.ini
 
-EOSQ_ENDPOINT_URL="localhost:8080"
-#EOSQ_ENDPOINT_URL="blockchain-civic.conscious-cities.com"
+set -e
+
+if [ -z "${EOSQ_ENDPOINT_URL}" ]; then
+    echo "EOSQ_ENDPOINT_URL not found"
+    exit 1
+fi
 
 set -x
 dfuseeos start \
