@@ -9,6 +9,7 @@ function help {
     echo "    install        - installs all containers and packages"
     echo "    init           - compiles contracts, starts and initalizes the blockchain"
     echo "    init fast      - starts and initializes the blockchain"
+    echo "    init prod      - compiles contracts, starts and initalizes the blockchain in production mode"
     echo "    start          - starts all services"
     echo "    start prod     - starts all services in production mode"
     echo "    start lean     - starts blockchain and mongo only - you need to run the front-end and back-end manually"
