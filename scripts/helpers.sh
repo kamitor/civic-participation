@@ -13,7 +13,7 @@ function start {
     if [ "${ARG1}" == "prod" ]; then
         EOSQ_ENDPOINT_URL="https://blockchain-civic.conscious-cities.com" docker-compose up -d
     else
-        EOSQ_ENDPOINT_URL="localhost:8888" docker-compose up -d
+        EOSQ_ENDPOINT_URL="localhost:8080" docker-compose up -d
     fi
 
     if [ "${ARG1}" == "lean" ]; then
