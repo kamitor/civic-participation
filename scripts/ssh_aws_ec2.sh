@@ -10,3 +10,5 @@ ssh -i ./keys/ec2.pem ubuntu@ec2-18-133-123-109.eu-west-2.compute.amazonaws.com
 # ./app.sh install
 # ./app.sh start prod    OR
 # ./app.sh init prod            (if you need to reset blockchain or recompile contracts)
+# check services run correctly with:
+# ./app.sh logs [service]
