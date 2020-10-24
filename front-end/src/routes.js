@@ -7,6 +7,7 @@ import Security from './pages/Security/Security';
 import PropsalCreate from './pages/ProposalCreate/ProposalCreate';
 import Dashboard from './pages/Dashboard/Dashboard';
 import ProposalDetail from './pages/ProposalDetail/ProposalDetail';
+import ProposalEdit from './pages/ProposalEdit/ProposalEdit';
 
 const Routes = () => (
     <Router >
@@ -31,6 +32,9 @@ const Routes = () => (
             </Route>
             <Route path="/proposal/:proposal_id">
                 <ProposalDetail />
+            </Route>
+            <Route path="/proposal-edit/:proposal_id">
+                <ProposalEdit />
             </Route>
         </Switch>
     </Router >
