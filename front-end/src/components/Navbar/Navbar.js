@@ -30,7 +30,8 @@ const useStyles = makeStyles((theme) => ({
     },
     logoContainer: {
         marginLeft: 80,
-        alignItems: "center"
+        alignItems: "center",
+        cursor: "pointer"
     },
     searchContainer: {
         maxWidth: 385,
@@ -140,11 +141,15 @@ export default function Navbar() {
         setSelectedProposal(event.target.value);
     };
 
+    function clickLogo() {
+        history.push('/');
+    }
+
     return (
         <div className={classes.root}>
             <Grid item container className={classes.navbar} alignItems="center" justify="flex-start">
                 <Grid item container xs={4} alignItems="center">
-                    <Grid item container className={classes.logoContainer}>
+                    <Grid item container className={classes.logoContainer} onClick={clickLogo}>
                         <Grid item className={classes.logo}>
                             <img src={logo} className={classes.logoImage} />
                         </Grid>
