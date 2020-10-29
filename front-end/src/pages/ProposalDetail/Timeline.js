@@ -61,26 +61,10 @@ const TimelineInfo = withStyles({
 })(Info);
 
 function Timeline(props) {
-    const [status, setStatus] = useState("");
-
-    useEffect(() => {
-        switch(props.status) {
-            case 0:
-                setStatus("Actioned");
-                break;
-            case 1:
-                setStatus("Voting passed");
-                break;
-            case 2:
-                setStatus("Reviwed");
-                break;
-        }   
-    }, [])
-
     return (
         <Grid item container className="timeline-item-wraper" alignItems="center" spacing={5}>
             <Grid item className="item-img">
-                {props.actionType === "government" ?
+                {props.gov === true ?
                     <img src={governmentUser} className="government-user-img" /> :
                     <UserIcon />
                 }
@@ -101,7 +85,7 @@ function Timeline(props) {
                                 <TimelineLock />
                             </Grid>
                             <Grid item>
-                                <TimelineMiddleTyography>{status}</TimelineMiddleTyography>
+                                <TimelineMiddleTyography>{props.status}</TimelineMiddleTyography>
                             </Grid>
                         </Grid>
                         <Grid item xs={6} container >

@@ -400,21 +400,6 @@ export default function ProposalDetail() {
                                             <Grid item xs={6} container spacing={2} alignItems="center">
                                                 <CategoryItem title={proposal.category} />
                                             </Grid>
-                                            {/* <Grid item xs={6} container spacing={2} alignItems="center">
-                                        <CategoryItem title="catogory2" />
-                                    </Grid>
-                                    <Grid item xs={6} container spacing={2} alignItems="center">
-                                        <CategoryItem title="catogory4" />
-                                    </Grid>
-                                    <Grid item xs={6} container spacing={2} alignItems="center">
-                                        <CategoryItem title="catogory5" />
-                                    </Grid>
-                                    <Grid item xs={6} container spacing={2} alignItems="center">
-                                        <CategoryItem title="Urban" />
-                                    </Grid>
-                                    <Grid item xs={6} container spacing={2} alignItems="center">
-                                        <CategoryItem title="category2" />
-                                    </Grid> */}
                                         </Grid>
                                     </Grid>
                                 </Grid>
@@ -482,16 +467,17 @@ export default function ProposalDetail() {
                                     </Grid>
                                 </Grid>
                                 <Grid className="timeline-box-wraper">
-                                    {showHistory && HistoryData.map((data, key) => {
+                                    {showHistory && proposalHistory && proposalHistory.map((data, key) => {
                                         return (
                                             <Grid item container direction="column" key={key}>
                                                 <Timeline
-                                                    actionType={data.type}
-                                                    userName={data.authHumanCommonName}
+                                                    actionType={data.status}
+                                                    userName={data.name}
                                                     comment={data.comment}
                                                     status={data.status}
-                                                    time={data.timestamp.split('T')[0]}
-                                                    exploreUrl={data.txId}
+                                                    time={data.timestamp}
+                                                    exploreUrl={data.txUrl}
+                                                    gov={data.gov}
                                                 />
                                             </Grid>
                                         )
