@@ -341,6 +341,7 @@ export default function ProposalDetail() {
     }
 
     function onVote() {
+        // TODO add to vote state (new context)
         history.push('/proposals-vote');
     }
 

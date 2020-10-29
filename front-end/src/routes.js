@@ -8,6 +8,7 @@ import PropsalCreate from './pages/ProposalCreate/ProposalCreate';
 import Dashboard from './pages/Dashboard/Dashboard';
 import ProposalDetail from './pages/ProposalDetail/ProposalDetail';
 import ProposalEdit from './pages/ProposalEdit/ProposalEdit';
+import ProposalVote from './pages/ProposalVote/ProposalVote';
 
 const Routes = () => (
     <Router >
@@ -35,6 +36,9 @@ const Routes = () => (
             </Route>
             <Route path="/proposal/:proposal_id/edit">
                 <ProposalEdit />
+            </Route>
+            <Route path="/proposals-vote">
+                <ProposalVote />
             </Route>
         </Switch>
     </Router >
