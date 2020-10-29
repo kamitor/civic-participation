@@ -22,7 +22,7 @@ services:
     volumes:
       - ./:/var/repo
       - blockchain-data:/data
-    command: "/var/repo/blockchain/entrypoint.sh"
+    command: ["dfuseeos", "start", "--data-dir", "/data", "--search-common-dfuse-events-action-name=dfuseiohooks:event", "--search-common-dfuse-events-unrestricted=true", "--common-chain-id", "df383d1cc33cbb9665538c604daac13706978566e17e5fd5f897eff68b88e1e4", "--eosq-api-endpoint-url=${EOSQ_ENDPOINT_URL}"]
   mongo:
     image: mongo:4.2.7
     container_name: 'mongodb'
