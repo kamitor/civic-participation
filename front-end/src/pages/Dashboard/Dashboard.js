@@ -55,7 +55,7 @@ function Dashboard(props) {
     }, []);
 
     const navigateToProposal = (proposalId) => {
-        history.push(`/proposals/${proposalId}`);
+        history.push(`/proposal/${proposalId}`);
     }
 
     return (
