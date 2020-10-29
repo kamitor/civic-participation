@@ -9,6 +9,7 @@ const authContext = createContext();
 
 function useProvideAuth() {
     const [isLoggedInValue, setIsLoggedIn] = useState(false);
+    const [isGov, setIsGov] = useState(false);
 
     async function isLoggedIn() {
         if (isLoggedInValue === true) return true;
@@ -16,6 +17,7 @@ function useProvideAuth() {
         const user = getUserStorage();
         if (user) {
             await civic.accountLoginWithKey(user.accountName, user.commonName, user.privKey)
+            setIsGov(user.isGov);
             setIsLoggedIn(true);
             return true;
         } else {
@@ -24,14 +26,16 @@ function useProvideAuth() {
     }
 
     async function login(accountName, password) {
-        await civic.accountLogin(accountName, password);
-        setUserStorage(accountName, civic.account.commonName, civic.account.privateKey);
+        const login = await civic.accountLogin(accountName, password);
+        setUserStorage(accountName, civic.account.commonName, civic.account.privateKey, login.isGov);
+        setIsGov(login.isGov);
         setIsLoggedIn(true);
     }
 
     async function createAccount(accountName, password, commonName) {
-        await civic.accountCreate(accountName, password, commonName);
-        setUserStorage(accountName, commonName, civic.account.privateKey);
+        const create = await civic.accountCreate(accountName, password, commonName);
+        setUserStorage(accountName, commonName, civic.account.privateKey, create.isGov);
+        setIsGov(create.isGov);
         setIsLoggedIn(true);
     }
 
@@ -42,6 +46,7 @@ function useProvideAuth() {
 
     return {
         civic,
+        isGov,
         isLoggedIn,
         login,
         createAccount,

@@ -357,6 +357,7 @@ function parseAccountRes(data) {
         created: Accountability.timePointToDate(data.created),
         permissions: data.permissions,
         contractDeployed: data.last_code_update !== "1970-01-01T00:00:00.000",
+        isGov: data.isGov
     }
     if (val.contractDeployed) {
         val.lastContractUpdate = Accountability.timePointToDate(data.last_code_update);
