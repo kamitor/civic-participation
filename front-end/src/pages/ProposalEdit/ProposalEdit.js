@@ -14,7 +14,6 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 import LocationGooglMap from '../../components/Location/LocationGooglMap';
 import { useForm } from "react-hook-form";
 import Navbar from '../../components/Navbar/Navbar';
-import Timeline from './Timeline';
 import CheckBox from './CheckBox';
 import './ProposalEdit.scss';
 
@@ -185,13 +184,16 @@ export default function ProposalDetail() {
     const [description, setDescription] = useState({
         content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna wirl Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna wirl Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna wirl Lorem ipsum dolor sit amet, consectetur adipisicing rl Lorem ipsum Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna wirl Lorem ipsum dolor sit ame"
     });
+    const [descriptionRegulations, setDescriptionRegulations] = useState("- we will need to ensure that")
+    const [comment, setComment] = useState("Please describe what you did with this update, this will be shown to the citizens in the history")
     const [hasErrorType, setHasError] = useState(false)
     const [hasErrorStatus, setHasErrorStatus] = useState(false)
+    const [hasErrorComment, setHasErrorComment] = useState(false)
     const [hasErrorCateory, setHasErrorCategory] = useState(false)
     const [hasErrorDescription, setHasErrorDescription] = useState(false)
+    const [hasErrorDescriptionRegulaions, setHasErrorDescriptionRegulaions] = useState(false)
     const [hasErrorTitle, setHasErrorTitle] = useState(false)
     const [title, setTitle] = useState("")
-    const [showHistory, setShowHistory] = useState(true)
     const { errors, handleSubmit } = useForm({
         criteriaMode: "all"
     });
@@ -269,6 +271,24 @@ export default function ProposalDetail() {
         setDescription({ ...description, [content]: event.target.value });
     };
 
+    const handleChangeRegualions = (event) => {
+        if (event.target.value.length > 0) {
+            setHasErrorDescriptionRegulaions(false);
+        } else {
+            setHasErrorDescriptionRegulaions(true);
+        }
+        setDescriptionRegulations(event.target.value);
+    };
+
+    const handleChangeComment = (event) => {
+        if (event.target.value.length > 0) {
+            setHasErrorComment(false);
+        } else {
+            setHasErrorComment(true);
+        }
+        setComment(event.target.value);
+    };
+
     const handleChangeTitle = (e) => {
         if (e.target.value == "") {
             setHasErrorTitle(true)
@@ -276,10 +296,6 @@ export default function ProposalDetail() {
             setHasErrorTitle(false)
         }
         setTitle(e.target.value)
-    }
-
-    const handleCollapse = () => {
-        setShowHistory(!showHistory)
     }
 
     return (
@@ -483,7 +499,14 @@ export default function ProposalDetail() {
                                             errors={errors}
                                         >
                                             <option aria-label="status" />
-                                            <option value="status">status</option>
+                                            <option value="0">Proposed</option>
+                                            <option value="1">Reviewing</option>
+                                            <option value="2">Approved</option>
+                                            <option value="3">Rejected</option>
+                                            <option value="4">VotePassed</option>
+                                            <option value="5">VoteFailed</option>
+                                            <option value="6">Actioned</option>
+                                            <option value="7">Closed</option>
                                         </Select>
                                         {hasErrorStatus && <FormHelperText>Please select a status.</FormHelperText>}
                                     </FormControl>
@@ -495,10 +518,17 @@ export default function ProposalDetail() {
                                         <GovernmentTitleTyography>Regulations</GovernmentTitleTyography>
                                     </Grid>
                                     <Grid item>
-                                        <GovernmentContentMiddleTyography>ISO 5454313</GovernmentContentMiddleTyography>
-                                        <GovernmentContentSmallTyography>- we will need to ensure that</GovernmentContentSmallTyography>
-                                        <GovernmentContentMiddleTyography>ISO 5454313</GovernmentContentMiddleTyography>
-                                        <GovernmentContentSmallTyography>- heathea</GovernmentContentSmallTyography>
+                                        <TextField
+                                            value={descriptionRegulations}
+                                            onChange={handleChangeRegualions}
+                                            margin="normal"
+                                            multiline
+                                            rows={5}
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} className="description-helper">
+                                        {hasErrorDescriptionRegulaions && <FormHelperText>Please insert value</FormHelperText>}
                                     </Grid>
                                 </Grid>
                                 <Grid item xs={6} container direction="column" spacing={2} className="comment-wraper">
@@ -506,43 +536,19 @@ export default function ProposalDetail() {
                                         <GovernmentTitleTyography>Comment for latest update</GovernmentTitleTyography>
                                     </Grid>
                                     <Grid item>
-                                        <GovernmentContentMiddleTyography>
-                                            Please describe what you did with this update, this will be shown to the citizens in the history
-                                        </GovernmentContentMiddleTyography>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                        <Grid item xs={12} container className="history-wraper">
-                            <Grid item container>
-                                <Grid item>
-                                    <MainTitleTyography>History</MainTitleTyography>
-                                </Grid>
-                                <Grid item xs={2} container className="collapse-wraper" direction="column" alignItems="center">
-                                    <CollapseTyography onClick={handleCollapse}>COLLAPSE</CollapseTyography>
-                                    {showHistory ? <ExpandLess /> : <ExpandMore />}
-                                </Grid>
-                            </Grid>
-                            <Grid className="timeline-box-wraper">
-                                {showHistory &&
-                                    <Grid item container direction="column">
-                                        <Timeline
-                                            actionType="government"
-                                            userName="Andrew Mishin"
-                                            comment="- Contractor Dig it B.V. started the flower construction on 12 March"
-                                            status="Actioned"
-                                            time="14/04/2019"
-                                            exploreUrl="tx/9fa0ac91c5293518bc563b5b1af9db33a8a60a2199b5e0d298f4307fa16997a4"
-                                        />
-                                        <Timeline
-                                            userName="Jack Tanner"
-                                            comment=" - Initial budget estimate and regulations added"
-                                            status="Voting opened"
-                                            time="14/04/2019"
-                                            exploreUrl="tx/9fa0ac91c5293518bc563b5b1af9db33a8a60a2199b5e0d298f4307fa16997a4"
+                                        <TextField
+                                            value={comment}
+                                            onChange={handleChangeComment}
+                                            margin="normal"
+                                            multiline
+                                            rows={5}
+                                            fullWidth
                                         />
                                     </Grid>
-                                }
+                                    <Grid item xs={12} className="description-helper">
+                                        {hasErrorComment && <FormHelperText>Please insert value</FormHelperText>}
+                                    </Grid>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </div>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Grid, Typography } from '@material-ui/core';
 import { Lock, AccountCircle, Info } from '@material-ui/icons';
 import { withStyles } from "@material-ui/core/styles";
@@ -61,6 +61,22 @@ const TimelineInfo = withStyles({
 })(Info);
 
 function Timeline(props) {
+    const [status, setStatus] = useState("");
+
+    useEffect(() => {
+        switch(props.status) {
+            case 0:
+                setStatus("Actioned");
+                break;
+            case 1:
+                setStatus("Voting passed");
+                break;
+            case 2:
+                setStatus("Reviwed");
+                break;
+        }   
+    }, [])
+
     return (
         <Grid item container className="timeline-item-wraper" alignItems="center" spacing={5}>
             <Grid item className="item-img">
@@ -85,7 +101,7 @@ function Timeline(props) {
                                 <TimelineLock />
                             </Grid>
                             <Grid item>
-                                <TimelineMiddleTyography>{props.status}</TimelineMiddleTyography>
+                                <TimelineMiddleTyography>{status}</TimelineMiddleTyography>
                             </Grid>
                         </Grid>
                         <Grid item xs={6} container >

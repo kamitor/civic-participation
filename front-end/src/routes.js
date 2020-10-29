@@ -34,7 +34,7 @@ const Routes = () => (
             <Route path="/proposal/:proposal_id">
                 <ProposalDetail />
             </Route>
-            <Route path="/proposal/:proposal_id/edit">
+            <Route path="/proposal-edit/:proposal_id">
                 <ProposalEdit />
             </Route>
             <Route path="/proposals-vote">

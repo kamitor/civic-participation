@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useParams } from 'react'
 import { Grid, Typography, TextField, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import background from '../../assets/image/header.png';
@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import Navbar from '../../components/Navbar/Navbar';
 import Timeline from './Timeline';
 import CategoryItem from './CategoryItem';
+import { DetailsData, HistoryData } from './DummyData';
 import './ProposalDetail.scss';
 import { useHistory, useParams } from "react-router-dom";
 import { ConsumeAuth } from '../../hooks/authContext';
@@ -79,8 +80,8 @@ const useStyles = makeStyles((theme) => ({
     },
     inputTitle: {
         color: "white",
-        width: "200px",
-        fontSize: "32px",
+        width: "425px",
+        fontSize: "25px",
         disableUnderline: true
     },
     inputLabelTitle: {
@@ -214,20 +215,31 @@ export default function ProposalDetail() {
     const { proposal_id } = useParams();
 
     const classes = useStyles();
+    // const { proposal_id } = useParams();
 
-    const [valueBudget, setValueBudget] = useState(20000);
-
+    const [valueBudget, setValueBudget] = useState(0);
     const [state, setState] = useState({
-        type: 'new',
+        type: DetailsData.type,
     });
-
+    const [status, setStatus] = useState("");
     const [description, setDescription] = useState({
-        content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna wirl Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna wirl Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna wirl Lorem ipsum dolor sit amet, consectetur adipisicing rl Lorem ipsum Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna wirl Lorem ipsum dolor sit ame"
+        content: ""
     });
-
+    const [location, setLocation] = useState({ lat: 0, lng: 0 })
     const [title, setTitle] = useState("")
-
     const [showHistory, setShowHistory] = useState(true)
+
+    useEffect(() => {
+        setTitle(DetailsData.title);
+        setDescription({ content: DetailsData.description });
+        setValueBudget(0);
+        setState({ type: DetailsData.type });
+        setStatus(DetailsData.status);
+        setLocation({
+            lat: parseFloat((DetailsData.location).split(",")[0]),
+            lng: parseFloat((DetailsData.location).split(",")[1])
+        })
+    }, [])
 
     const { errors, handleSubmit } = useForm({
         criteriaMode: "all"
@@ -307,25 +319,7 @@ export default function ProposalDetail() {
     const onSubmit = data => {
         console.log(data);
     };
-
-    const handleChange = (event) => {
-        const name = event.target.name;
-        setState({
-            ...state,
-            [name]: event.target.value,
-        });
-    };
-
     const CHARACTER_LIMIT = 580;
-
-    const handleChangeDescription = content => event => {
-        setDescription({ ...description, [content]: event.target.value });
-    };
-
-    const handleChangeTitle = (e) => {
-        setTitle(e.target.value)
-    }
-
     const handleCollapse = () => {
         setShowHistory(!showHistory)
     }
@@ -345,7 +339,6 @@ export default function ProposalDetail() {
                         <Grid container direction="row" className="hearder-title" alignItems="center">
                             <HearderCustomizeStar />
                             <TextField
-                                label="Name your idea"
                                 className={classes.margin, classes.commonText}
                                 InputProps={{
                                     className: classes.inputTitle
@@ -354,7 +347,7 @@ export default function ProposalDetail() {
                                     className: classes.inputLabelTitle,
                                 }}
                                 value={title}
-                                onChange={handleChangeTitle}
+                                editable="false"
                             />
                         </Grid>
                     </Grid>
@@ -363,7 +356,7 @@ export default function ProposalDetail() {
                             <Grid item xs={12} container>
                                 <Grid item xs={4} container spacing={1} direction="column">
                                     <Grid item>
-                                        <StatusTyography>Status</StatusTyography>
+                                        <StatusTyography>{status}</StatusTyography>
                                     </Grid>
                                     <Grid item>
                                         <MainTitleTyography>Ready for voting</MainTitleTyography>
@@ -394,7 +387,6 @@ export default function ProposalDetail() {
                                         decimalCharacter="."
                                         digitGroupSeparator=","
                                         placeholder="Budget"
-                                        onChange={(event, value) => setValueBudget(value)}
                                         className={classes.currencyInput}
                                         InputProps={{
                                             classes: {
@@ -409,17 +401,17 @@ export default function ProposalDetail() {
                                         <Select
                                             native
                                             value={state.type}
-                                            onChange={handleChange}
                                             inputProps={{
                                                 name: 'type',
                                                 id: 'type-select',
                                             }}
                                             errors={errors}
+                                            autoWidth={true}
                                         >
                                             <option aria-label="type" />
-                                            <option value="new">New</option>
-                                            <option value="upgrade">Upgrade</option>
-                                            <option value="remove">Remove</option>
+                                            <option value="0">New</option>
+                                            <option value="1">Upgrade</option>
+                                            <option value="2">Remove</option>
                                         </Select>
                                     </FormControl>
                                 </Grid>
@@ -466,17 +458,17 @@ export default function ProposalDetail() {
                                     }}
                                     value={description.content}
                                     helperText={`${description.content.length}/${CHARACTER_LIMIT}`}
-                                    onChange={handleChangeDescription("content")}
                                     margin="normal"
                                     multiline
                                     rows={10}
                                     fullWidth
+                                    editable="false"
                                 />
                             </Grid>
                         </Grid>
                         <Grid item xs={12}>
                             <div className="googlmap-wrape">
-                                <LocationGooglMap location={{ lat: 52.1135031, lng: 4.2829047 }} zoom={15} />
+                                <LocationGooglMap location={location} zoom={15} editable={false} />
                             </div>
                         </Grid>
                         <Grid item xs={12} container className="government-wraper">
@@ -518,25 +510,20 @@ export default function ProposalDetail() {
                                 </Grid>
                             </Grid>
                             <Grid className="timeline-box-wraper">
-                                {showHistory &&
-                                    <Grid item container direction="column">
-                                        <Timeline
-                                            actionType="government"
-                                            userName="Andrew Mishin"
-                                            comment="- Contractor Dig it B.V. started the flower construction on 12 March"
-                                            status="Actioned"
-                                            time="14/04/2019"
-                                            exploreUrl="tx/9fa0ac91c5293518bc563b5b1af9db33a8a60a2199b5e0d298f4307fa16997a4"
-                                        />
-                                        <Timeline
-                                            userName="Jack Tanner"
-                                            comment=" - Initial budget estimate and regulations added"
-                                            status="Voting opened"
-                                            time="14/04/2019"
-                                            exploreUrl="tx/9fa0ac91c5293518bc563b5b1af9db33a8a60a2199b5e0d298f4307fa16997a4"
-                                        />
-                                    </Grid>
-                                }
+                                {showHistory && HistoryData.map((data, key) => {
+                                    return (
+                                        <Grid item container direction="column" key={key}>
+                                            <Timeline
+                                                actionType={data.type}
+                                                userName={data.authHumanCommonName}
+                                                comment={data.comment}
+                                                status={data.status}
+                                                time={data.timestamp.split('T')[0]}
+                                                exploreUrl={data.txId}
+                                            />
+                                        </Grid>
+                                    )
+                                })}
                             </Grid>
                         </Grid>
                     </div>
