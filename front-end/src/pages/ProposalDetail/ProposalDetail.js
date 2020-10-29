@@ -209,16 +209,6 @@ const UploadLock = withStyles({
     }
 })(Lock);
 
-function isGovAction(action) {
-    switch (action) {
-        case "propcreate":
-            return false;
-        case "propupdate":
-            return true;
-        case "propvote":
-            return false;
-    }
-}
 
 export default function ProposalDetail() {
     const { proposal_id } = useParams();
@@ -292,7 +282,7 @@ export default function ProposalDetail() {
             historyState.push({
                 txUrl: txUrl,
                 name: historyItem.authHumanCommonName,
-                gov: isGovAction(historyItem.action),
+                gov: historyItem.gov,
                 comment: historyItem.comment,
                 timestamp: historyItem.timestamp.toLocaleDateString('nl-NL'),
                 status: toDefinition(historyItem.status)

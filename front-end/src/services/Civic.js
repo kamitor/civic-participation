@@ -330,6 +330,7 @@ export default class Civic {
                     authHuman: data.account_authorizers[0],
                     authHumanCommonName: data.account_authorizers_common_names[0],
                     data: actionData.data,
+                    gov: isGovAction(actionData.name),
                     status: mapActionToStatus(actionData.name)
                 }
                 if (actionData.name === "propupdate") proposalData.status = actionData.data.new_status;
@@ -375,3 +376,15 @@ function mapActionToStatus(actionName) {
             throw new Error("Invalid action name");
     }
 }
+
+function isGovAction(action) {
+    switch (action) {
+        case "propcreate":
+            return false;
+        case "propupdate":
+            return true;
+        case "propvote":
+            return false;
+    }
+}
+
