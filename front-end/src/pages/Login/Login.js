@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ConsumeAuth } from '../../hooks/authContext'
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -55,6 +55,17 @@ export default function Login() {
 			setLoading(false)
 		}
 	};
+
+	useEffect(() => {
+		async function main() {
+			if (await authContext.isLoggedIn()) {
+				history.push('/dashboard');
+				return;
+			}
+		}
+		main();
+	}, [])
+
 
 	const navigateCreatePage = () => {
 		history.push("/")

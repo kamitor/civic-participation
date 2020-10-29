@@ -23,6 +23,7 @@ import {
 	HtmlTooltip
 } from '../../components/Themes';
 import './CreateAccount.scss'
+import { useEffect } from 'react';
 
 export default function CreateAccount() {
 	const history = useHistory();
@@ -55,6 +56,16 @@ export default function CreateAccount() {
 			setLoading(false)
 		}
 	};
+
+	useEffect(() => {
+		async function main() {
+			if (await authContext.isLoggedIn()) {
+				history.push('/dashboard');
+				return;
+			}
+		}
+		main();
+	}, [])
 
 	const navigateLoginPage = () => {
 		history.push("/login")

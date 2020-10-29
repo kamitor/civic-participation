@@ -19,14 +19,7 @@ function useProvideAuth() {
             setIsLoggedIn(true);
             return true;
         } else {
-            if (!settings.isLiveEnvironment()) {
-                await civic.accountLogin('tijn', 'Password123');
-                setUserStorage('tijn', civic.account.commonName, civic.account.privateKey);
-                setIsLoggedIn(true);
-                return true;
-            } else {
-                return isLoggedInValue;
-            }
+            return isLoggedInValue;
         }
     }
 
