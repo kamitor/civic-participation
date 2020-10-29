@@ -15,7 +15,6 @@ import { useForm } from "react-hook-form";
 import Navbar from '../../components/Navbar/Navbar';
 import Timeline from './Timeline';
 import CategoryItem from './CategoryItem';
-import { DetailsData, HistoryData } from './DummyData';
 import './ProposalDetail.scss';
 import { useHistory, useParams } from "react-router-dom";
 import { ConsumeAuth } from '../../hooks/authContext';
