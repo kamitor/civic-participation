@@ -49,6 +49,10 @@ export function toLabel(type) {
     return categoryReverse[type].label;
 }
 
+export function toIcon(type) {
+    return categoryReverse[type].icon;
+}
+
 export function allCategories() {
     const res = [];
     mapObj(categoryReverse, (key, val) => {

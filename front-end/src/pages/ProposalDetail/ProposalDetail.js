@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useParams } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Grid, Typography, TextField, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import background from '../../assets/image/header.png';
@@ -20,9 +20,16 @@ import './ProposalDetail.scss';
 import { useHistory, useParams } from "react-router-dom";
 import { ConsumeAuth } from '../../hooks/authContext';
 import { toLabel as typeToLabel } from '../../types/proposals/type';
-import { toLabel as categoryToLabel } from '../../types/proposals/categories';
+import { toLabel as categoryToLabel, toIcon as categoryToIcon } from '../../types/proposals/categories';
 import ProposalStatus, { toDefinition } from '../../types/proposals/status';
 import settings from '../../settings';
+
+function parseLocation(location) {
+    return {
+        lat: parseFloat(location.split(",")[0]),
+        lng: parseFloat(location.split(",")[1])
+    }
+}
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -177,15 +184,6 @@ const GovernmentTitleTyography = withStyles({
     }
 })(Typography);
 
-const GovernmentContentMiddleTyography = withStyles({
-    root: {
-        fontSize: '14px',
-        color: 'rgba(0, 0, 0, 1)',
-        lineHeight: '16.41px',
-        fontWeight: '400'
-    }
-})(Typography);
-
 const GovernmentContentSmallTyography = withStyles({
     root: {
         fontSize: '12px',
@@ -210,36 +208,13 @@ const UploadLock = withStyles({
     }
 })(Lock);
 
-
 export default function ProposalDetail() {
     const { proposal_id } = useParams();
 
     const classes = useStyles();
-    // const { proposal_id } = useParams();
 
-    const [valueBudget, setValueBudget] = useState(0);
-    const [state, setState] = useState({
-        type: DetailsData.type,
-    });
-    const [status, setStatus] = useState("");
-    const [description, setDescription] = useState({
-        content: ""
-    });
-    const [location, setLocation] = useState({ lat: 0, lng: 0 })
-    const [title, setTitle] = useState("")
     const [showHistory, setShowHistory] = useState(true)
-
-    useEffect(() => {
-        setTitle(DetailsData.title);
-        setDescription({ content: DetailsData.description });
-        setValueBudget(0);
-        setState({ type: DetailsData.type });
-        setStatus(DetailsData.status);
-        setLocation({
-            lat: parseFloat((DetailsData.location).split(",")[0]),
-            lng: parseFloat((DetailsData.location).split(",")[1])
-        })
-    }, [])
+    const [showProposal, setShowProposal] = useState(false)
 
     const { errors, handleSubmit } = useForm({
         criteriaMode: "all"
@@ -260,6 +235,7 @@ export default function ProposalDetail() {
             title: proposalRes.title,
             description: proposalRes.description,
             category: categoryToLabel(proposalRes.category),
+            categoryIcon: categoryToIcon(proposalRes.category),
             budget: proposalRes.budget,
             type: typeToLabel(proposalRes.type),
             location: proposalRes.location,
@@ -332,203 +308,200 @@ export default function ProposalDetail() {
     return (
         <div className={classes.root}>
             <Navbar />
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <Grid container direction="column">
-                    <Grid className="hearder-wraper-proposal">
-                        <img src={background} className="hearder-img" />
-                        <Grid container direction="row" className="hearder-title" alignItems="center">
-                            <HearderCustomizeStar />
-                            <TextField
-                                className={classes.margin, classes.commonText}
-                                InputProps={{
-                                    className: classes.inputTitle
-                                }}
-                                InputLabelProps={{
-                                    className: classes.inputLabelTitle,
-                                }}
-                                value={title}
-                                editable="false"
-                            />
-                        </Grid>
-                    </Grid>
-                    <div className="main-container-proposal">
-                        <Grid container>
-                            <Grid item xs={12} container>
-                                <Grid item xs={4} container spacing={1} direction="column">
-                                    <Grid item>
-                                        <StatusTyography>{status}</StatusTyography>
-                                    </Grid>
-                                    <Grid item>
-                                        <MainTitleTyography>Ready for voting</MainTitleTyography>
-                                    </Grid>
-                                </Grid>
-                                <Grid item xs={8} container spacing={2} alignItems="center" justify="flex-end" className="button-wraper">
-                                    {showButtons.vote && (
-                                        <Grid item>
-                                            <AddToVoteButton type="button" onClick={onVote}>ADD TO VOTE</AddToVoteButton>
-                                        </Grid>
-                                    )}
-                                    {showButtons.edit && (
-                                        <Grid item>
-                                            <AddToVoteButton type="button" onClick={() => history.push(`/proposal/${proposal_id}/edit`)}>EDIT</AddToVoteButton>
-                                        </Grid>
-                                    )}
-                                </Grid>
-
-                            </Grid>
-                        </Grid>
-                        <Grid item xs={12} container className="item-wraper">
-                            <Grid item xs={4} container direction="column">
-                                <Grid item>
-                                    <CurrencyTextField
-                                        value={valueBudget}
-                                        currencySymbol="€"
-                                        outputFormat="string"
-                                        decimalCharacter="."
-                                        digitGroupSeparator=","
-                                        placeholder="Budget"
-                                        className={classes.currencyInput}
-                                        InputProps={{
-                                            classes: {
-                                                input: classes.input
-                                            }
-                                        }}
-                                    />
-                                </Grid>
-                                <Grid item className="type-wrape">
-                                    <FormControl className={classes.formControl}>
-                                        <InputLabel htmlFor="type-select" className={classes.inputLabel}>Type</InputLabel>
-                                        <Select
-                                            native
-                                            value={state.type}
-                                            inputProps={{
-                                                name: 'type',
-                                                id: 'type-select',
-                                            }}
-                                            errors={errors}
-                                            autoWidth={true}
-                                        >
-                                            <option aria-label="type" />
-                                            <option value="0">New</option>
-                                            <option value="1">Upgrade</option>
-                                            <option value="2">Remove</option>
-                                        </Select>
-                                    </FormControl>
-                                </Grid>
-                                <Grid item container className="category-wraper" direction="column" spacing={2}>
-                                    <Grid item>
-                                        <TitleCategoryTypography className={classes.categoryTitle}>Categories</TitleCategoryTypography>
-                                    </Grid>
-                                    <Grid item container spacing={2}>
-                                        <Grid item xs={6} container spacing={2} alignItems="center">
-                                            <CategoryItem title="Urban" />
-                                        </Grid>
-                                        <Grid item xs={6} container spacing={2} alignItems="center">
-                                            <CategoryItem title="catogory2" />
-                                        </Grid>
-                                        <Grid item xs={6} container spacing={2} alignItems="center">
-                                            <CategoryItem title="catogory4" />
-                                        </Grid>
-                                        <Grid item xs={6} container spacing={2} alignItems="center">
-                                            <CategoryItem title="catogory5" />
-                                        </Grid>
-                                        <Grid item xs={6} container spacing={2} alignItems="center">
-                                            <CategoryItem title="Urban" />
-                                        </Grid>
-                                        <Grid item xs={6} container spacing={2} alignItems="center">
-                                            <CategoryItem title="category2" />
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                            <Grid item xs={8}>
-                                <Paper className={classes.paper}>
-                                    <ButtonBase className={classes.image}>
-                                        <img className={classes.img} alt="image" src="" />
-                                    </ButtonBase>
-                                </Paper>
-                            </Grid>
-                        </Grid>
-                        <Grid item xs={12} container className="description-wraper">
-                            <Grid item xs={11}>
+            {proposal && (
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <Grid container direction="column">
+                        <Grid className="hearder-wraper-proposal">
+                            <img src={background} className="hearder-img" />
+                            <Grid container direction="row" className="hearder-title" alignItems="center">
+                                <HearderCustomizeStar />
                                 <TextField
-                                    label="Description"
-                                    inputProps={{
-                                        maxLength: CHARACTER_LIMIT,
+                                    className={classes.margin, classes.commonText}
+                                    InputProps={{
+                                        className: classes.inputTitle
                                     }}
-                                    value={description.content}
-                                    helperText={`${description.content.length}/${CHARACTER_LIMIT}`}
-                                    margin="normal"
-                                    multiline
-                                    rows={10}
-                                    fullWidth
+                                    InputLabelProps={{
+                                        className: classes.inputLabelTitle,
+                                    }}
+                                    value={proposal.title}
                                     editable="false"
                                 />
                             </Grid>
                         </Grid>
-                        <Grid item xs={12}>
-                            <div className="googlmap-wrape">
-                                <LocationGooglMap location={location} zoom={15} editable={false} />
-                            </div>
-                        </Grid>
-                        <Grid item xs={12} container className="government-wraper">
-                            <Grid item>
-                                <MainTitleTyography>Government additions</MainTitleTyography>
-                            </Grid>
-                            <Grid item container spacing={7}>
-                                <Grid item xs={4} container direction="column" spacing={2} className="regulations-wraper">
-                                    <Grid item>
-                                        <GovernmentTitleTyography>Regulations</GovernmentTitleTyography>
-                                    </Grid>
-                                    <Grid item>
-                                        <GovernmentContentMiddleTyography>ISO 5454313</GovernmentContentMiddleTyography>
-                                        <GovernmentContentSmallTyography>- we will need to ensure that</GovernmentContentSmallTyography>
-                                        <GovernmentContentMiddleTyography>ISO 5454313</GovernmentContentMiddleTyography>
-                                        <GovernmentContentSmallTyography>- heathea</GovernmentContentSmallTyography>
-                                    </Grid>
-                                </Grid>
-                                <Grid item xs={6} container direction="column" spacing={2} className="comment-wraper">
-                                    <Grid item>
-                                        <GovernmentTitleTyography>Comment for latest update</GovernmentTitleTyography>
-                                    </Grid>
-                                    <Grid item>
-                                        <GovernmentContentMiddleTyography>
-                                            Please describe what you did with this update, this will be shown to the citizens in the history
-                                        </GovernmentContentMiddleTyography>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                        <Grid item xs={12} container className="history-wraper">
-                            <Grid item container>
-                                <Grid item>
-                                    <MainTitleTyography>History</MainTitleTyography>
-                                </Grid>
-                                <Grid item xs={2} container className="collapse-wraper" direction="column" alignItems="center">
-                                    <CollapseTyography onClick={handleCollapse}>COLLAPSE</CollapseTyography>
-                                    {showHistory ? <ExpandLess /> : <ExpandMore />}
-                                </Grid>
-                            </Grid>
-                            <Grid className="timeline-box-wraper">
-                                {showHistory && HistoryData.map((data, key) => {
-                                    return (
-                                        <Grid item container direction="column" key={key}>
-                                            <Timeline
-                                                actionType={data.type}
-                                                userName={data.authHumanCommonName}
-                                                comment={data.comment}
-                                                status={data.status}
-                                                time={data.timestamp.split('T')[0]}
-                                                exploreUrl={data.txId}
-                                            />
+                        <div className="main-container-proposal">
+                            <Grid container>
+                                <Grid item xs={12} container>
+                                    <Grid item xs={4} container spacing={1} direction="column">
+                                        <Grid item>
+                                            <StatusTyography>Status</StatusTyography>
                                         </Grid>
-                                    )
-                                })}
+                                        <Grid item>
+                                            <MainTitleTyography>{proposal.status}</MainTitleTyography>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item xs={8} container spacing={2} alignItems="center" justify="flex-end" className="button-wraper">
+                                        {showButtons.vote && (
+                                            <Grid item>
+                                                <AddToVoteButton type="button" onClick={onVote}>ADD TO VOTE</AddToVoteButton>
+                                            </Grid>
+                                        )}
+                                        {showButtons.edit && (
+                                            <Grid item>
+                                                <AddToVoteButton type="button" onClick={() => history.push(`/proposal/${proposal_id}/edit`)}>EDIT</AddToVoteButton>
+                                            </Grid>
+                                        )}
+                                    </Grid>
+
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </div>
-                </Grid>
-            </form>
+                            <Grid item xs={12} container className="item-wraper">
+                                <Grid item xs={4} container direction="column">
+                                    <Grid item>
+                                        <CurrencyTextField
+                                            value={proposal.budget}
+                                            currencySymbol="€"
+                                            outputFormat="string"
+                                            decimalCharacter="."
+                                            digitGroupSeparator=","
+                                            placeholder="Budget"
+                                            className={classes.currencyInput}
+                                            InputProps={{
+                                                classes: {
+                                                    input: classes.input
+                                                }
+                                            }}
+                                        />
+                                    </Grid>
+                                    <Grid item className="type-wrape">
+                                        <FormControl className={classes.formControl}>
+                                            <InputLabel htmlFor="type-select" className={classes.inputLabel}>Type</InputLabel>
+                                            <Select
+                                                native
+                                                value={proposal.type}
+                                                inputProps={{
+                                                    name: 'type',
+                                                    id: 'type-select',
+                                                }}
+                                                errors={errors}
+                                                autoWidth={true}
+                                            >
+                                                <option aria-label="type" />
+                                                <option value="0">New</option>
+                                                <option value="1">Upgrade</option>
+                                                <option value="2">Remove</option>
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item container className="category-wraper" direction="column" spacing={2}>
+                                        <Grid item>
+                                            <TitleCategoryTypography className={classes.categoryTitle}>Category</TitleCategoryTypography>
+                                        </Grid>
+                                        <Grid item container spacing={2}>
+                                            <Grid item xs={6} container spacing={2} alignItems="center">
+                                                <CategoryItem title={proposal.category} />
+                                            </Grid>
+                                            {/* <Grid item xs={6} container spacing={2} alignItems="center">
+                                        <CategoryItem title="catogory2" />
+                                    </Grid>
+                                    <Grid item xs={6} container spacing={2} alignItems="center">
+                                        <CategoryItem title="catogory4" />
+                                    </Grid>
+                                    <Grid item xs={6} container spacing={2} alignItems="center">
+                                        <CategoryItem title="catogory5" />
+                                    </Grid>
+                                    <Grid item xs={6} container spacing={2} alignItems="center">
+                                        <CategoryItem title="Urban" />
+                                    </Grid>
+                                    <Grid item xs={6} container spacing={2} alignItems="center">
+                                        <CategoryItem title="category2" />
+                                    </Grid> */}
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={8}>
+                                    <Paper className={classes.paper}>
+                                        <ButtonBase className={classes.image}>
+                                            <img className={classes.img} alt="image" src={proposal.imgUrl} />
+                                        </ButtonBase>
+                                    </Paper>
+                                </Grid>
+                            </Grid>
+                            <Grid item xs={12} container className="description-wraper">
+                                <Grid item xs={11}>
+                                    <TextField
+                                        label="Description"
+                                        inputProps={{
+                                            maxLength: CHARACTER_LIMIT,
+                                        }}
+                                        value={proposal.description}
+                                        helperText={`${proposal.description.length}/${CHARACTER_LIMIT}`}
+                                        margin="normal"
+                                        multiline
+                                        rows={10}
+                                        fullWidth
+                                        editable="false"
+                                    />
+                                </Grid>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <div className="googlmap-wrape">
+                                    <LocationGooglMap location={parseLocation(proposal.location)} zoom={15} editable={false} />
+                                </div>
+                            </Grid>
+                            <Grid item xs={12} container className="government-wraper">
+                                <Grid item>
+                                    <MainTitleTyography>Government additions</MainTitleTyography>
+                                </Grid>
+                                <Grid item container spacing={7}>
+                                    <Grid item xs={4} container direction="column" spacing={2} className="regulations-wraper">
+                                        <Grid item>
+                                            <GovernmentTitleTyography>Regulations</GovernmentTitleTyography>
+                                        </Grid>
+                                        <Grid item>
+                                            {proposal.regulations}
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item xs={6} container direction="column" spacing={2} className="comment-wraper">
+                                        <Grid item>
+                                            <GovernmentTitleTyography>Comment for latest update</GovernmentTitleTyography>
+                                        </Grid>
+                                        <Grid item>
+                                            {proposal.comment}
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            <Grid item xs={12} container className="history-wraper">
+                                <Grid item container>
+                                    <Grid item>
+                                        <MainTitleTyography>History</MainTitleTyography>
+                                    </Grid>
+                                    <Grid item xs={2} container className="collapse-wraper" direction="column" alignItems="center">
+                                        <CollapseTyography onClick={handleCollapse}>COLLAPSE</CollapseTyography>
+                                        {showHistory ? <ExpandLess /> : <ExpandMore />}
+                                    </Grid>
+                                </Grid>
+                                <Grid className="timeline-box-wraper">
+                                    {showHistory && HistoryData.map((data, key) => {
+                                        return (
+                                            <Grid item container direction="column" key={key}>
+                                                <Timeline
+                                                    actionType={data.type}
+                                                    userName={data.authHumanCommonName}
+                                                    comment={data.comment}
+                                                    status={data.status}
+                                                    time={data.timestamp.split('T')[0]}
+                                                    exploreUrl={data.txId}
+                                                />
+                                            </Grid>
+                                        )
+                                    })}
+                                </Grid>
+                            </Grid>
+                        </div>
+                    </Grid>
+                </form>
+            )}
         </div>
     )
 }
