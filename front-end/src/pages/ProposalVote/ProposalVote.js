@@ -1,6 +1,8 @@
 import { makeStyles } from '@material-ui/core';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import Navbar from '../../components/Navbar/Navbar';
+import { ConsumeAuth } from '../../hooks/authContext';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -10,7 +12,20 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Login() {
     const classes = useStyles();
+    const authContext = ConsumeAuth();
+    const history = useHistory();
 
+    useEffect(() => {
+        async function main() {
+            // TODO uncomment out after UI completed
+
+            // if (!await authContext.isLoggedIn()) {
+            //     history.push('/login');
+            //     return;
+            // }
+        }
+        main();
+    }, [])
     return (
         <div className={classes.root}>
             <Navbar />
