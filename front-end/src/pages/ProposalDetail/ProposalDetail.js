@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Grid, Typography, TextField, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import background from '../../assets/image/header.png';
@@ -16,6 +16,8 @@ import Navbar from '../../components/Navbar/Navbar';
 import Timeline from './Timeline';
 import CategoryItem from './CategoryItem';
 import './ProposalDetail.scss';
+import { useHistory, useParams } from "react-router-dom";
+import { ConsumeAuth } from '../../hooks/authContext';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -203,7 +205,19 @@ const UploadLock = withStyles({
     }
 })(Lock);
 
+function isGovAction(action) {
+    switch (action) {
+        case "propcreate":
+            return false;
+        case "propupdate":
+            return true;
+        case "propvote":
+            return false;
+    }
+}
 export default function ProposalDetail() {
+    const { proposal_id } = useParams();
+
     const classes = useStyles();
 
     const [valueBudget, setValueBudget] = useState(20000);
@@ -223,6 +237,50 @@ export default function ProposalDetail() {
     const { errors, handleSubmit } = useForm({
         criteriaMode: "all"
     });
+
+    const authContext = ConsumeAuth();
+    const history = useHistory();
+    const [proposal, setProposal] = useState();
+    const [proposalHistory, setProposalHistory] = useState();
+
+    async function getProposal() {
+        const proposalRes = await authContext.civic.proposalGet(proposal_id);
+        const proposalState = {
+            title: proposalRes.title,
+            description: proposalRes.description,
+            category: proposalRes.category,
+            budget: proposalRes.budget,
+            type: proposalRes.type,
+            location: proposalRes.location,
+            status: proposalRes.status,
+            regulations: proposalRes.regulations,
+            comment: proposalRes.comment
+        }
+        console.log('proposalState', proposalState);
+        setProposal(proposalState);
+    }
+
+    async function getHistory() {
+        const historyRes = await authContext.civic.proposalHistory(proposal_id);
+        const historyState = [];
+        for (let historyItem of historyRes) {
+            historyState.push({
+                txUrl: `${historyItem.txId}`,
+                name: historyItem.authHumanCommonName,
+                gov: isGovAction(historyItem.action),
+                comment: historyItem.comment,
+                timestamp: historyItem.timestamp.toLocaleDateString(),
+                status: historyItem.status
+            })
+        }
+        console.log('historyState', historyState)
+        setProposalHistory(historyState);
+    }
+
+    useEffect(() => {
+        getProposal();
+        getHistory();
+    }, [])
 
     const onSubmit = data => {
         console.log(data);
