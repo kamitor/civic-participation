@@ -18,6 +18,9 @@ import CategoryItem from './CategoryItem';
 import './ProposalDetail.scss';
 import { useHistory, useParams } from "react-router-dom";
 import { ConsumeAuth } from '../../hooks/authContext';
+import { toLabel as typeToLabel } from '../../types/proposals/type';
+import { toLabel as categoryToLabel } from '../../types/proposals/categories';
+import { toDefinition } from '../../types/proposals/status';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -215,6 +218,7 @@ function isGovAction(action) {
             return false;
     }
 }
+
 export default function ProposalDetail() {
     const { proposal_id } = useParams();
 
@@ -248,11 +252,11 @@ export default function ProposalDetail() {
         const proposalState = {
             title: proposalRes.title,
             description: proposalRes.description,
-            category: proposalRes.category,
+            category: categoryToLabel(proposalRes.category),
             budget: proposalRes.budget,
-            type: proposalRes.type,
+            type: typeToLabel(proposalRes.type),
             location: proposalRes.location,
-            status: proposalRes.status,
+            status: toDefinition(proposalRes.status),
             regulations: proposalRes.regulations,
             comment: proposalRes.comment
         }
@@ -278,8 +282,15 @@ export default function ProposalDetail() {
     }
 
     useEffect(() => {
-        getProposal();
-        getHistory();
+        async function main() {
+            if (!await authContext.isLoggedIn()) {
+                history.push('/login');
+                return;
+            }
+            getProposal();
+            getHistory();
+        }
+        main();
     }, [])
 
     const onSubmit = data => {
