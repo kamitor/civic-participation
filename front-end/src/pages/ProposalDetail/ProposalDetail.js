@@ -21,6 +21,7 @@ import { ConsumeAuth } from '../../hooks/authContext';
 import { toLabel as typeToLabel } from '../../types/proposals/type';
 import { toLabel as categoryToLabel } from '../../types/proposals/categories';
 import { toDefinition } from '../../types/proposals/status';
+import settings from '../../settings';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -268,13 +269,15 @@ export default function ProposalDetail() {
         const historyRes = await authContext.civic.proposalHistory(proposal_id);
         const historyState = [];
         for (let historyItem of historyRes) {
+            const txUrl = `${settings.eosio.blockExplorerUrl}/tx/${historyItem.txId}`;
+
             historyState.push({
-                txUrl: `${historyItem.txId}`,
+                txUrl: txUrl,
                 name: historyItem.authHumanCommonName,
                 gov: isGovAction(historyItem.action),
                 comment: historyItem.comment,
-                timestamp: historyItem.timestamp.toLocaleDateString(),
-                status: historyItem.status
+                timestamp: historyItem.timestamp.toLocaleDateString('nl-NL'),
+                status: toDefinition(historyItem.status)
             })
         }
         console.log('historyState', historyState)
