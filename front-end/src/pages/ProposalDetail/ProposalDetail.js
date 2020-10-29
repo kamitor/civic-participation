@@ -20,7 +20,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { ConsumeAuth } from '../../hooks/authContext';
 import { toLabel as typeToLabel } from '../../types/proposals/type';
 import { toLabel as categoryToLabel } from '../../types/proposals/categories';
-import { toDefinition } from '../../types/proposals/status';
+import ProposalStatus, { toDefinition } from '../../types/proposals/status';
 import settings from '../../settings';
 
 const useStyles = makeStyles((theme) => ({
@@ -247,6 +247,10 @@ export default function ProposalDetail() {
     const history = useHistory();
     const [proposal, setProposal] = useState();
     const [proposalHistory, setProposalHistory] = useState();
+    const [showButtons, setShowButtons] = useState({
+        vote: false,
+        edit: false
+    });
 
     async function getProposal() {
         const proposalRes = await authContext.civic.proposalGet(proposal_id);
@@ -262,6 +266,20 @@ export default function ProposalDetail() {
             comment: proposalRes.comment
         }
         console.log('proposalState', proposalState);
+
+        if (authContext.isGov) {
+            setShowButtons({
+                vote: false,
+                edit: true
+            })
+        } else {
+            if (proposalRes.status === ProposalStatus.Approved) {
+                setShowButtons({
+                    vote: true,
+                    edit: false
+                })
+            }
+        }
         setProposal(proposalState);
     }
 
@@ -322,6 +340,10 @@ export default function ProposalDetail() {
         setShowHistory(!showHistory)
     }
 
+    function onVote() {
+        history.push('/proposals-vote');
+    }
+
     return (
         <div className={classes.root}>
             <Navbar />
@@ -357,20 +379,18 @@ export default function ProposalDetail() {
                                     </Grid>
                                 </Grid>
                                 <Grid item xs={8} container spacing={2} alignItems="center" justify="flex-end" className="button-wraper">
-                                    <Grid item>
-                                        <Grid item container>
-                                            <Grid item>
-                                                <UploadSmallTypographyCreate>encrypted</UploadSmallTypographyCreate>
-                                            </Grid>
-                                            <Grid item>
-                                                <UploadLock />
-                                            </Grid>
+                                    {showButtons.vote && (
+                                        <Grid item>
+                                            <AddToVoteButton type="button" onClick={onVote}>ADD TO VOTE</AddToVoteButton>
                                         </Grid>
-                                    </Grid>
-                                    <Grid item>
-                                        <AddToVoteButton type="submit">ADD TO VOTE</AddToVoteButton>
-                                    </Grid>
+                                    )}
+                                    {showButtons.edit && (
+                                        <Grid item>
+                                            <AddToVoteButton type="button" onClick={() => history.push(`/proposal/${proposal_id}/edit`)}>EDIT</AddToVoteButton>
+                                        </Grid>
+                                    )}
                                 </Grid>
+
                             </Grid>
                         </Grid>
                         <Grid item xs={12} container className="item-wraper">
