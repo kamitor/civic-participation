@@ -114,7 +114,7 @@ class LocationGooglMap extends Component {
             <>
                 {mapApiLoaded && (
                     <div>
-                        <AutoComplete map={mapInstance} mapApi={mapApi} addplace={this.addPlace} />
+                        <AutoComplete map={mapInstance} mapApi={mapApi} addplace={this.addPlace} editable={this.props.editable} />
                     </div>
                 )}
                 <GoogleMapReact
