@@ -8,6 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { withStyles } from "@material-ui/core/styles";
 import logo from '../../assets/image/logo.png';
 import { useHistory } from "react-router-dom";
+import { ConsumeAuth } from '../../hooks/authContext';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -136,6 +137,7 @@ export default function Navbar() {
     const classes = useStyles();
     const [selectedProposal, setSelectedProposal] = useState('');
     const history = useHistory();
+    const authContext = ConsumeAuth();
 
     const handleChange = (event) => {
         setSelectedProposal(event.target.value);
@@ -143,6 +145,11 @@ export default function Navbar() {
 
     function clickLogo() {
         history.push('/');
+    }
+
+    async function logout() {
+        await authContext.logout();
+        history.push('/login');
     }
 
     return (
@@ -186,6 +193,7 @@ export default function Navbar() {
                 </Grid>
                 <Grid item container xs={4} alignItems="center">
                     <Grid item container className={classes.buttonContainer}>
+                        <DashboardButton onClick={logout}>Logout</DashboardButton>
                         <DashboardButton onClick={() => history.push('/dashboard')}>Dashboard</DashboardButton>
                         <CreateButton onClick={() => history.push('/proposal-create')}>CREATE</CreateButton>
                     </Grid>
