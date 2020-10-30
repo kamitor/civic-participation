@@ -16,9 +16,9 @@
         bottom: 0px;
         align-items: flex-end;
         border-radius: 35px 35px 0 0;
-        width: 456px;
+        width: 550px;
         justify-content: center;
-        padding-bottom: 10px;
+        padding-bottom: 4px;
         background: $green;
         margin-left: 243px;
     }
@@ -105,6 +105,10 @@
             text-align: left;
             position: absolute;
             bottom: 0;
+        }
+
+        .MuiSelect-select:not([multiple]) option, .MuiSelect-select:not([multiple]) optgroup {
+            display: none;
         }
     }
 
