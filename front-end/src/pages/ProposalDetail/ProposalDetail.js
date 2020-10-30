@@ -343,7 +343,7 @@ export default function ProposalDetail() {
                                         )}
                                         {showButtons.edit && (
                                             <Grid item>
-                                                <AddToVoteButton type="button" onClick={() => history.push(`/proposal/${proposal_id}/edit`)}>EDIT</AddToVoteButton>
+                                                <AddToVoteButton type="button" onClick={() => history.push(`/proposal-edit/${proposal_id}`)}>EDIT</AddToVoteButton>
                                             </Grid>
                                         )}
                                     </Grid>

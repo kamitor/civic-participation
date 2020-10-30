@@ -17,7 +17,7 @@ class LocationGooglMap extends Component {
         geoCoder: null,
         places: [this.props.location.lat, this.props.location.lng],
         center: [this.props.location.lat, this.props.location.lng],
-        zoom: this.props.zoom,
+        zoom: 15,
         address: '',
         draggable: true,
         lat: this.props.location.lat,
@@ -119,8 +119,8 @@ class LocationGooglMap extends Component {
                     </div>
                 )}
                 <GoogleMapReact
-                    center={this.state.center}
-                    zoom={this.state.zoom}
+                    defaultCenter={this.state.center}
+                    defaultZoom={this.state.zoom}
                     draggable={this.state.draggable}
                     onChange={this._onChange}
                     onChildMouseDown={this.onMarkerInteraction}
