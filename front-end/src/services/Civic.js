@@ -213,7 +213,6 @@ export default class Civic {
             type: proposal.type,
             location: proposal.location,
             proposalId: proposal.proposalId,
-            status: ProposalStatus.Proposed,
             created: Accountability.timePointToDate(decodedRow.created),
             updated: Accountability.timePointToDate(decodedRow.updated),
             approved: Accountability.timePointToDate(decodedRow.approved),

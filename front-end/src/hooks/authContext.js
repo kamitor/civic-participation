@@ -1,7 +1,6 @@
-import React, { useState, useContext, useEffect, createContext } from 'react';
+import React, { useState, useContext, createContext } from 'react';
 import PropTypes from 'prop-types';
 import Civic from '../services/Civic';
-import settings from '../settings';
 import { getUserStorage, setUserStorage, clearUserStorage } from './storage';
 
 let civic = new Civic();

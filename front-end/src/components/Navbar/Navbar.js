@@ -86,15 +86,6 @@ const LogoTitle = withStyles({
     }
 })(Typography);
 
-const NavbarTitle = withStyles({
-    root: {
-        color: '#1261A3',
-        fontWeight: '400',
-        fontSize: '18px',
-        lineHeight: '12px'
-    }
-})(Typography);
-
 const CreateButton = withStyles({
     root: {
         backgroundColor: '#1261A3',
@@ -158,7 +149,7 @@ export default function Navbar() {
                 <Grid item container xs={4} alignItems="center">
                     <Grid item container className={classes.logoContainer} onClick={clickLogo}>
                         <Grid item className={classes.logo}>
-                            <img src={logo} className={classes.logoImage} />
+                            <img src={logo} alt="Civic Participation Tool" className={classes.logoImage} />
                         </Grid>
                         <LogoTitle>Civic</LogoTitle>
                     </Grid>

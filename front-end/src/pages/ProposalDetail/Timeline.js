@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Grid, Typography } from '@material-ui/core';
 import { Lock, AccountCircle, Info } from '@material-ui/icons';
 import { withStyles } from "@material-ui/core/styles";
@@ -78,7 +78,7 @@ function Timeline(props) {
         <Grid item container className="timeline-item-wraper" alignItems="center" spacing={5}>
             <Grid item className="item-img">
                 {props.gov === true ?
-                    <img src={governmentUser} className="government-user-img" /> :
+                    <img src={governmentUser} alt="Government" className="government-user-img" /> :
                     <UserIcon />
                 }
             </Grid>

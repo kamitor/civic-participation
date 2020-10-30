@@ -239,8 +239,6 @@ export default function ProposalDetail() {
         if (proposalRes.regulations) proposalState.regulations = proposalRes.regulations;
         if (proposalRes.comment) proposalState.comment = proposalRes.comment;
 
-        console.log('proposalState', proposalState);
-
         if (authContext.isGov) {
             setShowButtons({
                 vote: false,
@@ -272,7 +270,6 @@ export default function ProposalDetail() {
                 status: toDefinition(historyItem.status)
             })
         }
-        console.log('historyState', historyState)
         setProposalHistory(historyState);
     }
 

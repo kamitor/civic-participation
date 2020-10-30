@@ -6,10 +6,6 @@ import Marker from './Marker';
 import settings from '../../settings';
 
 class LocationGooglMap extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     state = {
         mapApiLoaded: false,
         mapInstance: null,

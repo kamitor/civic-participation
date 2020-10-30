@@ -1,8 +1,8 @@
 import { makeStyles } from '@material-ui/core';
 import React, { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 import Navbar from '../../components/Navbar/Navbar';
-import { ConsumeAuth } from '../../hooks/authContext';
+// import { useHistory } from 'react-router-dom';
+// import { ConsumeAuth } from '../../hooks/authContext';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -12,8 +12,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Login() {
     const classes = useStyles();
-    const authContext = ConsumeAuth();
-    const history = useHistory();
+    // const authContext = ConsumeAuth();
+    // const history = useHistory();
 
     useEffect(() => {
         async function main() {
