@@ -1,15 +1,13 @@
 import React, { useState } from 'react'
-import { useParams } from 'react-router-dom';
-import { Grid, Typography, Checkbox, TextField } from '@material-ui/core';
+import { Grid, Typography, TextField } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import background from '../../assets/image/header.png';
-import { Stars, ExpandMore, ExpandLess, Lock, AccountCircle, Info, NaturePeople } from '@material-ui/icons';
+import { Stars, ExpandMore, ExpandLess } from '@material-ui/icons';
 import { withStyles } from "@material-ui/core/styles";
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Select from '@material-ui/core/Select';
 import Paper from '@material-ui/core/Paper';
 import ButtonBase from '@material-ui/core/ButtonBase';
@@ -17,6 +15,7 @@ import LocationGooglMap from '../../components/Location/LocationGooglMap';
 import { useForm } from "react-hook-form";
 import Navbar from '../../components/Navbar/Navbar';
 import Timeline from './Timeline';
+import CheckBox from './CheckBox';
 import './ProposalEdit.scss';
 
 const useStyles = makeStyles((theme) => ({
@@ -121,17 +120,6 @@ const TitleCategoryTypography = withStyles({
     }
 })(Typography);
 
-const CategoryCheckbox = withStyles({
-    root: {
-        color: '#599C6D',
-        fontSize: '12px',
-        '&$checked': {
-            color: '#599C6D',
-        },
-    },
-    checked: {},
-})((props) => <Checkbox color="default" {...props} />);
-
 const MainTitleTyography = withStyles({
     root: {
         fontSize: '20px',
@@ -173,22 +161,6 @@ const CollapseTyography = withStyles({
         fontSize: '12px',
         color: 'rgba(18, 97, 163, 1)',
         lineHeight: '16px',
-        fontWeight: '400'
-    }
-})(Typography);
-
-const CategoryPeopleIcon = withStyles({
-    root: {
-        color: '#000000',
-        fontSize: 15,
-    }
-})(NaturePeople);
-
-const CatergoryItemTyography = withStyles({
-    root: {
-        fontSize: '12px',
-        color: 'rgba(1, 1, 1, 1)',
-        lineHeight: '14.06px',
         fontWeight: '400'
     }
 })(Typography);
@@ -252,6 +224,8 @@ export default function ProposalDetail() {
             setHasErrorDescription(true)
         }
 
+        console.log(data);
+
     };
 
     const handleChange = (event) => {
@@ -281,11 +255,6 @@ export default function ProposalDetail() {
     };
 
     const handleChangeCheckboxs = (event) => {
-        if (event.target.checked) {
-            setHasErrorCategory(false);
-        } else {
-            setHasErrorCategory(true)
-        }
         setStateCheckBox({ ...stateCheckBox, [event.target.name]: event.target.checked });
     };
 
@@ -379,7 +348,7 @@ export default function ProposalDetail() {
                                             }}
                                             errors={errors}
                                         >
-                                            <option aria-label="" value="" />
+                                            <option aria-label="type" />
                                             <option value="new">New</option>
                                             <option value="upgrade">Upgrade</option>
                                             <option value="remove">Remove</option>
@@ -393,132 +362,68 @@ export default function ProposalDetail() {
                                     </Grid>
                                     <Grid item container>
                                         <Grid item xs={6} container alignItems="center">
-                                            <Grid item>
-                                                <FormControlLabel
-                                                    control={
-                                                        <CategoryCheckbox
-                                                            checked={stateCheckBox.checkedA}
-                                                            onChange={handleChangeCheckboxs}
-                                                            name="checkedA" />
-                                                    }
-                                                />
-                                            </Grid>
-                                            <Grid item xs container >
-                                                <CategoryPeopleIcon />
-                                                <CatergoryItemTyography>Urban</CatergoryItemTyography>
-                                            </Grid>
+                                            <CheckBox
+                                                checked={stateCheckBox.checkedA}
+                                                handleChangeCheckboxs={handleChangeCheckboxs}
+                                                checkboxName="checkedA"
+                                                title="Urban"
+                                            />
                                         </Grid>
                                         <Grid item xs={6} container alignItems="center">
-                                            <Grid item>
-                                                <FormControlLabel
-                                                    control={
-                                                        <CategoryCheckbox
-                                                            checked={stateCheckBox.checkedB}
-                                                            onChange={handleChangeCheckboxs}
-                                                            name="checkedB" />
-                                                    }
-                                                />
-                                            </Grid>
-                                            <Grid item xs container>
-                                                <CategoryPeopleIcon />
-                                                <CatergoryItemTyography>category2</CatergoryItemTyography>
-                                            </Grid>
+                                            <CheckBox
+                                                checked={stateCheckBox.checkedB}
+                                                handleChangeCheckboxs={handleChangeCheckboxs}
+                                                checkboxName="checkedB"
+                                                title="category2"
+                                            />
                                         </Grid>
                                         <Grid item xs={6} container alignItems="center">
-                                            <Grid item>
-                                                <FormControlLabel
-                                                    control={
-                                                        <CategoryCheckbox
-                                                            checked={stateCheckBox.checkedC}
-                                                            onChange={handleChangeCheckboxs}
-                                                            name="checkedC" />
-                                                    }
-                                                />
-                                            </Grid>
-                                            <Grid item xs container >
-                                                <CategoryPeopleIcon />
-                                                <CatergoryItemTyography>category4</CatergoryItemTyography>
-                                            </Grid>
+                                            <CheckBox
+                                                checked={stateCheckBox.checkedC}
+                                                handleChangeCheckboxs={handleChangeCheckboxs}
+                                                checkboxName="checkedC"
+                                                title="category4"
+                                            />
                                         </Grid>
                                         <Grid item xs={6} container alignItems="center">
-                                            <Grid item>
-                                                <FormControlLabel
-                                                    control={
-                                                        <CategoryCheckbox
-                                                            checked={stateCheckBox.checkedD}
-                                                            onChange={handleChangeCheckboxs}
-                                                            name="checkedD" />
-                                                    }
-                                                />
-                                            </Grid>
-                                            <Grid item xs container >
-                                                <CategoryPeopleIcon />
-                                                <CatergoryItemTyography>category5</CatergoryItemTyography>
-                                            </Grid>
+                                            <CheckBox
+                                                checked={stateCheckBox.checkedD}
+                                                handleChangeCheckboxs={handleChangeCheckboxs}
+                                                checkboxName="checkedD"
+                                                title="category5"
+                                            />
                                         </Grid>
                                         <Grid item xs={6} container alignItems="center">
-                                            <Grid item>
-                                                <FormControlLabel
-                                                    control={
-                                                        <CategoryCheckbox
-                                                            checked={stateCheckBox.checkedE}
-                                                            onChange={handleChangeCheckboxs}
-                                                            name="checkedE" />
-                                                    }
-                                                />
-                                            </Grid>
-                                            <Grid item xs container >
-                                                <CategoryPeopleIcon />
-                                                <CatergoryItemTyography>Urban</CatergoryItemTyography>
-                                            </Grid>
+                                            <CheckBox
+                                                checked={stateCheckBox.checkedE}
+                                                handleChangeCheckboxs={handleChangeCheckboxs}
+                                                checkboxName="checkedE"
+                                                title="Urban"
+                                            />
                                         </Grid>
                                         <Grid item xs={6} container alignItems="center">
-                                            <Grid item>
-                                                <FormControlLabel
-                                                    control={
-                                                        <CategoryCheckbox
-                                                            checked={stateCheckBox.checkedF}
-                                                            onChange={handleChangeCheckboxs}
-                                                            name="checkedF" />
-                                                    }
-                                                />
-                                            </Grid>
-                                            <Grid item xs container >
-                                                <CategoryPeopleIcon />
-                                                <CatergoryItemTyography>category2</CatergoryItemTyography>
-                                            </Grid>
+                                            <CheckBox
+                                                checked={stateCheckBox.checkedF}
+                                                handleChangeCheckboxs={handleChangeCheckboxs}
+                                                checkboxName="checkedF"
+                                                title="category2"
+                                            />
                                         </Grid>
                                         <Grid item xs={6} container alignItems="center">
-                                            <Grid item>
-                                                <FormControlLabel
-                                                    control={
-                                                        <CategoryCheckbox
-                                                            checked={stateCheckBox.checkedG}
-                                                            onChange={handleChangeCheckboxs}
-                                                            name="checkedG" />
-                                                    }
-                                                />
-                                            </Grid>
-                                            <Grid item xs container >
-                                                <CategoryPeopleIcon />
-                                                <CatergoryItemTyography>category4</CatergoryItemTyography>
-                                            </Grid>
+                                            <CheckBox
+                                                checked={stateCheckBox.checkedG}
+                                                handleChangeCheckboxs={handleChangeCheckboxs}
+                                                checkboxName="checkedG"
+                                                title="category4"
+                                            />
                                         </Grid>
                                         <Grid item xs={6} container alignItems="center">
-                                            <Grid item>
-                                                <FormControlLabel
-                                                    control={
-                                                        <CategoryCheckbox
-                                                            checked={stateCheckBox.checkedH}
-                                                            onChange={handleChangeCheckboxs}
-                                                            name="checkedH" />
-                                                    }
-                                                />
-                                            </Grid>
-                                            <Grid item xs container >
-                                                <CategoryPeopleIcon />
-                                                <CatergoryItemTyography>category5</CatergoryItemTyography>
-                                            </Grid>
+                                            <CheckBox
+                                                checked={stateCheckBox.checkedH}
+                                                handleChangeCheckboxs={handleChangeCheckboxs}
+                                                checkboxName="checkedH"
+                                                title="caetegory5"
+                                            />
                                         </Grid>
                                     </Grid>
                                     <Grid item xs={12} className="checkbox-helper">
@@ -577,7 +482,7 @@ export default function ProposalDetail() {
                                             }}
                                             errors={errors}
                                         >
-                                            <option aria-label="" value="" />
+                                            <option aria-label="status" />
                                             <option value="status">status</option>
                                         </Select>
                                         {hasErrorStatus && <FormHelperText>Please select a status.</FormHelperText>}

@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
-import { useParams } from 'react-router-dom';
-import { Grid, Typography, Checkbox, TextField, Button } from '@material-ui/core';
+import { Grid, Typography, TextField, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import background from '../../assets/image/header.png';
-import { Stars, ExpandMore, ExpandLess, Lock, NaturePeople } from '@material-ui/icons';
+import { Stars, ExpandMore, ExpandLess, Lock } from '@material-ui/icons';
 import { withStyles } from "@material-ui/core/styles";
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import FormControl from '@material-ui/core/FormControl';
@@ -15,6 +14,7 @@ import LocationGooglMap from '../../components/Location/LocationGooglMap';
 import { useForm } from "react-hook-form";
 import Navbar from '../../components/Navbar/Navbar';
 import Timeline from './Timeline';
+import CategoryItem from './CategoryItem';
 import './ProposalDetail.scss';
 
 const useStyles = makeStyles((theme) => ({
@@ -197,31 +197,13 @@ const CollapseTyography = withStyles({
     }
 })(Typography);
 
-const CatergoryItemTyography = withStyles({
-    root: {
-        fontSize: '12px',
-        color: 'rgba(1, 1, 1, 1)',
-        lineHeight: '14.06px',
-        fontWeight: '400'
-    }
-})(Typography);
-
 const UploadLock = withStyles({
     root: {
         color: '#1261A3'
     }
 })(Lock);
 
-const CategoryPeopleIcon = withStyles({
-    root: {
-        color: '#000000',
-        fontSize: 15,
-    }
-})(NaturePeople);
-
 export default function ProposalDetail() {
-    const { proposal_id } = useParams();
-
     const classes = useStyles();
 
     const [valueBudget, setValueBudget] = useState(20000);
@@ -229,7 +211,7 @@ export default function ProposalDetail() {
     const [state, setState] = useState({
         type: 'new',
     });
-    
+
     const [description, setDescription] = useState({
         content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna wirl Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna wirl Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna wirl Lorem ipsum dolor sit amet, consectetur adipisicing rl Lorem ipsum Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna wirl Lorem ipsum dolor sit ame"
     });
@@ -243,7 +225,7 @@ export default function ProposalDetail() {
     });
 
     const onSubmit = data => {
-
+        console.log(data);
     };
 
     const handleChange = (event) => {
@@ -351,7 +333,7 @@ export default function ProposalDetail() {
                                             }}
                                             errors={errors}
                                         >
-                                            <option aria-label="" value="" />
+                                            <option aria-label="type" />
                                             <option value="new">New</option>
                                             <option value="upgrade">Upgrade</option>
                                             <option value="remove">Remove</option>
@@ -364,52 +346,22 @@ export default function ProposalDetail() {
                                     </Grid>
                                     <Grid item container spacing={2}>
                                         <Grid item xs={6} container spacing={2} alignItems="center">
-                                            <Grid item>
-                                                <CategoryPeopleIcon />
-                                            </Grid>
-                                            <Grid item>
-                                                <CatergoryItemTyography>Urban</CatergoryItemTyography>
-                                            </Grid>
+                                            <CategoryItem title="Urban" />
                                         </Grid>
                                         <Grid item xs={6} container spacing={2} alignItems="center">
-                                            <Grid item>
-                                                <CategoryPeopleIcon />
-                                            </Grid>
-                                            <Grid item>
-                                                <CatergoryItemTyography>category2</CatergoryItemTyography>
-                                            </Grid>
+                                            <CategoryItem title="catogory2" />
                                         </Grid>
                                         <Grid item xs={6} container spacing={2} alignItems="center">
-                                            <Grid item>
-                                                <CategoryPeopleIcon />
-                                            </Grid>
-                                            <Grid item>
-                                                <CatergoryItemTyography>category4</CatergoryItemTyography>
-                                            </Grid>
+                                            <CategoryItem title="catogory4" />
                                         </Grid>
                                         <Grid item xs={6} container spacing={2} alignItems="center">
-                                            <Grid item>
-                                                <CategoryPeopleIcon />
-                                            </Grid>
-                                            <Grid item>
-                                                <CatergoryItemTyography>category5</CatergoryItemTyography>
-                                            </Grid>
+                                            <CategoryItem title="catogory5" />
                                         </Grid>
                                         <Grid item xs={6} container spacing={2} alignItems="center">
-                                            <Grid item>
-                                                <CategoryPeopleIcon />
-                                            </Grid>
-                                            <Grid item>
-                                                <CatergoryItemTyography>Urban</CatergoryItemTyography>
-                                            </Grid>
+                                            <CategoryItem title="Urban" />
                                         </Grid>
                                         <Grid item xs={6} container spacing={2} alignItems="center">
-                                            <Grid item>
-                                                <CategoryPeopleIcon />
-                                            </Grid>
-                                            <Grid item>
-                                                <CatergoryItemTyography>category2</CatergoryItemTyography>
-                                            </Grid>
+                                            <CategoryItem title="category2" />
                                         </Grid>
                                     </Grid>
                                 </Grid>

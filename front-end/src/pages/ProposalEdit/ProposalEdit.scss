@@ -1,3 +1,5 @@
+@import "../../assets/css/colors";
+
 .hearder-wraper {
     width: 100%;
     height: 30vh;
@@ -17,13 +19,13 @@
         width: 456px;
         justify-content: center;
         padding-bottom: 10px;
-        background: rgba(34, 123, 60, 0.75);
+        background: $green;
         margin-left: 243px;
     }
 
     .input-container+p+p {
         margin: 0;
-        color: red;
+        color: $red;
         position: absolute;
         left: 100px;
         top: 53px;
@@ -31,9 +33,9 @@
 
     .MuiFormHelperText-root {
         position: absolute;
-        left: 100px;
-        bottom: -17px;
-        color: red;
+        top: 63px;
+        left: 150px;
+        color: $red;
     }
 }
 
@@ -59,9 +61,9 @@
 
         .MuiButton-root:hover {
             text-decoration: none;
-            background-color: #1261A3;
+            background-color: $dodgerBlue;
             margin-left: 10px;
-            box-shadow: 0px 1px 2px 1px #b5b5b5;
+            box-shadow: 0px 1px 2px 1px $pinkSwan;
         }
     }
 
@@ -75,15 +77,15 @@
     }
 
     .MuiTypography-colorTextSecondary {
-        color: #599C6D;
+        color: $green;
     }
 
     .MuiInput-underline:after {
-        border-bottom: 2px solid #599C6D;
+        border-bottom: 2px solid $green;
     }
 
     .MuiInput-underline::before {
-        border-bottom: 2px solid #599C6D;
+        border-bottom: 2px solid $green;
     }
 
     .MuiInputAdornment-positionStart {
@@ -129,7 +131,7 @@
             position: relative;
 
             .MuiTypography-body1 {
-                color: #599C6D;
+                color: $green;
             }
 
             .MuiFormHelperText-root {
@@ -163,27 +165,27 @@
 
         .MuiFormControl-fullWidth {
             label.Mui-focused {
-                color: #599C6D;
+                color: $green;
             }
 
             label.MuiFormLabel-root {
-                color: #599C6D;
+                color: $green;
             }
 
             textarea {
-                color: rgba(0, 0, 0, 0.8);
+                color: $black;
                 font-weight: 400;
                 font-size: 16px;
                 line-height: 24px;
             }
 
             .MuiFormHelperText-root {
-                color: #ccc;
+                color: $lightGrey;
             }
         }
 
         .description-helper {
-            margin-top: -35px;
+            margin-top: -15px;
 
             P {
                 text-align: left;
@@ -193,14 +195,14 @@
 
     .MuiFormHelperText-root {
         text-align: left;
-        color: red;
+        color: $red;
     }
 
     .MuiDropzoneArea-root {
         min-height: 157px;
         max-height: 244px;
         border: none;
-        background: rgba(34, 123, 60, 0.75);
+        background: $green;
         position: relative;
         outline: none;
 
@@ -232,7 +234,7 @@
         }
 
         &:hover {
-            border: 1px solid rgba(34, 123, 60, 0.75);
+            border: 1px solid $green;
         }
 
         .MuiDropzoneArea-textContainer {
@@ -243,13 +245,13 @@
 
             p {
                 font-size: 12px;
-                color: rgba(255, 255, 255, 1);
+                color: $customWhite;
             }
 
             .MuiDropzoneArea-icon {
                 width: 24px;
                 height: 16px;
-                color: #FFFFFF;
+                color: $white;
                 ;
             }
         }
@@ -265,7 +267,7 @@
 
             .search-input {
                 border: none;
-                border-bottom: 1px solid #599C6D;
+                border-bottom: 1px solid $green;
                 width: 39%;
                 margin-bottom: 20px;
                 outline: none;
@@ -273,25 +275,22 @@
             }
 
             ::placeholder {
-                color: #599C6D;
+                color: $green;
                 opacity: 1;
-                /* Firefox */
             }
 
             :-ms-input-placeholder {
-                /* Internet Explorer 10-11 */
-                color: #599C6D;
+                color: $green;
             }
 
             ::-ms-input-placeholder {
-                /* Microsoft Edge */
-                color: #599C6D;
+                color: $green;
             }
 
             .search-icon {
                 position: absolute;
                 left: 297px;
-                color: #599C6D;
+                color: $green;
             }
         }
     }
@@ -331,7 +330,7 @@
             .item-content {
                 width: 611px;
                 height: 102px;
-                background: #EEEEEE;
+                background: $whisper;
                 border-radius: 15px;
             }
             .item-img {
