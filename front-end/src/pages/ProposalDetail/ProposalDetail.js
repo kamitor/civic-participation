@@ -225,19 +225,16 @@ export default function ProposalDetail() {
         const formatter = new Intl.NumberFormat('nl-NL', {
             style: 'currency',
             currency: 'EUR',
-
-            // These options are needed to round to whole numbers if that's what you want.
-            //minimumFractionDigits: 0,
-            //maximumFractionDigits: 0,
         });
         const proposalState = {
+            proposalId: proposalRes.proposalId,
             title: proposalRes.title,
             description: proposalRes.description,
             category: categoryToLabel(proposalRes.category),
             categoryIcon: categoryToIcon(proposalRes.category),
             budget: formatter.format(proposalRes.budget),
             type: typeToLabel(proposalRes.type),
-            location: proposalRes.location,
+            location: parseLocation(proposalRes.location),
             status: toDefinition(proposalRes.status),
             regulations: proposalRes.regulations,
             comment: proposalRes.comment
@@ -390,7 +387,7 @@ export default function ProposalDetail() {
                             </Grid>
                             <Grid item xs={12}>
                                 <div className="googlmap-wrape">
-                                    <LocationGooglMap location={parseLocation(proposal.location)} zoom={15} editable={false} />
+                                    <LocationGooglMap location={proposal.location} zoom={15} editable={false} />
                                 </div>
                             </Grid>
                             <Grid item xs={12} container className="government-wraper">
