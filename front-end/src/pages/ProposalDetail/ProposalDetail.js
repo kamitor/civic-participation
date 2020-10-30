@@ -124,14 +124,6 @@ const HearderCustomizeStar = withStyles({
     }
 })(Stars)
 
-const TitleCategoryTypography = withStyles({
-    root: {
-        color: '#599C6D',
-        fontWeight: 500,
-        fontSize: '15px',
-    }
-})(Typography);
-
 const AddToVoteButton = withStyles({
     root: {
         backgroundColor: '#1261A3',
@@ -174,11 +166,11 @@ const MainTitleTyography = withStyles({
     }
 })(Typography);
 
-const GovernmentTitleTyography = withStyles({
+const TitleLabelTyography = withStyles({
     root: {
         fontSize: '12px',
-        color: 'rgba(0, 0, 0, 0.5393)',
-        lineHeight: '16x',
+        color: 'rgba(89, 156, 109, 1)',
+        lineHeight: '14.06x',
         fontWeight: '400'
     }
 })(Typography);
@@ -230,12 +222,20 @@ export default function ProposalDetail() {
 
     async function getProposal() {
         const proposalRes = await authContext.civic.proposalGet(proposal_id);
+        const formatter = new Intl.NumberFormat('nl-NL', {
+            style: 'currency',
+            currency: 'EUR',
+
+            // These options are needed to round to whole numbers if that's what you want.
+            //minimumFractionDigits: 0,
+            //maximumFractionDigits: 0,
+        });
         const proposalState = {
             title: proposalRes.title,
             description: proposalRes.description,
             category: categoryToLabel(proposalRes.category),
             categoryIcon: categoryToIcon(proposalRes.category),
-            budget: proposalRes.budget,
+            budget: formatter.format(proposalRes.budget),
             type: typeToLabel(proposalRes.type),
             location: proposalRes.location,
             status: toDefinition(proposalRes.status),
@@ -356,44 +356,16 @@ export default function ProposalDetail() {
                             <Grid item xs={12} container className="item-wraper">
                                 <Grid item xs={4} container direction="column">
                                     <Grid item>
-                                        <CurrencyTextField
-                                            value={proposal.budget}
-                                            currencySymbol="€"
-                                            outputFormat="string"
-                                            decimalCharacter="."
-                                            digitGroupSeparator=","
-                                            placeholder="Budget"
-                                            className={classes.currencyInput}
-                                            InputProps={{
-                                                classes: {
-                                                    input: classes.input
-                                                }
-                                            }}
-                                        />
+                                        <TitleLabelTyography>Budget</TitleLabelTyography>
+                                        {proposal.budget}
                                     </Grid>
                                     <Grid item className="type-wrape">
-                                        <FormControl className={classes.formControl}>
-                                            <InputLabel htmlFor="type-select" className={classes.inputLabel}>Type</InputLabel>
-                                            <Select
-                                                native
-                                                value={proposal.type}
-                                                inputProps={{
-                                                    name: 'type',
-                                                    id: 'type-select',
-                                                }}
-                                                errors={errors}
-                                                autoWidth={true}
-                                            >
-                                                <option aria-label="type" />
-                                                <option value="0">New</option>
-                                                <option value="1">Upgrade</option>
-                                                <option value="2">Remove</option>
-                                            </Select>
-                                        </FormControl>
+                                        <TitleLabelTyography>Infrastucture type</TitleLabelTyography>
+                                        {proposal.type}
                                     </Grid>
                                     <Grid item container className="category-wraper" direction="column" spacing={2}>
                                         <Grid item>
-                                            <TitleCategoryTypography className={classes.categoryTitle}>Category</TitleCategoryTypography>
+                                            <TitleLabelTyography>Category</TitleLabelTyography>
                                         </Grid>
                                         <Grid item container spacing={2}>
                                             <Grid item xs={6} container spacing={2} alignItems="center">
@@ -412,19 +384,8 @@ export default function ProposalDetail() {
                             </Grid>
                             <Grid item xs={12} container className="description-wraper">
                                 <Grid item xs={11}>
-                                    <TextField
-                                        label="Description"
-                                        inputProps={{
-                                            maxLength: CHARACTER_LIMIT,
-                                        }}
-                                        value={proposal.description}
-                                        helperText={`${proposal.description.length}/${CHARACTER_LIMIT}`}
-                                        margin="normal"
-                                        multiline
-                                        rows={10}
-                                        fullWidth
-                                        editable="false"
-                                    />
+                                    <TitleLabelTyography>Description</TitleLabelTyography>
+                                    {proposal.description}
                                 </Grid>
                             </Grid>
                             <Grid item xs={12}>
@@ -439,7 +400,7 @@ export default function ProposalDetail() {
                                 <Grid item container spacing={7}>
                                     <Grid item xs={4} container direction="column" spacing={2} className="regulations-wraper">
                                         <Grid item>
-                                            <GovernmentTitleTyography>Regulations</GovernmentTitleTyography>
+                                            <TitleLabelTyography>Regulations</TitleLabelTyography>
                                         </Grid>
                                         <Grid item>
                                             {proposal.regulations}
@@ -447,7 +408,7 @@ export default function ProposalDetail() {
                                     </Grid>
                                     <Grid item xs={6} container direction="column" spacing={2} className="comment-wraper">
                                         <Grid item>
-                                            <GovernmentTitleTyography>Comment for latest update</GovernmentTitleTyography>
+                                            <TitleLabelTyography>Comment for latest update</TitleLabelTyography>
                                         </Grid>
                                         <Grid item>
                                             {proposal.comment}

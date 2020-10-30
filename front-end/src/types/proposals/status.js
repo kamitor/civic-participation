@@ -18,11 +18,11 @@ const statusReverse = {
     },
     1: {
         label: "Reviewing",
-        definition: "Under review by the government"
+        definition: "Reviewing"
     },
     2: {
         label: "Approved",
-        definition: "Ready for voting"
+        definition: "Approved for voting"
     },
     3: {
         label: "Rejected",
