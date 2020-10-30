@@ -2,16 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { Grid, Typography, TextField, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import background from '../../assets/image/header.png';
-import { Stars, ExpandMore, ExpandLess, Lock } from '@material-ui/icons';
+import { Stars, ExpandMore, ExpandLess } from '@material-ui/icons';
 import { withStyles } from "@material-ui/core/styles";
-import CurrencyTextField from '@unicef/material-ui-currency-textfield'
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
 import Paper from '@material-ui/core/Paper';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import LocationGooglMap from '../../components/Location/LocationGooglMap';
-import { useForm } from "react-hook-form";
 import Navbar from '../../components/Navbar/Navbar';
 import Timeline from './Timeline';
 import CategoryItem from './CategoryItem';
@@ -19,7 +14,7 @@ import './ProposalDetail.scss';
 import { useHistory, useParams } from "react-router-dom";
 import { ConsumeAuth } from '../../hooks/authContext';
 import { toLabel as typeToLabel } from '../../types/proposals/type';
-import { toLabel as categoryToLabel, toIcon as categoryToIcon } from '../../types/proposals/categories';
+import { toLabel as categoryToLabel } from '../../types/proposals/categories';
 import ProposalStatus, { toDefinition } from '../../types/proposals/status';
 import settings from '../../settings';
 
@@ -141,13 +136,6 @@ const AddToVoteButton = withStyles({
     },
 })(Button);
 
-const UploadSmallTypographyCreate = withStyles({
-    root: {
-        fontSize: '15px',
-        color: '#1261A3',
-    }
-})(Typography);
-
 const StatusTyography = withStyles({
     root: {
         fontSize: '12px',
@@ -175,15 +163,6 @@ const TitleLabelTyography = withStyles({
     }
 })(Typography);
 
-const GovernmentContentSmallTyography = withStyles({
-    root: {
-        fontSize: '12px',
-        color: 'rgba(0, 0, 0, 1)',
-        lineHeight: '16.41px',
-        fontWeight: '400'
-    }
-})(Typography);
-
 const CollapseTyography = withStyles({
     root: {
         fontSize: '12px',
@@ -193,23 +172,12 @@ const CollapseTyography = withStyles({
     }
 })(Typography);
 
-const UploadLock = withStyles({
-    root: {
-        color: '#1261A3'
-    }
-})(Lock);
-
 export default function ProposalDetail() {
     const { proposal_id } = useParams();
 
     const classes = useStyles();
 
-    const [showHistory, setShowHistory] = useState(true)
-    const [showProposal, setShowProposal] = useState(false)
-
-    const { errors, handleSubmit } = useForm({
-        criteriaMode: "all"
-    });
+    const [showHistory, setShowHistory] = useState(true);
 
     const authContext = ConsumeAuth();
     const history = useHistory();
@@ -283,12 +251,8 @@ export default function ProposalDetail() {
             getHistory();
         }
         main();
-    }, [])
+    }, [authContext, history, getProposal, getHistory])
 
-    const onSubmit = data => {
-        console.log(data);
-    };
-    const CHARACTER_LIMIT = 580;
     const handleCollapse = () => {
         setShowHistory(!showHistory)
     }
@@ -302,153 +266,151 @@ export default function ProposalDetail() {
         <div className={classes.root}>
             <Navbar />
             {proposal && (
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <Grid container direction="column">
-                        <Grid className="hearder-wraper-proposal">
-                            <img src={background} className="hearder-img" />
-                            <Grid container direction="row" className="hearder-title" alignItems="center">
-                                <HearderCustomizeStar />
-                                <TextField
-                                    className={classes.margin, classes.commonText}
-                                    InputProps={{
-                                        className: classes.inputTitle
-                                    }}
-                                    InputLabelProps={{
-                                        className: classes.inputLabelTitle,
-                                    }}
-                                    value={proposal.title}
-                                    editable="false"
-                                />
+                <Grid container direction="column">
+                    <Grid className="hearder-wraper-proposal">
+                        <img src={background} className="hearder-img" alt="Dutch canals" />
+                        <Grid container direction="row" className="hearder-title" alignItems="center">
+                            <HearderCustomizeStar />
+                            <TextField
+                                className={classes.margin + ' ' + classes.commonText}
+                                InputProps={{
+                                    className: classes.inputTitle
+                                }}
+                                InputLabelProps={{
+                                    className: classes.inputLabelTitle,
+                                }}
+                                value={proposal.title}
+                                editable="false"
+                            />
+                        </Grid>
+                    </Grid>
+                    <div className="main-container-proposal">
+                        <Grid container>
+                            <Grid item xs={12} container>
+                                <Grid item xs={4} container spacing={1} direction="column">
+                                    <Grid item>
+                                        <StatusTyography>Status</StatusTyography>
+                                    </Grid>
+                                    <Grid item>
+                                        <MainTitleTyography>{proposal.status}</MainTitleTyography>
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={8} container spacing={2} alignItems="center" justify="flex-end" className="button-wraper">
+                                    {showButtons.vote && (
+                                        <Grid item>
+                                            <AddToVoteButton type="button" onClick={onVote}>ADD TO VOTE</AddToVoteButton>
+                                        </Grid>
+                                    )}
+                                    {showButtons.edit && (
+                                        <Grid item>
+                                            <AddToVoteButton type="button" onClick={() => history.push(`/proposal-edit/${proposal_id}`)}>EDIT</AddToVoteButton>
+                                        </Grid>
+                                    )}
+                                </Grid>
+
                             </Grid>
                         </Grid>
-                        <div className="main-container-proposal">
-                            <Grid container>
-                                <Grid item xs={12} container>
-                                    <Grid item xs={4} container spacing={1} direction="column">
-                                        <Grid item>
-                                            <StatusTyography>Status</StatusTyography>
-                                        </Grid>
-                                        <Grid item>
-                                            <MainTitleTyography>{proposal.status}</MainTitleTyography>
-                                        </Grid>
-                                    </Grid>
-                                    <Grid item xs={8} container spacing={2} alignItems="center" justify="flex-end" className="button-wraper">
-                                        {showButtons.vote && (
-                                            <Grid item>
-                                                <AddToVoteButton type="button" onClick={onVote}>ADD TO VOTE</AddToVoteButton>
-                                            </Grid>
-                                        )}
-                                        {showButtons.edit && (
-                                            <Grid item>
-                                                <AddToVoteButton type="button" onClick={() => history.push(`/proposal-edit/${proposal_id}`)}>EDIT</AddToVoteButton>
-                                            </Grid>
-                                        )}
-                                    </Grid>
-
-                                </Grid>
-                            </Grid>
-                            <Grid item xs={12} container className="item-wraper">
-                                <Grid item xs={4} container direction="column">
-                                    {proposal.budget && (
-                                        <Grid item>
-                                            <TitleLabelTyography>Budget</TitleLabelTyography>
-                                            {proposal.budget}
-                                        </Grid>
-                                    )}
-                                    <Grid item className="type-wrape">
-                                        <TitleLabelTyography>Infrastucture type</TitleLabelTyography>
-                                        {proposal.type}
-                                    </Grid>
-                                    <Grid item container className="category-wraper" direction="column" spacing={2}>
-                                        <Grid item>
-                                            <TitleLabelTyography>Category</TitleLabelTyography>
-                                        </Grid>
-                                        <Grid item container spacing={2}>
-                                            <Grid item xs={6} container spacing={2} alignItems="center">
-                                                <CategoryItem title={proposal.category} />
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                                <Grid item xs={8}>
-                                    <Paper className={classes.paper}>
-                                        <ButtonBase className={classes.image}>
-                                            <img className={classes.img} alt="image" src={proposal.imgUrl} />
-                                        </ButtonBase>
-                                    </Paper>
-                                </Grid>
-                            </Grid>
-                            <Grid item xs={12} container className="description-wraper">
-                                <Grid item xs={11}>
-                                    <TitleLabelTyography>Description</TitleLabelTyography>
-                                    {proposal.description}
-                                </Grid>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <div className="googlmap-wrape">
-                                    <LocationGooglMap location={proposal.location} zoom={15} editable={false} />
-                                </div>
-                            </Grid>
-                            <Grid item xs={12} container className="government-wraper">
-                                <Grid item>
-                                    {proposal.comment && proposal.regulations &&
-                                        <MainTitleTyography>Government additions</MainTitleTyography>
-                                    }
-                                </Grid>
-                                <Grid item container spacing={7}>
-                                    {proposal.regulations && (
-                                        <Grid item xs={4} container direction="column" spacing={2} className="regulations-wraper">
-                                            <Grid item>
-                                                <TitleLabelTyography>Regulations</TitleLabelTyography>
-                                            </Grid>
-                                            <Grid item>
-                                                {proposal.regulations}
-                                            </Grid>
-                                        </Grid>
-                                    )}
-                                    {proposal.comment && (
-                                        <Grid item xs={6} container direction="column" spacing={2} className="comment-wraper">
-                                            <Grid item>
-                                                <TitleLabelTyography>Comment for latest update</TitleLabelTyography>
-                                            </Grid>
-                                            <Grid item>
-                                                {proposal.comment}
-                                            </Grid>
-                                        </Grid>
-                                    )}
-                                </Grid>
-                            </Grid>
-                            <Grid item xs={12} container className="history-wraper">
-                                <Grid item container>
+                        <Grid item xs={12} container className="item-wraper">
+                            <Grid item xs={4} container direction="column">
+                                {proposal.budget && (
                                     <Grid item>
-                                        <MainTitleTyography>History</MainTitleTyography>
+                                        <TitleLabelTyography>Budget</TitleLabelTyography>
+                                        {proposal.budget}
                                     </Grid>
-                                    <Grid item xs={2} container className="collapse-wraper" direction="column" alignItems="center">
-                                        <CollapseTyography onClick={handleCollapse}>COLLAPSE</CollapseTyography>
-                                        {showHistory ? <ExpandLess /> : <ExpandMore />}
-                                    </Grid>
+                                )}
+                                <Grid item className="type-wrape">
+                                    <TitleLabelTyography>Infrastucture type</TitleLabelTyography>
+                                    {proposal.type}
                                 </Grid>
-                                <Grid className="timeline-box-wraper">
-                                    {showHistory && proposalHistory && proposalHistory.map((data, key) => {
-                                        return (
-                                            <Grid item container direction="column" key={key}>
-                                                <Timeline
-                                                    actionType={data.status}
-                                                    userName={data.name}
-                                                    comment={data.comment}
-                                                    status={data.status}
-                                                    time={data.timestamp}
-                                                    exploreUrl={data.txUrl}
-                                                    gov={data.gov}
-                                                />
-                                            </Grid>
-                                        )
-                                    })}
+                                <Grid item container className="category-wraper" direction="column" spacing={2}>
+                                    <Grid item>
+                                        <TitleLabelTyography>Category</TitleLabelTyography>
+                                    </Grid>
+                                    <Grid item container spacing={2}>
+                                        <Grid item xs={6} container spacing={2} alignItems="center">
+                                            <CategoryItem title={proposal.category} />
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
                             </Grid>
-                        </div>
-                    </Grid>
-                </form>
+                            <Grid item xs={8}>
+                                <Paper className={classes.paper}>
+                                    <ButtonBase className={classes.image}>
+                                        <img className={classes.img} alt={proposal.title} src={proposal.imgUrl} />
+                                    </ButtonBase>
+                                </Paper>
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={12} container className="description-wraper">
+                            <Grid item xs={11}>
+                                <TitleLabelTyography>Description</TitleLabelTyography>
+                                {proposal.description}
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <div className="googlmap-wrape">
+                                <LocationGooglMap location={proposal.location} zoom={15} editable={false} />
+                            </div>
+                        </Grid>
+                        <Grid item xs={12} container className="government-wraper">
+                            <Grid item>
+                                {proposal.comment && proposal.regulations &&
+                                    <MainTitleTyography>Government additions</MainTitleTyography>
+                                }
+                            </Grid>
+                            <Grid item container spacing={7}>
+                                {proposal.regulations && (
+                                    <Grid item xs={4} container direction="column" spacing={2} className="regulations-wraper">
+                                        <Grid item>
+                                            <TitleLabelTyography>Regulations</TitleLabelTyography>
+                                        </Grid>
+                                        <Grid item>
+                                            {proposal.regulations}
+                                        </Grid>
+                                    </Grid>
+                                )}
+                                {proposal.comment && (
+                                    <Grid item xs={6} container direction="column" spacing={2} className="comment-wraper">
+                                        <Grid item>
+                                            <TitleLabelTyography>Comment for latest update</TitleLabelTyography>
+                                        </Grid>
+                                        <Grid item>
+                                            {proposal.comment}
+                                        </Grid>
+                                    </Grid>
+                                )}
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={12} container className="history-wraper">
+                            <Grid item container>
+                                <Grid item>
+                                    <MainTitleTyography>History</MainTitleTyography>
+                                </Grid>
+                                <Grid item xs={2} container className="collapse-wraper" direction="column" alignItems="center">
+                                    <CollapseTyography onClick={handleCollapse}>COLLAPSE</CollapseTyography>
+                                    {showHistory ? <ExpandLess /> : <ExpandMore />}
+                                </Grid>
+                            </Grid>
+                            <Grid className="timeline-box-wraper">
+                                {showHistory && proposalHistory && proposalHistory.map((data, key) => {
+                                    return (
+                                        <Grid item container direction="column" key={key}>
+                                            <Timeline
+                                                actionType={data.status}
+                                                userName={data.name}
+                                                comment={data.comment}
+                                                status={data.status}
+                                                time={data.timestamp}
+                                                exploreUrl={data.txUrl}
+                                                gov={data.gov}
+                                            />
+                                        </Grid>
+                                    )
+                                })}
+                            </Grid>
+                        </Grid>
+                    </div>
+                </Grid>
             )}
         </div>
     )

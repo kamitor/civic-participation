@@ -64,7 +64,7 @@ export default function Login() {
 			}
 		}
 		main();
-	}, [])
+	}, [authContext, history])
 
 
 	const navigateCreatePage = () => {

@@ -65,7 +65,7 @@ export default function CreateAccount() {
 			}
 		}
 		main();
-	}, [])
+	}, [authContext, history])
 
 	const navigateLoginPage = () => {
 		history.push("/login")

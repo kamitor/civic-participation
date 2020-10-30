@@ -74,7 +74,7 @@ class LocationGooglMap extends Component {
         const {
             mapApi
         } = this.state;
-        const geocoder = new mapApi.Geocoder;
+        const geocoder = new mapApi.Geocoder();
         geocoder.geocode({ 'location': { lat: this.state.lat, lng: this.state.lng } }, (results, status) => {
             if (status === 'OK') {
                 if (results[0]) {
@@ -104,7 +104,7 @@ class LocationGooglMap extends Component {
 
     render() {
         const {
-            places, mapApiLoaded, mapInstance, mapApi,
+            mapApiLoaded, mapInstance, mapApi,
         } = this.state;
 
         return (

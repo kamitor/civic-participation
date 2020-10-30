@@ -384,6 +384,8 @@ function isGovAction(action) {
             return true;
         case "propvote":
             return false;
+        default:
+            throw new Error("action not valid");
     }
 }
 
