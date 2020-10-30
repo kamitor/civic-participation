@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import GoogleMapReact from 'google-map-react';
 import AutoComplete from './Autocomplete';
 import Marker from './Marker';
+import settings from '../../settings';
 
 class LocationGooglMap extends Component {
     constructor(props) {
@@ -127,7 +128,7 @@ class LocationGooglMap extends Component {
                     onChildMouseMove={this.onMarkerInteraction}
                     onClick={this._onClick}
                     bootstrapURLKeys={{
-                        key: 'AIzaSyDMa6KMn669HY33Qrdu5gd0ggyf5C8G4WQ',
+                        key: settings.google.apiKey,
                         libraries: ['places', 'geometry'],
                     }}
                     yesIWantToUseGoogleMapApiInternals
