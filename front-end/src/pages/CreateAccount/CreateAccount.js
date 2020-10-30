@@ -72,7 +72,7 @@ export default function CreateAccount() {
 	}
 
 	const navigateSecurityPage = () => {
-		window.open("security", "_blank")
+		window.open("/security", "_blank")
 	}
 
 	const GreenSmallTypographyCreate = withStyles({

@@ -101,7 +101,7 @@ export default function Login() {
 	})(Typography);
 
 	const navigateSecurityPage = () => {
-		window.open("security", "_blank")
+		window.open("/security", "_blank")
 	}
 
 	const TitleLock = withStyles({

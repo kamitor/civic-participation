@@ -3,6 +3,8 @@ import { Grid, Typography } from '@material-ui/core';
 import { Lock, AccountCircle, Info } from '@material-ui/icons';
 import { withStyles } from "@material-ui/core/styles";
 import governmentUser from '../../assets/image/government_user.png';
+import { HtmlTooltip } from '../../components/Themes';
+import { Link } from '@material-ui/core';
 
 const TimelineMiddleTyography = withStyles({
     root: {
@@ -12,6 +14,13 @@ const TimelineMiddleTyography = withStyles({
         fontWeight: '400',
     }
 })(Typography);
+
+const TitleLock = withStyles({
+    root: {
+        fontSize: "14px"
+    }
+})(Lock);
+
 
 const TimelineMiddleUnderlineTyography = withStyles({
     root: {
@@ -61,6 +70,10 @@ const TimelineInfo = withStyles({
 })(Info);
 
 function Timeline(props) {
+    const navigateSecurityPage = () => {
+        window.open("/security", "_blank")
+    }
+
     return (
         <Grid item container className="timeline-item-wraper" alignItems="center" spacing={5}>
             <Grid item className="item-img">
@@ -81,12 +94,32 @@ function Timeline(props) {
                 <Grid item container xs={6} className="item-right-wraper">
                     <Grid item container spacing={3}>
                         <Grid item xs={6} container >
-                            <Grid item>
-                                <TimelineLock />
-                            </Grid>
-                            <Grid item>
-                                <TimelineMiddleTyography>{props.status}</TimelineMiddleTyography>
-                            </Grid>
+                            <HtmlTooltip
+                                title={
+                                    <React.Fragment>
+                                        <div>{<TitleLock />}Proposals, voting and government actions are stored on the blockchain.
+												This data is cryptographically secured and cannot be forged or tampered
+												with by anyone, including the government.&nbsp;
+												<Link className="read-more-link" onClick={navigateSecurityPage}>
+                                                Click to learn more
+												</Link>
+                                        </div>
+                                    </React.Fragment>
+                                }
+                                arrow
+                                interactive
+                            >
+                                <span>
+                                    <Grid item>
+                                        <TimelineLock />
+                                    </Grid>
+                                    <Grid item>
+                                        <TimelineMiddleTyography>{props.status}</TimelineMiddleTyography>
+                                    </Grid>
+
+                                </span>
+                            </HtmlTooltip>
+
                         </Grid>
                         <Grid item xs={6} container >
                             <Grid item>
