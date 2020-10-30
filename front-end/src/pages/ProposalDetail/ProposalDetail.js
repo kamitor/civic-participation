@@ -231,14 +231,14 @@ export default function ProposalDetail() {
             title: proposalRes.title,
             description: proposalRes.description,
             category: categoryToLabel(proposalRes.category),
-            categoryIcon: categoryToIcon(proposalRes.category),
-            budget: formatter.format(proposalRes.budget),
             type: typeToLabel(proposalRes.type),
             location: parseLocation(proposalRes.location),
             status: toDefinition(proposalRes.status),
-            regulations: proposalRes.regulations,
-            comment: proposalRes.comment
         }
+        if (proposalRes.budget) proposalState.budget = formatter.format(proposalRes.budget);
+        if (proposalRes.regulations) proposalState.regulations = proposalRes.regulations;
+        if (proposalRes.comment) proposalState.comment = proposalRes.comment;
+
         console.log('proposalState', proposalState);
 
         if (authContext.isGov) {
@@ -352,10 +352,12 @@ export default function ProposalDetail() {
                             </Grid>
                             <Grid item xs={12} container className="item-wraper">
                                 <Grid item xs={4} container direction="column">
-                                    <Grid item>
-                                        <TitleLabelTyography>Budget</TitleLabelTyography>
-                                        {proposal.budget}
-                                    </Grid>
+                                    {proposal.budget && (
+                                        <Grid item>
+                                            <TitleLabelTyography>Budget</TitleLabelTyography>
+                                            {proposal.budget}
+                                        </Grid>
+                                    )}
                                     <Grid item className="type-wrape">
                                         <TitleLabelTyography>Infrastucture type</TitleLabelTyography>
                                         {proposal.type}
@@ -392,25 +394,31 @@ export default function ProposalDetail() {
                             </Grid>
                             <Grid item xs={12} container className="government-wraper">
                                 <Grid item>
-                                    <MainTitleTyography>Government additions</MainTitleTyography>
+                                    {proposal.comment && proposal.regulations &&
+                                        <MainTitleTyography>Government additions</MainTitleTyography>
+                                    }
                                 </Grid>
                                 <Grid item container spacing={7}>
-                                    <Grid item xs={4} container direction="column" spacing={2} className="regulations-wraper">
-                                        <Grid item>
-                                            <TitleLabelTyography>Regulations</TitleLabelTyography>
+                                    {proposal.regulations && (
+                                        <Grid item xs={4} container direction="column" spacing={2} className="regulations-wraper">
+                                            <Grid item>
+                                                <TitleLabelTyography>Regulations</TitleLabelTyography>
+                                            </Grid>
+                                            <Grid item>
+                                                {proposal.regulations}
+                                            </Grid>
                                         </Grid>
-                                        <Grid item>
-                                            {proposal.regulations}
+                                    )}
+                                    {proposal.comment && (
+                                        <Grid item xs={6} container direction="column" spacing={2} className="comment-wraper">
+                                            <Grid item>
+                                                <TitleLabelTyography>Comment for latest update</TitleLabelTyography>
+                                            </Grid>
+                                            <Grid item>
+                                                {proposal.comment}
+                                            </Grid>
                                         </Grid>
-                                    </Grid>
-                                    <Grid item xs={6} container direction="column" spacing={2} className="comment-wraper">
-                                        <Grid item>
-                                            <TitleLabelTyography>Comment for latest update</TitleLabelTyography>
-                                        </Grid>
-                                        <Grid item>
-                                            {proposal.comment}
-                                        </Grid>
-                                    </Grid>
+                                    )}
                                 </Grid>
                             </Grid>
                             <Grid item xs={12} container className="history-wraper">
