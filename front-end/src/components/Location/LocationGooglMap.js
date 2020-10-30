@@ -20,7 +20,7 @@ class LocationGooglMap extends Component {
         lng: this.props.location.lng
     };
 
-    componentWillMount() {
+    componentDidMount() {
         this.setCurrentLocation();
     }
 

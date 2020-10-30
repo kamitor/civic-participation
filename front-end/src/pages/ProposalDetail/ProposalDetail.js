@@ -17,6 +17,7 @@ import { toLabel as typeToLabel } from '../../types/proposals/type';
 import { toLabel as categoryToLabel } from '../../types/proposals/categories';
 import ProposalStatus, { toDefinition } from '../../types/proposals/status';
 import settings from '../../settings';
+import { useCallback } from 'react';
 
 function parseLocation(location) {
     return {
@@ -188,7 +189,7 @@ export default function ProposalDetail() {
         edit: false
     });
 
-    async function getProposal() {
+    const getProposal = useCallback(async () => {
         const proposalRes = await authContext.civic.proposalGet(proposal_id);
         const formatter = new Intl.NumberFormat('nl-NL', {
             style: 'currency',
@@ -221,9 +222,9 @@ export default function ProposalDetail() {
             }
         }
         setProposal(proposalState);
-    }
+    }, [authContext.civic, authContext.isGov, proposal_id])
 
-    async function getHistory() {
+    const getHistory = useCallback(async () => {
         const historyRes = await authContext.civic.proposalHistory(proposal_id);
         const historyState = [];
         for (let historyItem of historyRes) {
@@ -239,7 +240,7 @@ export default function ProposalDetail() {
             })
         }
         setProposalHistory(historyState);
-    }
+    }, [authContext.civic, proposal_id])
 
     useEffect(() => {
         async function main() {
@@ -247,6 +248,7 @@ export default function ProposalDetail() {
                 history.push('/login');
                 return;
             }
+            // useCallback(getProposal);
             getProposal();
             getHistory();
         }
