@@ -17,7 +17,7 @@ class LocationGooglMap extends Component {
         geoCoder: null,
         places: [this.props.location.lat, this.props.location.lng],
         center: [this.props.location.lat, this.props.location.lng],
-        zoom: 15,
+        zoom: this.props.zoom,
         address: '',
         draggable: true,
         lat: this.props.location.lat,
@@ -113,9 +113,9 @@ class LocationGooglMap extends Component {
 
         return (
             <>
-                {mapApiLoaded && (
+                {mapApiLoaded && this.props.editable && (
                     <div>
-                        <AutoComplete map={mapInstance} mapApi={mapApi} addplace={this.addPlace} editable={this.props.editable} />
+                        <AutoComplete map={mapInstance} mapApi={mapApi} addplace={this.addPlace} />
                     </div>
                 )}
                 <GoogleMapReact
@@ -136,8 +136,8 @@ class LocationGooglMap extends Component {
                 >
                     <Marker
                         text={this.state.address}
-                        lat={this.props.lat}
-                        lng={this.props.lng}
+                        lat={this.props.location.lat}
+                        lng={this.props.location.lng}
                     />
                 </GoogleMapReact>
             </ >
