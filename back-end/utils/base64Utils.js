@@ -1,30 +1,65 @@
 const settings = require('../settings');
 const fs = require('fs');
 const path = require('path');
+const base64Img = require('base64-img');
+const localPath = settings.imageUploadDirectory;
 
 /**
  * Takes base64 string of image, filename and store in '../uploads' directory
  * @param {*} baseImage - base64 string of image
  * @param {*} fileName - filename of the image
  */
-module.exports = async function base64ToPNG(base64String, fileName) {
+async function base64ToImage(base64String, fileName) {
     return new Promise((resolve, reject) => {
-        //path of folder where you want to save the image.
-        const localPath = settings.imageUploadDirectory;
         //Check that if directory is present or not.
         if (!fs.existsSync(localPath)) {
             fs.mkdirSync(localPath);
         }
-
-        const ext = base64String.substring(base64String.indexOf("/") + 1, base64String.indexOf(";base64"));
-        
-        const data = base64String.replace(/^data:image\/png;base64,/, '');
-
-        fs.writeFile(path.resolve(__dirname, `${localPath}${fileName}.${ext}`), data, 'base64', function (err) {
+        // eslint-disable-next-line no-undef
+        base64Img.img(base64String, path.resolve(__dirname, localPath), fileName, function (err, filepath) {
             if (err) {
                 reject(err);
-            };
-            resolve('success');
+            }
+            resolve(filepath);
         });
     });
+}
+
+/**
+ * This function takes SHA256 hash as a key and parses the file with the name and
+ * returns base64 string of the parsed image.
+ * 
+ * @param {string} imageSha256 - SHA256 hash of the image.
+ * @returns {string} - Base64 string data of image.
+ */
+async function hashToBase64(imageSha256) {
+    return new Promise((resolve, reject) => {
+        if (!imageSha256) {
+            resolve('');
+        }
+
+        fs.readdir(localPath, (err, files) => {
+            const fileIndex = files.findIndex(file => file.includes(imageSha256));
+
+            if (fileIndex > -1) {
+                // eslint-disable-next-line no-undef
+                const fileLocation = path.resolve(__dirname, `${localPath}${files[fileIndex]}`);
+                base64Img.base64(fileLocation, function (err, data) {
+                    if (err) {
+                        console.log(`not able to read file ${fileLocation}, ${err}`);
+                        resolve('');
+                    }
+                    resolve(data);
+                });
+            } else {
+                reject('file not found', imageSha256);
+            }
+
+        })
+    });
+}
+
+module.exports = {
+    base64ToImage,
+    hashToBase64
 }
