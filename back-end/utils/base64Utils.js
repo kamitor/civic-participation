@@ -37,13 +37,13 @@ async function hashToBase64(imageSha256) {
         if (!imageSha256) {
             resolve('');
         }
-
-        fs.readdir(localPath, (err, files) => {
+        // eslint-disable-next-line no-undef
+        fs.readdir(path.resolve(__dirname, localPath), (err, files) => {
             const fileIndex = files.findIndex(file => file.includes(imageSha256));
-
             if (fileIndex > -1) {
+                const fileName = files[fileIndex];
                 // eslint-disable-next-line no-undef
-                const fileLocation = path.resolve(__dirname, `${localPath}${files[fileIndex]}`);
+                const fileLocation = path.resolve(__dirname, `${localPath}${fileName}`);
                 base64Img.base64(fileLocation, function (err, data) {
                     if (err) {
                         console.log(`not able to read file ${fileLocation}, ${err}`);
