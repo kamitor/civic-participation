@@ -1,7 +1,6 @@
-const fs = require('fs');
 const crypto = require('crypto')
 
-const base64ToPNG = require('../utils/base64ToPng');
+const { base64ToImage } = require('../utils/base64Utils');
 
 /**
  * Stores the proposal photo with sha256 as key and returns sha256 of the image.
@@ -16,9 +15,9 @@ module.exports = async function (req, res) {
     }
     try {
         const imageSha256 = crypto.createHash("sha256").update(image).digest("hex");
-        await base64ToPNG(image, imageSha256);
+        await base64ToImage(image, imageSha256);
         // send sha256 of image
-        res.send({imageSha256});
+        res.send({ imageSha256 });
     } catch (e) {
         res.status(400).send(`Error creating image from base64 data, ${e}`);
     }
