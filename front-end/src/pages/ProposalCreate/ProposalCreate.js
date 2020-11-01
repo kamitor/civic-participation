@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Grid, Typography, Checkbox, TextField, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import background from '../../assets/image/heading.png';
@@ -17,6 +17,8 @@ import LocationGooglMap from '../../components/Location/LocationGooglMap';
 import { useForm } from "react-hook-form";
 import Navbar from '../../components/Navbar/Navbar';
 import './ProposalCreate.scss';
+import { ConsumeAuth } from '../../hooks/authContext';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -157,6 +159,8 @@ const UploadLock = withStyles({
 
 export default function ProposalCreate() {
     const classes = useStyles();
+    const authContext = ConsumeAuth();
+    const history = useHistory();
 
     const [stateCheckBox, setStateCheckBox] = useState({
         checkedA: false,
@@ -271,6 +275,16 @@ export default function ProposalCreate() {
         }
         setTitle(e.target.value)
     }
+
+    useEffect(() => {
+        async function main() {
+            if (!await authContext.isLoggedIn()) {
+                history.push('/login');
+                return;
+            }
+        }
+        main();
+    }, [])
 
     return (
         <div className={classes.root}>
@@ -451,14 +465,14 @@ export default function ProposalCreate() {
                                         dropzoneText="drag files here or click to upload"
                                         onChange={() => handleDropDownImage(files)}
                                         filesLimit={1}
-                                        // showPreviewsInDropzone={true}
+                                    // showPreviewsInDropzone={true}
                                     />
                                     {/* <DragDrop /> */}
 
                                 </Grid>
                                 <Grid item xs={12}>
                                     <div className="googlmap-wrape">
-                                        <LocationGooglMap location={{lat: 52.1135031, lng: 4.2829047}} zoom={15} />
+                                        <LocationGooglMap location={{ lat: 52.1135031, lng: 4.2829047 }} zoom={15} />
                                     </div>
                                 </Grid>
                             </Grid>

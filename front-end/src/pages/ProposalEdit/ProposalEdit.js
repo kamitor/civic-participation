@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Grid, Typography, TextField } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import background from '../../assets/image/header.png';
-import { Stars, ExpandMore, ExpandLess } from '@material-ui/icons';
+import { Stars } from '@material-ui/icons';
 import { withStyles } from "@material-ui/core/styles";
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import FormControl from '@material-ui/core/FormControl';
@@ -137,33 +137,6 @@ const GovernmentTitleTyography = withStyles({
     }
 })(Typography);
 
-const GovernmentContentMiddleTyography = withStyles({
-    root: {
-        fontSize: '14px',
-        color: 'rgba(0, 0, 0, 1)',
-        lineHeight: '16.41px',
-        fontWeight: '400'
-    }
-})(Typography);
-
-const GovernmentContentSmallTyography = withStyles({
-    root: {
-        fontSize: '12px',
-        color: 'rgba(0, 0, 0, 1)',
-        lineHeight: '16.41px',
-        fontWeight: '400'
-    }
-})(Typography);
-
-const CollapseTyography = withStyles({
-    root: {
-        fontSize: '12px',
-        color: 'rgba(18, 97, 163, 1)',
-        lineHeight: '16px',
-        fontWeight: '400'
-    }
-})(Typography);
-
 export default function ProposalDetail() {
     const classes = useStyles();
     const [stateCheckBox, setStateCheckBox] = useState({
@@ -199,20 +172,20 @@ export default function ProposalDetail() {
     });
     const onSubmit = data => {
         // Title validation
-        if (title == "") {
+        if (title === "") {
             setHasErrorTitle(true);
         } else {
             setHasErrorTitle(false)
         }
         // Type validation
-        if (state.type == "") {
+        if (state.type === "") {
             setHasError(true);
         } else {
             setHasError(false)
         }
         // Categories validation
         for (const [key, value] of Object.entries(stateCheckBox)) {
-            if (value == true) {
+            if (value === true) {
                 setHasErrorCategory(false)
                 break;
             } else {
@@ -232,7 +205,7 @@ export default function ProposalDetail() {
 
     const handleChange = (event) => {
         const name = event.target.name;
-        if (event.target.value == "") {
+        if (event.target.value === "") {
             setHasError(true)
         } else {
             setHasError(false)
@@ -245,7 +218,7 @@ export default function ProposalDetail() {
 
     const handleChangeStatus = (event) => {
         const name = event.target.name;
-        if (event.target.value == "") {
+        if (event.target.value === "") {
             setHasErrorStatus(true)
         } else {
             setHasErrorStatus(false)
@@ -290,7 +263,7 @@ export default function ProposalDetail() {
     };
 
     const handleChangeTitle = (e) => {
-        if (e.target.value == "") {
+        if (e.target.value === "") {
             setHasErrorTitle(true)
         } else {
             setHasErrorTitle(false)
@@ -309,7 +282,7 @@ export default function ProposalDetail() {
                             <HearderCustomizeStar />
                             <TextField
                                 label="Name your idea"
-                                className={classes.margin, classes.commonText}
+                                className={classes.margin + ' ' + classes.commonText}
                                 InputProps={{
                                     className: classes.inputTitle
                                 }}
@@ -450,7 +423,7 @@ export default function ProposalDetail() {
                             <Grid item xs={8}>
                                 <Paper className={classes.paper}>
                                     <ButtonBase className={classes.image}>
-                                        <img className={classes.img} alt="image" src="" />
+                                        <img className={classes.img} src="" />
                                     </ButtonBase>
                                 </Paper>
                             </Grid>
