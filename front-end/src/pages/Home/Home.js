@@ -33,7 +33,7 @@ function Home() {
             }
 
             // 1. Create a file input and add a React ref onto it.
-            const proposalData = await civic.proposalCreateWithPhoto(proposal);
+            const proposalData = await civic.proposalCreate(proposal);
             console.log('proposalCreate()', proposalData)
             const proposalId = proposalData.proposalId;
 
@@ -42,18 +42,15 @@ function Home() {
             proposal.proposalId = proposalId;
             proposal.status = ProposalStatus.Reviewing;
             
-            if(!proposal.proposalId){
-                throw new Error('We can not update proposal without proposal id');
-            }
             
-            let proposalUpdateRes = await civic.proposalUpdateWithPhoto(proposal);
+            let proposalUpdateRes = await civic.proposalUpdate(proposal);
             console.log('proposalUpdate()', proposalUpdateRes);
 
             proposal.regulation = 'RM 3212';
             proposal.budget = 2300.00;
             proposal.comment = 'Regulations checked and budget added'
             proposal.status = ProposalStatus.Approved;
-            proposalUpdateRes = await civic.proposalUpdateWithPhoto(proposal);
+            proposalUpdateRes = await civic.proposalUpdate(proposal);
             console.log('proposalUpdate()', proposalUpdateRes);
 
             accountLoginRes = await civic.accountLogin('jack', 'Password1234!');
