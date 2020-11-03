@@ -9,7 +9,7 @@ echo "Running wallet"
 set +e
 keosd &
 set -e
-sleep 1
+sleep 5
 
 echo "Creating key wallet"
 cleos wallet create --file /data/wallet.txt

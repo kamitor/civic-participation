@@ -1,11 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Civic from '../../services/Civic';
 import { ProposalCategory, ProposalType, ProposalStatus } from '../../types/civic';
 
 function Home() {
+    const [selectedFile, setSelectedFile] = useState('');
 
     useEffect(() => {
         async function main() {
+            console.log(selectedFile);
             let civic = new Civic(); // put this in context API, or use singleton
 
             let accountLoginRes;
@@ -23,11 +25,14 @@ function Home() {
                 category: ProposalCategory.Green,
                 budget: 0,
                 type: ProposalType.Create,
-                photos: [],
                 location: createLocation()
-            }
-            
+            };
 
+            if (selectedFile) {
+                proposal.photo = selectedFile;
+            }
+
+            // 1. Create a file input and add a React ref onto it.
             const proposalData = await civic.proposalCreate(proposal);
             console.log('proposalCreate()', proposalData)
             const proposalId = proposalData.proposalId;
@@ -36,6 +41,8 @@ function Home() {
             console.log('accountLogin() - tijn', accountLoginRes);
             proposal.proposalId = proposalId;
             proposal.status = ProposalStatus.Reviewing;
+            
+            
             let proposalUpdateRes = await civic.proposalUpdate(proposal);
             console.log('proposalUpdate()', proposalUpdateRes);
 
@@ -67,6 +74,9 @@ function Home() {
     return (
         <div>
             Here is the app!
+            <form>
+                <input type="file" name="photo" id="photo" onChange={(e) => setSelectedFile(e.target.files[0])} />
+            </form>
         </div>
     )
 }

@@ -11,10 +11,10 @@ public:
   // microseconds vote_period = eosio::days(30);
   // static constexpr uint32_t vote_yes_pass_count = 5; // 5 yes votes
 
-  ACTION propcreate(name creator, string title, string description, uint8_t category, float budget, uint8_t type, string location);
+  ACTION propcreate(name creator, string title, string description, uint8_t category, float budget, uint8_t type, string location, eosio::checksum256 photo);
 
   ACTION propupdate(name updater, uint64_t proposal_id, string title, string description, uint8_t category, float budget,
-                    uint8_t type, string location, uint8_t new_status, string regulations, string comment);
+                    uint8_t type, string location, uint8_t new_status, string regulations, string comment, eosio::checksum256 photo);
 
   // ACTION propvote(name voter, uint64_t proposal_id, bool vote);
 
@@ -81,6 +81,11 @@ private:
     time_point updated;
     // vector<eosio::name> voted;
     // uint8_t yes_vote_count;
+    // Instead of storing image directly on blockchain
+    // 1. we convert image to base64 and store it in middleware (NodeJS), calculate sha256 hash of image send that to blockchain
+    // 2. we store sha256 hash of the image in blockchain.
+    // 3. while retreving also we use sha256 hash as a key and retrive image based on sha256 hash from middelware
+    eosio::checksum256 photo;
 
     auto primary_key() const
     {

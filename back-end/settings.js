@@ -19,7 +19,8 @@ const settings = {
         url: "mongodb://localhost:27017/conscious"
     },
     port: 4000,
-    env: "development"
+    env: "development",
+    imageUploadDirectory: '../uploads/',
 };
 
 if (process.env.REACT_APP_NODE_ENV === "production") {

@@ -5,7 +5,7 @@ const { mergeObj } = require('../services/objects');
 
 // Blockchain proxy
 // Use the following array for paths that should not be proxied to the blockchain
-const blockchainPathBlacklist = ['/login', '/create-account'];
+const blockchainPathBlacklist = ['/login', '/create-account', '/image'];
 
 const pre = async function(req, res, next) {
     if (blockchainPathBlacklist.includes(req.path)) {

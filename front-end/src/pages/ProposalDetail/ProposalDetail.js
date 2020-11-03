@@ -205,6 +205,7 @@ export default function ProposalDetail() {
             status: toDefinition(proposalRes.status),
         }
         if (proposalRes.budget) proposalState.budget = formatter.format(proposalRes.budget);
+        if (proposalRes.photo) proposalState.photo = proposalRes.photo;
         if (proposalRes.regulations) proposalState.regulations = proposalRes.regulations;
         if (proposalRes.comment) proposalState.comment = proposalRes.comment;
 
@@ -263,7 +264,6 @@ export default function ProposalDetail() {
         // TODO add to vote state (new context)
         history.push('/proposals-vote');
     }
-
     return (
         <div className={classes.root}>
             <Navbar />
@@ -338,7 +338,7 @@ export default function ProposalDetail() {
                             <Grid item xs={8}>
                                 <Paper className={classes.paper}>
                                     <ButtonBase className={classes.image}>
-                                        <img className={classes.img} alt={proposal.title} src={proposal.imgUrl} />
+                                        <img className={classes.img} alt={proposal.title} src={proposal.photo} />
                                     </ButtonBase>
                                 </Paper>
                             </Grid>

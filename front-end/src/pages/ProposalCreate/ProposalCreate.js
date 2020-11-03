@@ -171,7 +171,7 @@ export default function ProposalCreate() {
 
     const [files, setFiles] = useState([]);
     const [fileError, setFileError] = useState(false);
-    const [location, setLocation] = useState({lat: 52.1135031, lng: 4.2829047});
+    const [location, setLocation] = useState({ lat: 52.1135031, lng: 4.2829047 });
 
     const handleChangeLocation = async (location) => {
         setLocation(location)
@@ -206,9 +206,10 @@ export default function ProposalCreate() {
 
         const create = await authContext.civic.proposalCreate({
             ...data,
+            budget: Number(data.budget.replace(/[^0-9.-]+/g, "")),
             category: +data.category,
             location: `${location.lat},${location.lng}`,
-            photos: files
+            photo: files[0]
         })
 
         history.push('/dashboard')
@@ -482,10 +483,9 @@ export default function ProposalCreate() {
                                                 required:
                                                     "Please enter a description",
                                             })}
-                                            helperText={`Please describe your proposal and how it will impact the neighborhood (${
-                                                watch("description")?.length ||
+                                            helperText={`Please describe your proposal and how it will impact the neighborhood (${watch("description")?.length ||
                                                 0
-                                            }/${CHARACTER_LIMIT})`}
+                                                }/${CHARACTER_LIMIT})`}
                                             className="description-textarea"
                                             error={
                                                 errors.description !== undefined

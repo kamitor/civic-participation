@@ -6,6 +6,8 @@ import ecc from 'eosjs-ecc';
 import crypto from 'crypto'
 import { wait } from './objects';
 
+import encodeImageFileAsURL from '../utils';
+
 export default class Civic {
     // SEE civic AND accounts FOR TYPES!!!
     // import { ProposalCategory, ProposalStatus, ProposalType,
@@ -134,13 +136,29 @@ export default class Civic {
      * @returns {ProposalDetailed}
      */
     async proposalCreate(proposal) {
-        const tx = await this.civicContract.propcreate(this.account.accountName,
+        if (!proposal.photo) {
+            throw new Error('Photo is mandatory while creating proposal');
+        }
+
+        let proposalDetails = [
+            this.account.accountName,
             proposal.title,
             proposal.description,
             proposal.category,
             proposal.budget,
             proposal.type,
-            proposal.location);
+            proposal.location
+        ];
+
+        const imageBase64 = await encodeImageFileAsURL(proposal.photo);
+
+        const response = await Api.post('/image', {
+            photoString: imageBase64
+        });
+
+        proposalDetails.push(response.data.imageSha256);
+
+        const tx = await this.civicContract.propcreate(...proposalDetails);
 
         await wait(1000);
         const txDetailed = await this.accountability.dfuseClient.fetchTransaction(tx.transaction_id);
@@ -160,7 +178,7 @@ export default class Civic {
             created: new Date(decodedRow.created),
         }
         if (proposal.budget) { proposalDetailed.budget = proposal.budget }
-        if (proposal.photos) { proposalDetailed.photos = proposal.photos }
+        if (proposal.photo) { proposalDetailed.photo = proposal.photo }
         return proposalDetailed;
     }
 
@@ -192,9 +210,27 @@ export default class Civic {
                     location: proposal.location,
                     new_status: proposal.status,
                     regulations: proposal.regulations,
-                    comment: proposal.comment
+                    comment: proposal.comment,
+                    // sha256 of ''
+                    photo: '6f49cdbd80e1b95d5e6427e1501fc217790daee87055fa5b4e71064288bddede'
                 },
             }]
+        }
+
+        if (proposal.photo) {
+            const imageBase64 = await encodeImageFileAsURL(proposal.photo);
+
+            // 1. get sha256 of imageString
+            // await Api.post('/image')
+            // then we will get SHA256 of base64 string which we can pass to propcreate smart contract.
+            // if we have photo in proposal let us push that data as well. But we will only get this data from /image API response.
+            // proposal.photoSHA256 we will get from /image API.
+
+            const response = await Api.post('/image', {
+                photoString: imageBase64
+            });
+
+            txData.actions[0].data.photo = response.data.imageSha256;
         }
 
         const tx = await this.accountability.transact2(txData);
@@ -213,14 +249,16 @@ export default class Civic {
             type: proposal.type,
             location: proposal.location,
             proposalId: proposal.proposalId,
+            status: ProposalStatus.Proposed,
             created: Accountability.timePointToDate(decodedRow.created),
             updated: Accountability.timePointToDate(decodedRow.updated),
             approved: Accountability.timePointToDate(decodedRow.approved),
             status: proposal.status,
-        }
+        };
         if (proposal.budget) { proposalDetailed.budget = proposal.budget }
-        if (proposal.photos) { proposalDetailed.photos = proposal.photos }
+        if (proposal.photo) { proposalDetailed.photo = proposal.photo }
         if (proposal.regulations) { proposalDetailed.regulations = proposal.regulations }
+        if (proposal.comment) { proposalDetailed.comment = proposal.comment }
 
         return proposalDetailed;
     }
@@ -239,40 +277,44 @@ export default class Civic {
      * @returns {ProposalDetailed[]}
      */
     async proposalList(status = null) {
-        const proposalsQuery = await this.civicContract.proposals(this.civicContract.contractAccount)
+        try {
+            const proposalsQuery = await this.civicContract.proposals(this.civicContract.contractAccount)
 
-        // filter per status if not null
-        const proposals = status ? proposalsQuery.rows.filter(x => {
-            return x.json.status === status
-        }) : proposalsQuery.rows;
+            // filter per status if not null
+            const proposals = status ? proposalsQuery.rows.filter(x => {
+                return x.json.status === status
+            }) : proposalsQuery.rows;
 
-        // return ProposalDetailed[] type
-        const response = proposals.map(x => ({
-            proposalId: x.json.proposal_id,
-            title: x.json.title,
-            description: x.json.description,
-            category: x.json.category,
-            budget: x.json.budget,
-            type: x.json.type,
-            location: x.json.location,
-            status: x.json.status,
-            photos: x.json.photos,
-            regulations: x.json.regulations,
-            created: Accountability.timePointToDate(x.json.approved),
-            approved: Accountability.timePointToDate(x.json.approved),
-            updated: Accountability.timePointToDate(x.json.updated),
-            voted: x.json.voted,
-            yesVoteCount: x.json.yes_vote_count,
-        }))
+            // return ProposalDetailed[] type
+            const response = proposals.map(x => ({
+                proposalId: x.json.proposal_id,
+                title: x.json.title,
+                description: x.json.description,
+                category: x.json.category,
+                budget: x.json.budget,
+                type: x.json.type,
+                location: x.json.location,
+                status: x.json.status,
+                photo: x.json.photo,
+                regulations: x.json.regulations,
+                created: Accountability.timePointToDate(x.json.approved),
+                approved: Accountability.timePointToDate(x.json.approved),
+                updated: Accountability.timePointToDate(x.json.updated),
+                voted: x.json.voted,
+                yesVoteCount: x.json.yes_vote_count,
+            }))
 
-        // sort by created date
-        response.sort((a, b) => {
-            if (a.created > b.created) { return 1; }
-            if (a.created < b.created) { return -1; }
-            return 0;
-        })
+            // sort by created date
+            response.sort((a, b) => {
+                if (a.created > b.created) { return 1; }
+                if (a.created < b.created) { return -1; }
+                return 0;
+            })
 
-        return response
+            return response
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     /** 
@@ -294,7 +336,7 @@ export default class Civic {
             type: proposal.type,
             location: proposal.location,
             status: proposal.status,
-            photos: proposal.photos,
+            photo: proposal.photo,
             regulations: proposal.regulations,
             created: Accountability.timePointToDate(proposal.approved),
             approved: Accountability.timePointToDate(proposal.approved),

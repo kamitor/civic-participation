@@ -1,2 +1,7 @@
 node_modules
+
+# NodeJS server logs
 node.log
+
+#File upload directory
+uploads/
