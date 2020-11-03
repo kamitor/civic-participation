@@ -139,7 +139,7 @@ export default class Civic {
         if (!proposal.photo) {
             throw new Error('Photo is mandatory while creating proposal');
         }
-    
+
         let proposalDetails = [
             this.account.accountName,
             proposal.title,
@@ -149,24 +149,24 @@ export default class Civic {
             proposal.type,
             proposal.location
         ];
-    
+
         const imageBase64 = await encodeImageFileAsURL(proposal.photo);
-    
+
         const response = await Api.post('/image', {
             photoString: imageBase64
         });
-        
+
         proposalDetails.push(response.data.imageSha256);
-    
+
         const tx = await this.civicContract.propcreate(...proposalDetails);
-    
+
         await wait(1000);
         const txDetailed = await this.accountability.dfuseClient.fetchTransaction(tx.transaction_id);
-    
+
         const blockNum = txDetailed.execution_trace.action_traces[0].block_num;
         const decodedRows = await this.accountability.dfuseClient.stateAbiBinToJson('civic', 'proposals', [txDetailed.dbops[0].new.hex], blockNum)
         const decodedRow = decodedRows.rows[0]
-    
+
         const proposalDetailed = {
             title: proposal.title,
             description: proposal.description,
@@ -216,32 +216,32 @@ export default class Civic {
                 },
             }]
         }
-    
+
         if (proposal.photo) {
             const imageBase64 = await encodeImageFileAsURL(proposal.photo);
-    
+
             // 1. get sha256 of imageString
             // await Api.post('/image')
             // then we will get SHA256 of base64 string which we can pass to propcreate smart contract.
             // if we have photo in proposal let us push that data as well. But we will only get this data from /image API response.
             // proposal.photoSHA256 we will get from /image API.
-    
+
             const response = await Api.post('/image', {
                 photoString: imageBase64
             });
-    
+
             txData.actions[0].data.photo = response.data.imageSha256;
         }
-    
+
         const tx = await this.accountability.transact2(txData);
-    
+
         await wait(1000);
         const txDetailed = await this.accountability.dfuseClient.fetchTransaction(tx.transaction_id);
-    
+
         const blockNum = txDetailed.execution_trace.action_traces[0].block_num;
         const decodedRows = await this.accountability.dfuseClient.stateAbiBinToJson('civic', 'proposals', [txDetailed.dbops[0].new.hex], blockNum)
         const decodedRow = decodedRows.rows[0];
-    
+
         const proposalDetailed = {
             title: proposal.title,
             description: proposal.description,
@@ -259,7 +259,7 @@ export default class Civic {
         if (proposal.photo) { proposalDetailed.photo = proposal.photo }
         if (proposal.regulations) { proposalDetailed.regulations = proposal.regulations }
         if (proposal.comment) { proposalDetailed.comment = proposal.comment }
-    
+
         return proposalDetailed;
     }
 
