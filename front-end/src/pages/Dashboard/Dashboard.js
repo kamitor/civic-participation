@@ -76,7 +76,7 @@ function Dashboard(props) {
                                         <Card
                                             title={proposal.title}
                                             description={proposal.description}
-                                            imageUrl={proposal.photos}
+                                            imageUrl={proposal.photo}
                                             selected={selected.proposalId === proposal.proposalId}
                                             onClick={() => setSelected(proposal)}
                                             onButtonClick={() => navigateToProposal(proposal.proposalId)}
