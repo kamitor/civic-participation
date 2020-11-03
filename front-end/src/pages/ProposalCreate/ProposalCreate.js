@@ -208,7 +208,7 @@ export default function ProposalCreate() {
             ...data,
             category: +data.category,
             location: `${location.lat},${location.lng}`,
-            photos: files
+            photo: files[0]
         })
 
         history.push('/dashboard')
