@@ -9,8 +9,8 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import ProposalDetail from './pages/ProposalDetail/ProposalDetail';
 import ProposalEdit from './pages/ProposalEdit/ProposalEdit';
 import ProposalVote from './pages/ProposalVote/ProposalVote';
-import ProposalView from './pages/ProposalView/ProposalView';
-import VoteSuccessfult from './pages/ProposalView/VoteSuccesfult';
+import Vote from './pages/Vote/Vote';
+import VoteSuccess from './pages/Vote/VoteSuccess';
 
 const Routes = () => (
     <Router >
@@ -43,10 +43,10 @@ const Routes = () => (
                 <ProposalVote />
             </Route>
             <Route path="/vote">
-                <ProposalView />
+                <Vote />
             </Route>
-            <Route path="/succesfult">
-                <VoteSuccessfult />
+            <Route path="/vote-success">
+                <VoteSuccess />
             </Route>
         </Switch>
     </Router >

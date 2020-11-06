@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { Grid, Typography, Button } from '@material-ui/core';
 import { withStyles } from "@material-ui/core/styles";
 import Navbar from '../../components/Navbar/Navbar';
-import './ProposalView.scss'
+import './Vote.scss'
 
 const TitleTypography = withStyles({
     root: {

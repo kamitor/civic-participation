@@ -8,7 +8,7 @@ import { Data } from './Data';
 import Card from './Card';
 import Navbar from '../../components/Navbar/Navbar';
 import ProgressBar from './ProgressBar';
-import './ProposalView.scss'
+import './Vote.scss'
 import Chart from './Chart';
 
 const useStyles = makeStyles((theme) => ({
@@ -86,15 +86,20 @@ export default function ProposalView() {
     const [totalvalue, setTotalValue] = useState(100000);
    
     const _handleVote = () => {
-        history.push("./succesfult")
+        history.push("./vote-success")
     }
+
+    const formatter = new Intl.NumberFormat('nl-NL', {
+        style: 'currency',
+        currency: 'EUR',
+    });
 
     useEffect(() => {
         let tempData = 0
         Data.map((data) => {
             tempData = tempData + parseInt(data.budget)
         })
-        setSelectedValue(tempData)
+        setSelectedValue(formatter.format(tempData))
         setCompleted((tempData/totalvalue * 100))
     }, []);
 
@@ -114,13 +119,13 @@ export default function ProposalView() {
                             <Grid item container direction="column" spacing={2}>
                                 <ProgressBar bgcolor={"#E39696"} completed={completed} selectedValue={selectedValue} />
                                 <Grid item item container justify="flex-end">
-                                    <TitleHeaderTypography>from budget of ${totalvalue}</TitleHeaderTypography>
+                                    <TitleHeaderTypography>from budget of&nbsp;&nbsp;&nbsp;&nbsp;{formatter.format(totalvalue)}</TitleHeaderTypography>
                                 </Grid>
                             </Grid>
                         </Grid>
                         <Grid item container xs={6} direction="column" spacing={5} alignItems="center">
                             <Grid item>
-                                <TitleHeaderTypography>your votes by categories</TitleHeaderTypography>
+                                <TitleHeaderTypography>Your votes by categories</TitleHeaderTypography>
                             </Grid>
                             <Grid item container xs justify="flex-end">
                                 <Chart series={[44, 55, 13, 43, 22]} labels={['Urban', 'Urban', 'Urban', 'Urban', 'Urban']} />
@@ -135,7 +140,7 @@ export default function ProposalView() {
                         <Grid item>
                             <Grid item container>
                                 <Grid item>
-                                    <UploadSmallTypographyCreate>encrypted</UploadSmallTypographyCreate>
+                                    <UploadSmallTypographyCreate>tamper proof</UploadSmallTypographyCreate>
                                 </Grid>
                                 <Grid item>
                                     <UploadLock />

@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Grid, Typography, TextField, Button } from '@material-ui/core';
+import { Grid, Typography, Button } from '@material-ui/core';
 import { withStyles } from "@material-ui/core/styles";
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
-import ButtonBase from '@material-ui/core/ButtonBase';
 import { NaturePeople } from '@material-ui/icons';
-import './ProposalView.scss'
+import './Vote.scss'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -91,9 +90,9 @@ export default function Card(props) {
                         <Grid item xs container spacing={5}>
                             <Grid item>
                                 <Paper>
-                                    <ButtonBase className={classes.image}>
+                                    <Grid className={classes.image}>
                                         <img className={classes.img} alt="image" src="" />
-                                    </ButtonBase>
+                                    </Grid>
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} sm container>

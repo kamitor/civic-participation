@@ -28,13 +28,14 @@ const ProgressBar = (props) => {
         left: '50%',
         fontFamily: 'Roboto',
         fontSize: 18,
-        transform: 'translateX(-50%)'
+        transform: 'translateX(-50%)',
+        fontFamily: 'Roboto'
     }
 
     return (
         <div style={containerStyles}>
             <div style={fillerStyles}>
-                <span style={labelStyles}>{`$${props.selectedValue} selected`}</span>
+                <span style={labelStyles}>{`${props.selectedValue} selected`}</span>
             </div>
         </div>
     );
