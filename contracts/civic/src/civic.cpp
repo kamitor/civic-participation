@@ -196,6 +196,27 @@ ACTION civic::propvote(name voter, vector<uint64_t> proposal_ids)
 {
     require_auth(voter);
 
+    // update previous proposal votes incase user has already voted
+    votes_table _votes(get_self(), get_self().value);
+    const auto votes_itr = _votes.find(voter.value);
+
+    if (votes_itr != _votes.end())
+    {
+        // user has already voted
+        _votes.modify(creator, same_payer, [&](auto &vote) {
+            vote.proposals = proposal_ids;
+        });
+    }
+    else
+    {
+        // user has not yet voted
+        // Create a proposal with proposal id.
+        _votes.emplace(creator, [&](auto &vote) {
+            vote.account_name = voter;
+            vote.proposals = proposal_ids;
+        });
+    }
+
     proposals_table _proposals(get_self(), get_self().value);
 
     float accumulated_budget = 0.0f;
