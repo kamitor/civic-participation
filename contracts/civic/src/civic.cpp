@@ -191,3 +191,26 @@ ACTION civic::clear()
         msg_itr = _proposals.erase(msg_itr);
     }
 }
+
+ACTION civic::propvote(name voter, vector<uint64_t> proposal_ids)
+{
+    require_auth(voter);
+
+    proposals_table _proposals(get_self(), get_self().value);
+
+    float accumulated_budget = 0;
+    float approved_budget = 100000;
+
+    for (uint64_t proposal_id : proposal_ids)
+    {
+        const auto proposal_itr = _proposals.find(proposal_id);
+        check(proposal_itr != _proposals.end(), "Proposal not found");
+        check(proposal_itr->status == ProposalStatus::Approved, "Proposal not approved for voting");
+        accumulated_budget += proposal_itr->budget;
+        eosio::print(std::to_string(accumulated_budget));
+        _proposals.modify(proposal_itr, same_payer, [&](auto &proposal) {
+            proposal.yes_vote_count += 1;
+        });
+    }
+    // check(accumulated_budget > approved_budget, "Proposals budget exceeded");
+}
