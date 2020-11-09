@@ -190,6 +190,15 @@ ACTION civic::clear()
     {
         msg_itr = _proposals.erase(msg_itr);
     }
+
+    votes_table _votes(get_self(), get_self().value);
+
+    // Delete all records in _proposals table
+    auto votes_itr = _votes.begin();
+    while (votes_itr != _votes.end())
+    {
+        votes_itr = _votes.erase(votes_itr);
+    }
 }
 
 ACTION civic::propvote(name voter, vector<uint64_t> proposal_ids)
@@ -200,9 +209,11 @@ ACTION civic::propvote(name voter, vector<uint64_t> proposal_ids)
     votes_table _votes(get_self(), get_self().value);
     const auto votes_itr = _votes.find(voter.value);
 
+    vector<uint64_t> proposals_voted; // Will be initialized to empty vector
     if (votes_itr != _votes.end())
     {
         // user has already voted
+        proposals_voted = votes_itr->proposals;
         _votes.modify(creator, same_payer, [&](auto &vote) {
             vote.proposals = proposal_ids;
         });
@@ -228,9 +239,35 @@ ACTION civic::propvote(name voter, vector<uint64_t> proposal_ids)
         check(proposal_itr != _proposals.end(), "Proposal not found");
         check(proposal_itr->status == ProposalStatus::Approved, "Proposal not approved for voting");
         accumulated_budget += proposal_itr->budget;
-        _proposals.modify(proposal_itr, same_payer, [&](auto &proposal) {
-            proposal.yes_vote_count += 1;
-        });
+
+        // See if proposal was previously voted on
+        // Find is part of algorithms library
+        vector<uint64_t>::iterator previous_vote_itr = find(proposals_voted.begin(), proposals_voted.end(), proposal->proposal_id);
+        if (previous_vote_itr != proposals_voted.end())
+        {
+            // User previously voted for this proposal
+            // Remove from vector so that it is not decreased later
+            proposals_voted.erase(previous_vote_itr);
+        }
+        else
+        {
+            // Did not vote for previously
+            _proposals.modify(proposal_itr, same_payer, [&](auto &proposal) {
+                proposal.yes_vote_count += 1;
+            });
+        }
     }
     check(accumulated_budget <= approved_budget, "Proposals budget exceeded");
+
+    // For any remaining previous proposals (that were not voted on again) decrease vote count
+    if (!proposals_voted.empty())
+    {
+        for (uint64_t proposal_id : proposals_voted)
+        {
+            const auto proposal_itr = _proposals.find(proposal_id);
+            _proposals.modify(proposal_itr, same_payer, [&](auto &proposal) {
+                proposal.yes_vote_count -= 1;
+            });
+        }
+    }
 }
