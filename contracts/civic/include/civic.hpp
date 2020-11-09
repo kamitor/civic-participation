@@ -87,7 +87,7 @@ private:
     time_point approved;
     time_point updated;
     // vector<eosio::name> voted;
-    uint8_t yes_vote_count;
+    uint32_t yes_vote_count;
     // Instead of storing image directly on blockchain
     // 1. we convert image to base64 and store it in middleware (NodeJS), calculate sha256 hash of image send that to blockchain
     // 2. we store sha256 hash of the image in blockchain.
