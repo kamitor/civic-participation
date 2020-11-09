@@ -277,11 +277,14 @@ export default class Civic {
 
     /** 
      * Votes on an open proposal as the logged in user
-     * @param {number} proposalId
-     * @param {boolean} vote - true = yes, false = no
-     * @returns {ProposalDetailed}
+     * @param {Array} proposalIds - Array of proposal ids.
      */
-    async proposalVote(proposalId, vote) { }
+    async proposalVote(proposalIds) {
+        if (!Array.isArray(proposalIds) || proposalIds.length < 1) {
+            throw new Error('We should send at least one proposal Id in an array');
+        }
+        await this.civicContract.propvote(this.account.accountName, proposalIds);
+    }
 
     /** 
      * Returns a list of proposals ordered by date with optional filter
