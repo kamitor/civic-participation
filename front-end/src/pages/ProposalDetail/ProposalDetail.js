@@ -140,6 +140,15 @@ const MainTitleTyography = withStyles({
     }
 })(Typography);
 
+const MainSmallTitleTyography = withStyles({
+    root: {
+        fontSize: '15px',
+        color: 'rgba(18, 97, 163, 1)',
+        lineHeight: '26.6px',
+        fontWeight: '400'
+    }
+})(Typography);
+
 const TitleLabelTyography = withStyles({
     root: {
         fontSize: '12px',
@@ -428,8 +437,9 @@ export default function ProposalDetail() {
                                     interactive
                                     >
                                         <span>
-                                            <Grid item>
+                                            <Grid item container>
                                                 <TimelineLock />
+                                                <MainSmallTitleTyography>Immutable</MainSmallTitleTyography>
                                             </Grid>
                                         </span>
                                     </HtmlTooltip>

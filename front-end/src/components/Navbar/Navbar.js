@@ -110,6 +110,7 @@ export default function Navbar() {
                 <Grid item container xs alignItems="center">
                     <Grid item container className={classes.buttonContainer}>
                         <DashboardButton onClick={logout}>Logout</DashboardButton>
+                        <DashboardButton onClick={() => history.push('/vote')}>Vote</DashboardButton>
                         <DashboardButton onClick={() => history.push('/dashboard')}>Dashboard</DashboardButton>
                         <CreateButton onClick={() => history.push('/proposal-create')}>CREATE</CreateButton>
                     </Grid>

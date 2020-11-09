@@ -177,13 +177,13 @@ export default function CreateAccount() {
 										color="green"
 										errors={errors}
 										registerRef={register({
-											required: "Up to 13 characters with letters and 0-5.",
+											required: "Up to 13 characters with letters and 1-5.",
 											pattern: {
-												value: /^[0-5a-zA-Z]{1,13}$/,
-												message: "Up to 13 characters with letters and 0-5."
+												value: /^[1-5a-zA-Z]{1,13}$/,
+												message: "Up to 13 characters with letters and 1-5."
 											}
 										})}
-										defaultText="Up to 13 characters with letters and 0-5"
+										defaultText="Up to 13 characters with letters and 1-5"
 									/>
 								</div>
 								<div className="form-ele-wrap">

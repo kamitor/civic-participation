@@ -515,8 +515,8 @@ export default function ProposalCreate() {
                                         onChange={(files) =>
                                             handleDropDownImage(files)
                                         }
-                                        onClick={() => console.log('kokokoookokoko')}
                                         filesLimit={1}
+                                        showAlerts={false}
                                     />
                                     {fileError && (
                                         <FormHelperText>

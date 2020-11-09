@@ -94,9 +94,6 @@ function Timeline(props) {
                 <Grid item container xs={6} className="item-right-wraper">
                     <Grid item container spacing={2}>
                         <Grid item xs={7} container >
-                             <Grid item>
-                                <TimelineLock />
-                            </Grid>
                             <Grid item>
                                 <TimelineMiddleTyography>{props.status}</TimelineMiddleTyography>
                             </Grid>
