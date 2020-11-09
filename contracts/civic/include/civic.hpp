@@ -18,6 +18,10 @@ public:
 
   ACTION propupdate2(name updater, uint64_t proposal_id, string title, string description, uint8_t category, float budget,
                     uint8_t type, string location, uint8_t new_status, string regulations, string comment);
+  ACTION propvote(name voter, vector<uint64_t> proposal_ids);
+  // arguments for vote action
+  // 1. name of the person who is voting
+  // 2. vector: list of proposals
 
   // ACTION propvote(name voter, uint64_t proposal_id, bool vote);
 
@@ -83,7 +87,7 @@ private:
     time_point approved;
     time_point updated;
     // vector<eosio::name> voted;
-    // uint8_t yes_vote_count;
+    uint8_t yes_vote_count;
     // Instead of storing image directly on blockchain
     // 1. we convert image to base64 and store it in middleware (NodeJS), calculate sha256 hash of image send that to blockchain
     // 2. we store sha256 hash of the image in blockchain.
@@ -97,6 +101,17 @@ private:
   };
 
   typedef multi_index<name("proposals"), proposal> proposals_table;
+
+  TABLE votes
+  {
+    name account_name;
+    vector<uint64_t> proposals;
+
+    auto primary_key() const
+    {
+      return account_name.value;
+    }
+  };
 
   // Default table
   // TABLE messages {
