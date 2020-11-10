@@ -91,7 +91,7 @@ export default function Card(props) {
                             <Grid item>
                                 <Paper>
                                     <Grid className={classes.image}>
-                                        <img className={classes.img} alt="image" src="" />
+                                        <img className={classes.img} alt="image" src={props.photo} />
                                     </Grid>
                                 </Paper>
                             </Grid>
