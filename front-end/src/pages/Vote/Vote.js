@@ -8,8 +8,8 @@ import { Lock } from '@material-ui/icons';
 
 import Navbar from '../../components/Navbar/Navbar';
 import { ConsumeAuth } from '../../hooks/authContext'
+import { ConsumeVote } from '../../hooks/voteContext'
 
-import { Data } from './Data';
 import Card from './Card';
 import ProgressBar from './ProgressBar';
 import Chart from './Chart';
@@ -84,16 +84,18 @@ const UploadLock = withStyles({
 
 export default function ProposalView() {
     const authContext = ConsumeAuth();
+    const voteContext = ConsumeVote();
 
     const classes = useStyles();
     const history = useHistory();
     const [completed, setCompleted] = useState(0);
     const [selectedValue, setSelectedValue] = useState(0);
-    const [totalvalue, setTotalValue] = useState(100000);
+    // total budget
+    const [budgetLimit, _] = useState(100000);
 
     const _handleVote = async () => {
-        // TODO: get proposal Ids from global store/ context.
-        const proposalIds = [];
+        // TODO: get proposal data from global store/ context.
+        const proposalIds = voteContext.proposals.map(proposal => proposal.proposalId);
         const proposalVoteRes = await authContext.civic.proposalVote(proposalIds);
         // TODO: Can we pass some proposal name or id to vote-success route so that we can display it in vote-success page?
         if (proposalVoteRes) {
@@ -101,7 +103,6 @@ export default function ProposalView() {
         } else {
             console.log('Error occurred while voting the proposal, please try again');
         }
-
     }
 
     const formatter = new Intl.NumberFormat('nl-NL', {
@@ -110,12 +111,10 @@ export default function ProposalView() {
     });
 
     useEffect(() => {
-        let tempData = 0
-        Data.map((data) => {
-            tempData = tempData + parseInt(data.budget)
-        })
-        setSelectedValue(formatter.format(tempData))
-        setCompleted((tempData / totalvalue * 100))
+        const totalProposalBudget = voteContext.proposals.reduce((acc, curr) => acc + parseFloat(curr.budget), 0);
+
+        setSelectedValue(formatter.format(totalProposalBudget))
+        setCompleted((totalProposalBudget / budgetLimit * 100))
     }, []);
 
     return (
@@ -134,7 +133,7 @@ export default function ProposalView() {
                             <Grid item container direction="column" spacing={2}>
                                 <ProgressBar bgcolor={"#E39696"} completed={completed} selectedValue={selectedValue} />
                                 <Grid item item container justify="flex-end">
-                                    <TitleHeaderTypography>from budget of&nbsp;&nbsp;&nbsp;&nbsp;{formatter.format(totalvalue)}</TitleHeaderTypography>
+                                    <TitleHeaderTypography>from budget of&nbsp;&nbsp;&nbsp;&nbsp;{formatter.format(budgetLimit)}</TitleHeaderTypography>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -172,12 +171,13 @@ export default function ProposalView() {
                 </Grid>
                 <Grid className="content-wraper">
                     <Grid container spacing={5}>
-                        {Data.map((data, key) => {
+                        {voteContext.proposals.map((data, key) => {
                             return (
                                 <Card
                                     title={data.title}
                                     description={data.description}
                                     budget={data.budget}
+                                    photo={data.photo}
                                     key={key}
                                 />
                             )
