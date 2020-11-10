@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { Grid, Typography, TextField, Button } from '@material-ui/core';
+import { Grid, Typography, TextField, Button, CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import background from '../../assets/image/header.png';
-import { Stars, ExpandMore, ExpandLess } from '@material-ui/icons';
+import { Stars, ExpandMore, ExpandLess, Lock } from '@material-ui/icons';
 import { withStyles } from "@material-ui/core/styles";
 import Paper from '@material-ui/core/Paper';
+import { HtmlTooltip } from '../../components/Themes';
+import { Link } from '@material-ui/core';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import LocationGoogleMaps from '../../components/Location/LocationGoogleMaps';
 import Navbar from '../../components/Navbar/Navbar';
@@ -91,8 +93,8 @@ const useStyles = makeStyles((theme) => ({
         fontSize: "25px",
     },
     image: {
-        width: 450,
-        height: 294,
+        width: '100%',
+        height: '100%',
     },
     img: {
         margin: 'auto',
@@ -101,9 +103,8 @@ const useStyles = makeStyles((theme) => ({
         maxHeight: '100%',
     },
     paper: {
-        padding: theme.spacing(2),
         margin: 'auto',
-        maxWidth: 450,
+        maxWidth: 330,
         marginRight: 25
     },
     currencyInput: {
@@ -120,22 +121,6 @@ const HearderCustomizeStar = withStyles({
     }
 })(Stars)
 
-const AddToVoteButton = withStyles({
-    root: {
-        backgroundColor: '#1261A3',
-        borderRadius: 3,
-        border: 0,
-        color: 'white',
-        height: 36,
-        padding: '0 20px',
-        marginLeft: '10px'
-    },
-    label: {
-        textTransform: 'capitalize',
-        fontSize: '14px',
-        fontWeight: '500'
-    },
-})(Button);
 
 const StatusTyography = withStyles({
     root: {
@@ -152,6 +137,15 @@ const MainTitleTyography = withStyles({
         color: 'rgba(18, 97, 163, 1)',
         lineHeight: '26.6px',
         fontWeight: '600'
+    }
+})(Typography);
+
+const MainSmallTitleTyography = withStyles({
+    root: {
+        fontSize: '15px',
+        color: 'rgba(18, 97, 163, 1)',
+        lineHeight: '26.6px',
+        fontWeight: '400'
     }
 })(Typography);
 
@@ -173,13 +167,27 @@ const CollapseTyography = withStyles({
     }
 })(Typography);
 
+const TitleLock = withStyles({
+    root: {
+        fontSize: "14px"
+    }
+})(Lock);
+
+
+const TimelineLock = withStyles({
+    root: {
+        color: 'rgba(18, 97, 163, 1);',
+        width: '25px',
+    }
+})(Lock);
+
 export default function ProposalDetail() {
     const { proposal_id } = useParams();
 
     const classes = useStyles();
 
     const [showHistory, setShowHistory] = useState(true);
-
+    const [loading, setLoading] = useState(false)
     const authContext = ConsumeAuth();
     const history = useHistory();
     const [proposal, setProposal] = useState();
@@ -188,6 +196,27 @@ export default function ProposalDetail() {
         vote: false,
         edit: false
     });
+
+    const AddToVoteButton = withStyles({
+        root: {
+            backgroundColor: loading ? 'rgba(79,79,79, 0.26)' : '#1261A3',
+            borderRadius: 3,
+            border: 0,
+            color: 'white',
+            height: 36,
+            padding: '0 20px',
+            marginLeft: '10px'
+        },
+        label: {
+            textTransform: 'capitalize',
+            fontSize: '14px',
+            fontWeight: '500'
+        },
+    })(Button);
+
+    const navigateSecurityPage = () => {
+        window.open("https://conscious-cities.com/security", "_blank")
+    }
 
     const getProposal = useCallback(async () => {
         const proposalRes = await authContext.civic.proposalGet(proposal_id);
@@ -262,6 +291,7 @@ export default function ProposalDetail() {
 
     function onVote() {
         // TODO add to vote state (new context)
+        setLoading(true);
         history.push('/proposals-vote');
     }
     return (
@@ -300,14 +330,15 @@ export default function ProposalDetail() {
                                 <Grid item xs={8} container spacing={2} alignItems="center" justify="flex-end" className="button-wraper">
                                     {showButtons.vote && (
                                         <Grid item>
-                                            <AddToVoteButton type="button" onClick={onVote}>ADD TO VOTE</AddToVoteButton>
+                                            <AddToVoteButton type="button" disabled={loading} onClick={onVote}>ADD TO VOTE</AddToVoteButton>
                                         </Grid>
                                     )}
                                     {showButtons.edit && (
                                         <Grid item>
-                                            <AddToVoteButton type="button" onClick={() => history.push(`/proposal-edit/${proposal_id}`)}>EDIT</AddToVoteButton>
+                                            <AddToVoteButton type="button" disabled={loading} onClick={() => history.push(`/proposal-edit/${proposal_id}`)}>EDIT</AddToVoteButton>
                                         </Grid>
                                     )}
+                                    {loading && <CircularProgress size={24} className="button-progress" />}
                                 </Grid>
 
                             </Grid>
@@ -384,11 +415,36 @@ export default function ProposalDetail() {
                             </Grid>
                         </Grid>
                         <Grid item xs={12} container className="history-wraper">
-                            <Grid item container>
-                                <Grid item>
-                                    <MainTitleTyography>History</MainTitleTyography>
+                            <Grid item container alignItems="center" justify="space-between">
+                                <Grid item xs container spacing={8} alignItems="center">
+                                    <Grid item>
+                                        <MainTitleTyography>History</MainTitleTyography>
+                                    </Grid>
+                                    <HtmlTooltip
+                                    title={
+                                        <React.Fragment>
+                                            <div>Proposals, voting and government actions
+                                                are stored on the blockchain. Historic data is cryptographically secure,
+                                                meaning the history of events cannot be changed by anyone, including the
+                                                government.
+                                                <Link className="read-more-link" onClick={navigateSecurityPage}>
+                                                    Click to learn more
+                                                </Link>
+                                            </div>
+                                        </React.Fragment>
+                                    }
+                                    arrow
+                                    interactive
+                                    >
+                                        <span>
+                                            <Grid item container>
+                                                <TimelineLock />
+                                                <MainSmallTitleTyography>Immutable</MainSmallTitleTyography>
+                                            </Grid>
+                                        </span>
+                                    </HtmlTooltip>
                                 </Grid>
-                                <Grid item xs={2} container className="collapse-wraper" direction="column" alignItems="center">
+                                <Grid item container xs className="collapse-wraper" alignItems="center" justify="flex-end">
                                     <CollapseTyography onClick={handleCollapse}>COLLAPSE</CollapseTyography>
                                     {showHistory ? <ExpandLess /> : <ExpandMore />}
                                 </Grid>
