@@ -212,17 +212,16 @@ ACTION civic::propvote(name voter, vector<uint64_t> proposal_ids)
     vector<uint64_t> proposals_voted; // Will be initialized to empty vector
     if (votes_itr != _votes.end())
     {
-        // user has already voted
+        // user has already voted => Update the proposals
         proposals_voted = votes_itr->proposals;
-        _votes.modify(creator, same_payer, [&](auto &vote) {
+        _votes.modify(votes_itr, same_payer, [&](auto &vote) {
             vote.proposals = proposal_ids;
         });
     }
     else
     {
-        // user has not yet voted
-        // Create a proposal with proposal id.
-        _votes.emplace(creator, [&](auto &vote) {
+        // user has not yet voted => Create a proposal with proposal id.
+        _votes.emplace(voter, [&](auto &vote) {
             vote.account_name = voter;
             vote.proposals = proposal_ids;
         });
@@ -242,7 +241,7 @@ ACTION civic::propvote(name voter, vector<uint64_t> proposal_ids)
 
         // See if proposal was previously voted on
         // Find is part of algorithms library
-        vector<uint64_t>::iterator previous_vote_itr = find(proposals_voted.begin(), proposals_voted.end(), proposal->proposal_id);
+        vector<uint64_t>::iterator previous_vote_itr = find(proposals_voted.begin(), proposals_voted.end(), proposal_itr->proposal_id);
         if (previous_vote_itr != proposals_voted.end())
         {
             // User previously voted for this proposal
