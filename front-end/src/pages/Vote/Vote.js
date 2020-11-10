@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
+
 import { Grid, Typography, Button } from '@material-ui/core';
 import { withStyles } from "@material-ui/core/styles";
 import { makeStyles } from '@material-ui/core/styles';
 import { Lock } from '@material-ui/icons';
+
+import Navbar from '../../components/Navbar/Navbar';
+import { ConsumeAuth } from '../../hooks/authContext'
+
 import { Data } from './Data';
 import Card from './Card';
-import Navbar from '../../components/Navbar/Navbar';
 import ProgressBar from './ProgressBar';
-import './Vote.scss'
 import Chart from './Chart';
+
+import './Vote.scss'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -78,15 +83,25 @@ const UploadLock = withStyles({
 })(Lock);
 
 export default function ProposalView() {
+    const authContext = ConsumeAuth();
 
     const classes = useStyles();
     const history = useHistory();
     const [completed, setCompleted] = useState(0);
     const [selectedValue, setSelectedValue] = useState(0);
     const [totalvalue, setTotalValue] = useState(100000);
-   
-    const _handleVote = () => {
-        history.push("./vote-success")
+
+    const _handleVote = async () => {
+        // TODO: get proposal Ids from global store/ context.
+        const proposalIds = [];
+        const proposalVoteRes = await authContext.civic.proposalVote(proposalIds);
+        // TODO: Can we pass some proposal name or id to vote-success route so that we can display it in vote-success page?
+        if (proposalVoteRes) {
+            history.push("./vote-success")
+        } else {
+            console.log('Error occurred while voting the proposal, please try again');
+        }
+
     }
 
     const formatter = new Intl.NumberFormat('nl-NL', {
@@ -100,7 +115,7 @@ export default function ProposalView() {
             tempData = tempData + parseInt(data.budget)
         })
         setSelectedValue(formatter.format(tempData))
-        setCompleted((tempData/totalvalue * 100))
+        setCompleted((tempData / totalvalue * 100))
     }, []);
 
     return (
