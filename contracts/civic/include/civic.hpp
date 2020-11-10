@@ -114,6 +114,7 @@ private:
     }
   };
 
+  typedef multi_index<name("votes"), votes> votes_table;
   // Default table
   // TABLE messages {
   //   name    user;
