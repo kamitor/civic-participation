@@ -191,7 +191,7 @@ export default class Civic {
         const txData = {
             actions: [{
                 account: 'civic',
-                name: 'propupdate',
+                name: 'propupdate2',
                 authorization: [{
                     actor: this.account.accountName,
                     permission: this.accountability.account.permission,
@@ -210,9 +210,7 @@ export default class Civic {
                     location: proposal.location,
                     new_status: proposal.status,
                     regulations: proposal.regulations,
-                    comment: proposal.comment,
-                    // sha256 of ''
-                    photo: '6f49cdbd80e1b95d5e6427e1501fc217790daee87055fa5b4e71064288bddede'
+                    comment: proposal.comment
                 },
             }]
         }
@@ -220,16 +218,11 @@ export default class Civic {
         if (proposal.photo) {
             const imageBase64 = await encodeImageFileAsURL(proposal.photo);
 
-            // 1. get sha256 of imageString
-            // await Api.post('/image')
-            // then we will get SHA256 of base64 string which we can pass to propcreate smart contract.
-            // if we have photo in proposal let us push that data as well. But we will only get this data from /image API response.
-            // proposal.photoSHA256 we will get from /image API.
-
             const response = await Api.post('/image', {
                 photoString: imageBase64
             });
 
+            txData.actions[0].name = 'propupdate';
             txData.actions[0].data.photo = response.data.imageSha256;
         }
 
@@ -413,6 +406,8 @@ function mapActionToStatus(actionName) {
             return ProposalStatus.Proposed;
         case "propupdate":
             return ProposalStatus.Reviewing;
+        case "propupdate2":
+            return ProposalStatus.Reviewing;
         default:
             throw new Error("Invalid action name");
     }
@@ -423,6 +418,8 @@ function isGovAction(action) {
         case "propcreate":
             return false;
         case "propupdate":
+            return true;
+        case "propupdate2":
             return true;
         case "propvote":
             return false;
