@@ -153,9 +153,10 @@ export default function ProposalCreate() {
     const authContext = ConsumeAuth()
     const classes = useStyles();
     const history = useHistory();
-
+    const [currencyValue, setCurrencyValue] = useState(null);
     const [files, setFiles] = useState([]);
     const [fileError, setFileError] = useState(false);
+    const [fileSizeError, setFileSizeError] = useState(false);
     const [location, setLocation] = useState({ lat: 52.1135031, lng: 4.2829047 });
 
     const handleChangeLocation = async (location) => {
@@ -163,7 +164,6 @@ export default function ProposalCreate() {
     }
 
     const handleDropDownImage = (files) => {
-        console.log("ko")
         setFileError(false);
         setFiles(files);
     };
@@ -190,7 +190,15 @@ export default function ProposalCreate() {
         Please provide a clear description of the infrastructure change.
         Clearly describe how this proposal will impact the neighbourhood.
         Explain who will this change have a positive and negative impact on.
-    `)
+    `);
+
+    const handleFileSize = (message) => {
+        if (message.search("File is too big") > 0) {
+            setFileSizeError(true);
+            return;
+        }
+        setFileSizeError(false);
+    }
 
     const onSubmit = async (data) => {
         setLoading(true);
@@ -295,8 +303,7 @@ export default function ProposalCreate() {
                             <Grid item xs={7} className="main-wraper ">
                                 <Grid container item xs={12} spacing={4}>
                                     <Grid item>
-                                        <Controller
-                                            as={<CurrencyTextField />}
+                                         <CurrencyTextField
                                             name="budget"
                                             currencySymbol="€"
                                             outputFormat="string"
@@ -309,12 +316,14 @@ export default function ProposalCreate() {
                                                 },
                                             }}
                                             className={classes.budgetInputStyle}
+                                            className={classes.budgetInputStyle}
                                             error={errors.budget !== undefined}
                                             control={control}
                                             ref={register}
                                             key="budget"
                                             rules={{ required: true }}
-                                            value={null}
+                                            value={currencyValue}
+                                            onChange={(event, value)=> setCurrencyValue(value)}
                                         />
                                     </Grid>
                                     <Grid item className="type-wrap">
@@ -397,91 +406,92 @@ export default function ProposalCreate() {
                                                             e.target.value
                                                         );
                                                     }}
-                                                >
-                                                    <Grid item xs={12}>
-                                                        <FormControlLabel
-                                                            control={
-                                                                <CategoryRadio />
-                                                            }
-                                                            label="Green space"
-                                                            value={ProposalCategory.Green}
-                                                            defaultChecked={
-                                                                false
-                                                            }
-                                                        />
-                                                        <FormControlLabel
-                                                            control={
-                                                                <CategoryRadio />
-                                                            }
-                                                            label="Kids"
-                                                            value={ProposalCategory.Kids}
-                                                            defaultChecked={
-                                                                false
-                                                            }
-                                                        />
-                                                        <FormControlLabel
-                                                            control={
-                                                                <CategoryRadio />
-                                                            }
-                                                            value={ProposalCategory.Safety}
-                                                            label="Safety"
-                                                            defaultChecked={
-                                                                false
-                                                            }
-                                                        />
-                                                        <FormControlLabel
-                                                            control={
-                                                                <CategoryRadio />
-                                                            }
-                                                            value={ProposalCategory.Accessibility}
-                                                            label="Accessibility"
-                                                            defaultChecked={
-                                                                false
-                                                            }
-                                                        />
-                                                    </Grid>
-                                                    <Grid item xs={12}>
-                                                        <FormControlLabel
-                                                            control={
-                                                                <CategoryRadio />
-                                                            }
-                                                            value={ProposalCategory.Art}
-                                                            label="Art"
-                                                            defaultChecked={
-                                                                false
-                                                            }
-                                                        />
-                                                        <FormControlLabel
-                                                            control={
-                                                                <CategoryRadio />
-                                                            }
-                                                            value={ProposalCategory.Health}
-                                                            label="Health"
-                                                            defaultChecked={
-                                                                false
-                                                            }
-                                                        />
-                                                        <FormControlLabel
-                                                            control={
-                                                                <CategoryRadio />
-                                                            }
-                                                            value={ProposalCategory.Road}
-                                                            label="Roads"
-                                                            defaultChecked={
-                                                                false
-                                                            }
-                                                        />
-                                                        <FormControlLabel
-                                                            control={
-                                                                <CategoryRadio />
-                                                            }
-                                                            value={ProposalCategory.Residential}
-                                                            label="Residential"
-                                                            defaultChecked={
-                                                                false
-                                                            }
-                                                        />
-                                                    </Grid>
+                                                >   <Grid container alignItems="center" spacing={2}>
+                                                        <Grid item xs={6} container direction="column" >
+                                                            <FormControlLabel
+                                                                control={
+                                                                    <CategoryRadio />
+                                                                }
+                                                                label="Green space"
+                                                                value={ProposalCategory.Green}
+                                                                defaultChecked={
+                                                                    true
+                                                                }
+                                                            />
+                                                            <FormControlLabel
+                                                                control={
+                                                                    <CategoryRadio />
+                                                                }
+                                                                label="Kidaas"
+                                                                value={ProposalCategory.Kids}
+                                                                defaultChecked={
+                                                                    true
+                                                                }
+                                                            />
+                                                            <FormControlLabel
+                                                                control={
+                                                                    <CategoryRadio />
+                                                                }
+                                                                value={ProposalCategory.Safety}
+                                                                label="Safety"
+                                                                defaultChecked={
+                                                                    false
+                                                                }
+                                                            />
+                                                            <FormControlLabel
+                                                                control={
+                                                                    <CategoryRadio />
+                                                                }
+                                                                value={ProposalCategory.Accessibility}
+                                                                label="Accessibility"
+                                                                defaultChecked={
+                                                                    false
+                                                                }
+                                                            />
+                                                        </Grid>
+                                                        <Grid item xs={6} container direction="column">
+                                                            <FormControlLabel
+                                                                control={
+                                                                    <CategoryRadio />
+                                                                }
+                                                                value={ProposalCategory.Art}
+                                                                label="Art"
+                                                                defaultChecked={
+                                                                    false
+                                                                }
+                                                            />
+                                                            <FormControlLabel
+                                                                control={
+                                                                    <CategoryRadio />
+                                                                }
+                                                                value={ProposalCategory.Health}
+                                                                label="Health"
+                                                                defaultChecked={
+                                                                    false
+                                                                }
+                                                            />
+                                                            <FormControlLabel
+                                                                control={
+                                                                    <CategoryRadio />
+                                                                }
+                                                                value={ProposalCategory.Road}
+                                                                label="Roads"
+                                                                defaultChecked={
+                                                                    false
+                                                                }
+                                                            />
+                                                            <FormControlLabel
+                                                                control={
+                                                                    <CategoryRadio />
+                                                                }
+                                                                value={ProposalCategory.Residential}
+                                                                label="Residential"
+                                                                defaultChecked={
+                                                                    false
+                                                                }
+                                                            />
+                                                        </Grid>
+                                                        </Grid>
                                                 </RadioGroup>
                                             )}
                                             rules={{ required: true }}
@@ -493,6 +503,8 @@ export default function ProposalCreate() {
                                             item
                                             xs={12}
                                             className="checkbox-helper"
+                                            container
+                                            justify="flex-start"
                                         >
                                             {errors.category !== undefined && (
                                                 <FormHelperText>
@@ -517,10 +529,17 @@ export default function ProposalCreate() {
                                         }
                                         filesLimit={1}
                                         showAlerts={false}
+                                        maxFileSize={2000000}
+                                        onAlert={(message) => handleFileSize(message)}
                                     />
                                     {fileError && (
                                         <FormHelperText>
                                             Image is missing.
+                                        </FormHelperText>
+                                    )}
+                                    {fileSizeError && (
+                                        <FormHelperText>
+                                            File is too big. Size limit is 2Mb. 
                                         </FormHelperText>
                                     )}
                                 </Grid>
