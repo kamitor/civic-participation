@@ -20,10 +20,6 @@ class LocationGooglMap extends Component {
         lng: this.props.location.lng
     };
 
-    componentDidMount() {
-        this.setCurrentLocation();
-    }
-
     onMarkerInteraction = (childKey, childProps, mouse) => {
         this.setState({
             draggable: false,
@@ -69,6 +65,10 @@ class LocationGooglMap extends Component {
     };
 
     addPlace = (place) => {
+        this.props.getLocation({
+            lat: place.geometry.location.lat(),
+            lng: place.geometry.location.lng()
+        })
         this.setState({
             places: [place],
             lat: place.geometry.location.lat(),

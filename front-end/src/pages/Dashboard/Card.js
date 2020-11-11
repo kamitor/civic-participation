@@ -24,7 +24,8 @@ const CardContentDescription = withStyles({
         fontWeight: 'normal',
         fontSize: '10px',
         lineHeight: '24px',
-        marginTop: 10
+        marginTop: 10,
+        wordBreak: 'break-word'
     }
 })(Typography);
 
@@ -113,7 +114,7 @@ export default function Card(props) {
                     <Grid item>
                         <CardContentDescription>
                             {(props.description).slice(0, 70)} ...
-                            </CardContentDescription>
+                        </CardContentDescription>
                     </Grid>
                 </Grid>
             </Grid>
