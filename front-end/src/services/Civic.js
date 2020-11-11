@@ -388,8 +388,7 @@ export default class Civic {
                     authHuman: data.account_authorizers[0],
                     authHumanCommonName: data.account_authorizers_common_names[0],
                     data: actionData.data,
-                    gov: isGovAction(actionData.name),
-                    status: mapActionToStatus(actionData.name)
+                    gov: isGovAction(actionData.name)
                 }
                 if (actionData.name === "propupdate") proposalData.status = actionData.data.new_status;
                 if (actionData.data.comment) proposalData.comment = actionData.data.comment;

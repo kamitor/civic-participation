@@ -204,7 +204,7 @@ export default function ProposalCreate() {
     setLoading(true);
     let selectedBudget = currencyValue;
 
-    const budget = 0;
+    let budget = 0;
     if (currencyValue !== undefined) {
       budget = parseFloat(selectedBudget.replace(',', ''));
     }
