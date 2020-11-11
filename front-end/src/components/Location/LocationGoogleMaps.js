@@ -18,8 +18,8 @@ class LocationGooglMap extends Component {
         zoom: this.props.zoom,
         address: '',
         draggable: true,
-        lat: this.props.location ? this.props.location.lat : defaultLocation.lat,
-        lng: this.props.location ? this.props.location.lng : defaultLocation.lng
+        lat: this.props.location ? this.props.location.lat : undefined,
+        lng: this.props.location ? this.props.location.lng : undefined
     };
 
     onMarkerInteraction = (childKey, childProps, mouse) => {
@@ -139,11 +139,13 @@ class LocationGooglMap extends Component {
                     yesIWantToUseGoogleMapApiInternals
                     onGoogleApiLoaded={({ map, maps }) => this.apiHasLoaded(map, maps)}
                 >
-                    <Marker
-                        text={this.state.address}
-                        lat={this.state.lat}
-                        lng={this.state.lng}
-                    />
+                    {this.state.lat &&
+                        <Marker
+                            text={this.state.address}
+                            lat={this.state.lat}
+                            lng={this.state.lng}
+                        />
+                    }
                 </GoogleMapReact>
             </ >
         );
