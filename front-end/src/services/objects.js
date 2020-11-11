@@ -19,3 +19,7 @@ export function mapObj(obj, fn) {
     }
     return retObj;
 }
+
+export function isNumber(value) {
+    return typeof value === 'number' && isFinite(value);
+}

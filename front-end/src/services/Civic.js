@@ -7,6 +7,7 @@ import crypto from 'crypto'
 import { wait } from './objects';
 
 import encodeImageFileAsURL from '../utils';
+import { isNumber } from './objects';
 
 export default class Civic {
     // SEE civic AND accounts FOR TYPES!!!
@@ -140,12 +141,21 @@ export default class Civic {
             throw new Error('Photo is mandatory while creating proposal');
         }
 
+        const budget = 0;
+        if (proposal.budget) {
+            if (isNumber(proposal.budget)) {
+                budget = proposal.budget;
+            } else {
+                throw new Error("Expected budget to be a number")
+            }
+        }
+
         let proposalDetails = [
             this.account.accountName,
             proposal.title,
             proposal.description,
             proposal.category,
-            proposal.budget,
+            budget,
             proposal.type,
             proposal.location
         ];
@@ -177,7 +187,7 @@ export default class Civic {
             status: ProposalStatus.Proposed,
             created: new Date(decodedRow.created),
         }
-        if (proposal.budget) { proposalDetailed.budget = proposal.budget }
+        if (proposal.budget) { proposalDetailed.budget = budget }
         if (proposal.photo) { proposalDetailed.photo = proposal.photo }
         return proposalDetailed;
     }
@@ -188,6 +198,15 @@ export default class Civic {
      * @returns {ProposalDetailed}
      */
     async proposalUpdate(proposal) {
+        const budget = 0;
+        if (proposal.budget) {
+            if (isNumber(proposal.budget)) {
+                budget = proposal.budget;
+            } else {
+                throw new Error("Expected budget to be a number")
+            }
+        }
+
         const txData = {
             actions: [{
                 account: 'civic',
@@ -205,7 +224,7 @@ export default class Civic {
                     title: proposal.title,
                     description: proposal.description,
                     category: proposal.category,
-                    budget: proposal.budget,
+                    budget: budget,
                     type: proposal.type,
                     location: proposal.location,
                     new_status: proposal.status,
@@ -248,7 +267,7 @@ export default class Civic {
             approved: Accountability.timePointToDate(decodedRow.approved),
             status: proposal.status,
         };
-        if (proposal.budget) { proposalDetailed.budget = proposal.budget }
+        if (proposal.budget) { proposalDetailed.budget = budget }
         if (proposal.photo) { proposalDetailed.photo = proposal.photo }
         if (proposal.regulations) { proposalDetailed.regulations = proposal.regulations }
         if (proposal.comment) { proposalDetailed.comment = proposal.comment }
