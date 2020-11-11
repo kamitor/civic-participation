@@ -138,7 +138,7 @@ export default function ProposalView() {
                 <Grid container spacing={2}>
                     <Grid item container alignItems="center" justify="flex-end" className="button-wraper">
                         <Grid item>
-                            <Grid item container>
+                            <Grid item container className="tamper-wraper">
                                 <Grid item>
                                     <UploadSmallTypographyCreate>tamper proof</UploadSmallTypographyCreate>
                                 </Grid>

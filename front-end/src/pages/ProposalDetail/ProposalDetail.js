@@ -12,6 +12,8 @@ import ProposalStatus, { toDefinition } from "../../types/proposals/status";
 
 import CategoryItem from "./components/CategoryItem";
 import LocationGoogleMaps from "../../components/Location/LocationGoogleMaps";
+import { HtmlTooltip } from '../../components/Themes';
+import { Link } from '@material-ui/core';
 import Navbar from "../../components/Navbar/Navbar";
 import Timeline from "./components/Timeline";
 
@@ -88,11 +90,11 @@ const useStyles = makeStyles((theme) => ({
       paddingBottom: "5px",
     },
     "& label.Mui-focused": {
-      color: "#ffffff",
+      color: "#000000",
       fontSize: "18px",
     },
     "& .MuiInputBase-root.MuiInput-underline:after": {
-      borderBottomColor: "#ffffff",
+      borderBottomColor: "#000000",
     },
     "& .MuiInput-underline:before": {
       borderBottom: "none",
@@ -104,23 +106,23 @@ const useStyles = makeStyles((theme) => ({
       borderBottom: "none",
     },
     "& .makeStyles-inputLabel-118": {
-      color: "#ffffff",
+      color: "#000000",
       fontSize: "25px",
     },
   },
   inputTitle: {
-    color: "white",
+    color: "#000000",
     width: "425px",
     fontSize: "25px",
     disableUnderline: true,
   },
   inputLabelTitle: {
-    color: "white",
+    color: "#000000",
     fontSize: "25px",
   },
   image: {
-    width: 450,
-    height: 294,
+    width: '100%',
+    height: '100%',
   },
   img: {
     margin: "auto",
@@ -129,16 +131,15 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: "100%",
   },
   paper: {
-    padding: theme.spacing(2),
     margin: "auto",
-    maxWidth: 450,
+    maxWidth: 330,
     marginRight: 25,
   },
   currencyInput: {
     width: "80%",
   },
   inputTitleEdit: {
-    color: "white",
+    color: "#000000",
     width: "200px",
     fontSize: "32px",
     disableUnderline: true,
@@ -158,10 +159,9 @@ const CategoryRadio = withStyles({
 
 const HeaderCustomizeStar = withStyles({
   root: {
-    color: "#FFFFFF",
+    color: "#000000",
     width: "28px",
     height: "28px",
-    marginBottom: "6px",
   },
 })(Stars);
 
@@ -193,11 +193,20 @@ const StatusTypography = withStyles({
 
 const MainTitleTypography = withStyles({
   root: {
-    fontSize: "20px",
-    color: "rgba(18, 97, 163, 1)",
-    lineHeight: "26.6px",
-    fontWeight: "600",
-  },
+    fontSize: '20px',
+    color: 'rgba(18, 97, 163, 1)',
+    lineHeight: '26.6px',
+    fontWeight: '600'
+  }
+})(Typography);
+
+const MainSmallTitleTyography = withStyles({
+  root: {
+    fontSize: '15px',
+    color: 'rgba(18, 97, 163, 1)',
+    lineHeight: '26.6px',
+    fontWeight: '400'
+  }
 })(Typography);
 
 const TitleLabelTypography = withStyles({
@@ -209,7 +218,7 @@ const TitleLabelTypography = withStyles({
   },
 })(Typography);
 
-const CollapseTypography = withStyles({
+const CollapseTyography = withStyles({
   root: {
     fontSize: "12px",
     color: "rgba(18, 97, 163, 1)",
@@ -265,6 +274,13 @@ const UploadLock = withStyles({
   },
 })(Lock);
 
+const TimelineLock = withStyles({
+  root: {
+    color: 'rgba(18, 97, 163, 1);',
+    width: '25px',
+  }
+})(Lock);
+
 export default function ProposalDetail() {
   const { proposal_id } = useParams();
   const history = useHistory();
@@ -281,6 +297,7 @@ export default function ProposalDetail() {
   const [editing, setEditing] = useState(false);
   const [proposal, setProposal] = useState();
   const [proposalHistory, setProposalHistory] = useState();
+  const [historyCollapse, setHistoryCollapse] = useState('COLLAPSE');
   const [showButtons, setShowButtons] = useState({
     vote: false,
     edit: false,
@@ -338,11 +355,31 @@ export default function ProposalDetail() {
     setProposal(proposalState);
   }, [authContext.civic, authContext.isGov, proposal_id]);
 
+  const navigateSecurityPage = () => {
+    window.open("https://conscious-cities.com/security", "_blank")
+  }
+
   const getProposalHistory = useCallback(async () => {
     const historyRes = await authContext.civic.proposalHistory(proposal_id);
     const historyState = [];
     for (let historyItem of historyRes) {
       const txUrl = `${settings.eosio.blockExplorerUrl}/tx/${historyItem.txId}`;
+
+      let status;
+      switch (historyItem.action) {
+        case 'propcreate':
+          status = ProposalStatus.Proposed;
+          break;
+        case 'propupdate':
+        case 'propupdate2':
+          status = historyItem.data.new_status;
+          break;
+        case 'propvote':
+          status = -99;
+          break;
+        default:
+          throw new Error("action logic not implemented yet")
+      }
 
       historyState.push({
         txUrl: txUrl,
@@ -350,7 +387,7 @@ export default function ProposalDetail() {
         gov: historyItem.gov,
         comment: historyItem.comment,
         timestamp: historyItem.timestamp.toLocaleDateString("nl-NL"),
-        status: toDefinition(historyItem.status),
+        status: status !== -99 ? toDefinition(status) : 'Voted',
       });
     }
     setProposalHistory(historyState);
@@ -370,6 +407,7 @@ export default function ProposalDetail() {
 
   const handleCollapse = () => {
     setShowHistory(!showHistory);
+    showHistory ? setHistoryCollapse('EXPAND') : setHistoryCollapse('COLLAPSE');
   };
 
   function onVote() {
@@ -414,6 +452,9 @@ export default function ProposalDetail() {
         <Grid container direction="column">
           <Grid className="header-wraper-proposal">
             <img src={background} className="header-img" alt="Dutch canals" />
+
+          </Grid>
+          <div className="main-container-proposal">
             <Grid
               container
               direction="row"
@@ -433,8 +474,6 @@ export default function ProposalDetail() {
                 editable="false"
               />
             </Grid>
-          </Grid>
-          <div className="main-container-proposal">
             <Grid container>
               <Grid item xs={12} container>
                 <Grid item xs={4} container spacing={1} direction="column">
@@ -576,21 +615,37 @@ export default function ProposalDetail() {
               </Grid>
             </Grid>
             <Grid item xs={12} container className="history-wraper">
-              <Grid item container>
-                <Grid item>
-                  <MainTitleTypography>History</MainTitleTypography>
+              <Grid item container alignItems="center" justify="space-between">
+                <Grid item xs container spacing={8} alignItems="center">
+                  <Grid item>
+                    <MainTitleTypography>History</MainTitleTypography>
+                  </Grid>
+                  <HtmlTooltip
+                    title={
+                      <React.Fragment>
+                        <div>Proposals, voting and government actions
+                        are stored on the blockchain. Historic data is cryptographically secure,
+                        meaning the history of events cannot be changed by anyone, including the
+                        government.
+                            <Link className="read-more-link" onClick={navigateSecurityPage}>
+                            Click to learn more
+                            </Link>
+                        </div>
+                      </React.Fragment>
+                    }
+                    arrow
+                    interactive
+                  >
+                    <span>
+                      <Grid item container>
+                        <TimelineLock />
+                        <MainSmallTitleTyography>Immutable</MainSmallTitleTyography>
+                      </Grid>
+                    </span>
+                  </HtmlTooltip>
                 </Grid>
-                <Grid
-                  item
-                  xs={2}
-                  container
-                  className="collapse-wraper"
-                  direction="column"
-                  alignItems="center"
-                >
-                  <CollapseTypography onClick={handleCollapse}>
-                    COLLAPSE
-                  </CollapseTypography>
+                <Grid item container xs className="collapse-wraper" alignItems="center" justify="flex-end" onClick={handleCollapse}>
+                  <CollapseTyography>{historyCollapse}</CollapseTyography>
                   {showHistory ? <ExpandLess /> : <ExpandMore />}
                 </Grid>
               </Grid>
@@ -623,6 +678,9 @@ export default function ProposalDetail() {
           <Grid container direction="column">
             <Grid className="header-wraper">
               <img src={background} className="header-img" />
+
+            </Grid>
+            <div className="main-container-proposal-edit">
               <Grid
                 container
                 direction="row"
@@ -650,8 +708,6 @@ export default function ProposalDetail() {
                   <FormHelperText>Please select a title.</FormHelperText>
                 )}
               </Grid>
-            </Grid>
-            <div className="main-container-proposal-edit">
               <Grid container>
                 <Grid item xs={12} container>
                   <Grid item xs={4} container spacing={1} direction="column">
@@ -789,9 +845,8 @@ export default function ProposalDetail() {
                     inputProps={{
                       maxLength: CHARACTER_LIMIT,
                     }}
-                    helperText={`${
-                      (watch("description") && watch("description").length) || 0
-                    }/${CHARACTER_LIMIT}`}
+                    helperText={`${(watch("description") && watch("description").length) || 0
+                      }/${CHARACTER_LIMIT}`}
                     margin="normal"
                     name="description"
                     inputRef={register({

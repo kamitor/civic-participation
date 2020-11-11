@@ -104,7 +104,7 @@ export default function Login() {
 	})(Typography);
 
 	const navigateSecurityPage = () => {
-		window.open("/security", "_blank")
+		window.open("https://conscious-cities.com/security", "_blank")
 	}
 
 	const TitleLock = withStyles({

@@ -153,14 +153,14 @@ export default function ProposalCreate() {
   const authContext = ConsumeAuth();
   const classes = useStyles();
   const history = useHistory();
-  const [currencyValue, setCurrencyValue] = useState(null);
+  const [currencyValue, setCurrencyValue] = useState();
   const [files, setFiles] = useState([]);
   const [fileError, setFileError] = useState(false);
+  const [locationError, setLocationError] = useState(false);
   const [fileSizeError, setFileSizeError] = useState(false);
-  const [location, setLocation] = useState({ lat: 52.1135031, lng: 4.2829047 });
+  const [location, setLocation] = useState();
 
   const handleChangeLocation = async (location) => {
-    console.log(location);
     setLocation(location);
   };
 
@@ -182,7 +182,6 @@ export default function ProposalCreate() {
   } = useForm({
     criteriaMode: "all",
     defaultValues: {
-      category: ProposalCategory.Green,
       budget: null,
     },
   });
@@ -203,7 +202,17 @@ export default function ProposalCreate() {
 
   const onSubmit = async (data) => {
     setLoading(true);
+    let selectedBudget = currencyValue;
 
+    let budget = 0;
+    if (currencyValue !== undefined) {
+      budget = parseFloat(selectedBudget.replace(',', ''));
+    }
+    if (location === undefined) {
+      setLocationError(true)
+      setLoading(false);
+      return;
+    }
     if (files.length === 0) {
       setFileError(true);
       setLoading(false);
@@ -212,7 +221,7 @@ export default function ProposalCreate() {
 
     await authContext.civic.proposalCreate({
       ...data,
-      budget: parseFloat(data.budget.replace(',', '')),
+      budget: budget,
       category: +data.category,
       type: +data.type,
       location: `${location.lat},${location.lng}`,
@@ -240,6 +249,15 @@ export default function ProposalCreate() {
     },
   })(Button);
 
+  const getLocation = (location) => {
+    setLocation(location);
+    setLocationError(false);
+  }
+
+  const handleChangeBudget = (budget) => {
+    setCurrencyValue(budget)
+  }
+
   const CHARACTER_LIMIT = 1000;
 
   useEffect(() => {
@@ -262,7 +280,7 @@ export default function ProposalCreate() {
           <Grid className="header-wrap">
             <img src={background} className="header-img" />
           </Grid>
-          <div className="main-container">
+          <div className="main-container-proposal-create">
             <Grid container justify="flex-start">
               <Grid
                 item
@@ -315,28 +333,32 @@ export default function ProposalCreate() {
               <Grid item xs={7} className="main-wraper ">
                 <Grid container item xs={12} spacing={4}>
                   <Grid item>
-                  <Controller
-                      as={<CurrencyTextField />}
-                      name="budget"
-                      currencySymbol="€"
-                      outputFormat="number"
-                      decimalCharacter="."
-                      digitGroupSeparator=","
-                      placeholder="Budget"
-                      InputProps={{
-                        classes: {
-                          input: classes.input,
-                        },
-                      }}
-                      className={classes.budgetInputStyle}
-                      error={errors.budget !== undefined}
-                      control={control}
-                      ref={register}
-                      key="budget"
-                      rules={{ required: true }}
-                    />
+                    <FormControl className={classes.formControl}>
+                      <CurrencyTextField
+                        name="budget"
+                        currencySymbol="€"
+                        outputFormat="string"
+                        decimalCharacter="."
+                        digitGroupSeparator=","
+                        placeholder="Budget"
+                        InputProps={{
+                          classes: {
+                            input: classes.input,
+                          },
+                        }}
+                        className={classes.budgetInputStyle}
+                        className={classes.budgetInputStyle}
+                        error={errors.budget !== undefined}
+                        control={control}
+                        ref={register}
+                        key="budget"
+                        rules={{ required: true }}
+                        value={currencyValue}
+                        onChange={(event, value) => handleChangeBudget(value)}
+                      />
+                    </FormControl>
                   </Grid>
-                  <Grid item className="type-wrap">
+                  <Grid item className="create-type-wrape">
                     <FormControl className={classes.formControl}>
                       <InputLabel
                         htmlFor="type-select"
@@ -404,7 +426,7 @@ export default function ProposalCreate() {
                               />
                               <FormControlLabel
                                 control={<CategoryRadio />}
-                                label="Kidaas"
+                                label="Kids"
                                 value={ProposalCategory.Kids}
                                 defaultChecked={true}
                               />
@@ -471,8 +493,8 @@ export default function ProposalCreate() {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item className="main-wraper" xs={5}>
-                <Grid item xs={12}>
+              <Grid item container justify="flex-end" className="dropzone-wraper" xs={5}>
+                <Grid item xs={9}>
                   <ImageDragTypography>Images</ImageDragTypography>
                   <DropzoneArea
                     acceptedFiles={["image/*"]}
@@ -508,9 +530,8 @@ export default function ProposalCreate() {
                   inputRef={register({
                     required: "Please enter a description",
                   })}
-                  helperText={`(${
-                    watch("description")?.length || 0
-                  }/${CHARACTER_LIMIT})`}
+                  helperText={`(${watch("description")?.length || 0
+                    }/${CHARACTER_LIMIT})`}
                   className="description-textarea"
                   error={errors.description !== undefined}
                   placeholder={placeholder}
@@ -518,14 +539,22 @@ export default function ProposalCreate() {
               </Grid>
               <Grid item xs={12} className="description-helper"></Grid>
             </Grid>
-            <Grid item xs={12}>
-              <div className="googlmap-wrap">
+            <Grid item container xs={12} spacing={5}>
+              <FormControl></FormControl>
+              <Grid item className="googlmap-wrap">
                 <LocationGoogleMaps
                   handleChange={handleChangeLocation}
                   location={location}
                   zoom={15}
+                  editable={true}
+                  getLocation={(location) => getLocation(location)}
                 />
-              </div>
+              </Grid>
+              <Grid item container justify="flex-end">
+                {locationError && (<FormHelperText>
+                  Please insert location.
+                </FormHelperText>)}
+              </Grid>
             </Grid>
           </div>
         </Grid>
