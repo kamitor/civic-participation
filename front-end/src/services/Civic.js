@@ -141,7 +141,7 @@ export default class Civic {
             throw new Error('Photo is mandatory while creating proposal');
         }
 
-        const budget = 0;
+        let budget = 0;
         if (proposal.budget) {
             if (isNumber(proposal.budget)) {
                 budget = proposal.budget;
@@ -198,7 +198,7 @@ export default class Civic {
      * @returns {ProposalDetailed}
      */
     async proposalUpdate(proposal) {
-        const budget = 0;
+        let budget = 0;
         if (proposal.budget) {
             if (isNumber(proposal.budget)) {
                 budget = proposal.budget;
