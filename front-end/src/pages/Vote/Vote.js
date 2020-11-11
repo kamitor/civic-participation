@@ -6,6 +6,8 @@ import { withStyles } from "@material-ui/core/styles";
 import { makeStyles } from '@material-ui/core/styles';
 import { Lock } from '@material-ui/icons';
 
+import { toLabel as categoryToLabel } from "../../types/proposals/categories";
+
 import Navbar from '../../components/Navbar/Navbar';
 import { ConsumeAuth } from '../../hooks/authContext'
 import { ConsumeVote } from '../../hooks/voteContext'
@@ -82,7 +84,7 @@ const UploadLock = withStyles({
     }
 })(Lock);
 
-export default function ProposalView() {
+export default function Vote() {
     const authContext = ConsumeAuth();
     const voteContext = ConsumeVote();
 
@@ -90,19 +92,22 @@ export default function ProposalView() {
     const history = useHistory();
     const [completed, setCompleted] = useState(0);
     const [selectedValue, setSelectedValue] = useState(0);
+    const [chartValues, setChartValues] = useState([]);
     // total budget
     const [budgetLimit, _] = useState(100000);
 
+    // On delete button click in proposal
+    const handleDelete = (proposalId) => {
+        // Filter the not deleted proposals and update the context with them
+        const remainingProposals = voteContext.proposals.filter(proposal => proposal.proposalId !== proposalId);
+        voteContext.setProposals(remainingProposals);
+    }
+    // On vote button click
     const _handleVote = async () => {
         // TODO: get proposal data from global store/ context.
         const proposalIds = voteContext.proposals.map(proposal => proposal.proposalId);
-        const proposalVoteRes = await authContext.civic.proposalVote(proposalIds);
-        // TODO: Can we pass some proposal name or id to vote-success route so that we can display it in vote-success page?
-        if (proposalVoteRes) {
-            history.push("./vote-success")
-        } else {
-            console.log('Error occurred while voting the proposal, please try again');
-        }
+        await authContext.civic.proposalVote(proposalIds);
+        history.push("./vote-success")
     }
 
     const formatter = new Intl.NumberFormat('nl-NL', {
@@ -112,10 +117,23 @@ export default function ProposalView() {
 
     useEffect(() => {
         const totalProposalBudget = voteContext.proposals.reduce((acc, curr) => acc + parseFloat(curr.budget), 0);
+        // For currency
+        setSelectedValue(formatter.format(totalProposalBudget));
+        // For progressbar
+        setCompleted((totalProposalBudget / budgetLimit * 100));
+        // For chart
+        const chartValues = voteContext.proposals.map(proposal => {
+            return {
+                series: proposal.budget / totalProposalBudget * 100,
+                label: categoryToLabel(proposal.category),
+            };
+        });
+        setChartValues(chartValues);
 
-        setSelectedValue(formatter.format(totalProposalBudget))
-        setCompleted((totalProposalBudget / budgetLimit * 100))
-    }, []);
+    }, [voteContext.proposals]);
+
+    const proposalsSeries = chartValues.map(chartValue => chartValue.series);
+    const proposalsLabels = chartValues.map(chartValue => chartValue.label);
 
     return (
         <div className={classes.root}>
@@ -142,7 +160,7 @@ export default function ProposalView() {
                                 <TitleHeaderTypography>Your votes by categories</TitleHeaderTypography>
                             </Grid>
                             <Grid item container xs justify="flex-end">
-                                <Chart series={[44, 55, 13, 43, 22]} labels={['Urban', 'Urban', 'Urban', 'Urban', 'Urban']} />
+                                {proposalsSeries && <Chart series={proposalsSeries} labels={proposalsLabels} />}
                             </Grid>
                         </Grid>
                     </Grid>
@@ -162,11 +180,11 @@ export default function ProposalView() {
                             </Grid>
                         </Grid>
                         <Grid item>
-                            <VoteButton type="button" onClick={_handleVote}>VOTE</VoteButton>
+                            <VoteButton type="button" onClick={_handleVote} disabled={!completed || (completed > 100)}>VOTE</VoteButton>
                         </Grid>
                     </Grid>
                     <Grid item container alignItems="center" justify="flex-end">
-                        <TitleContentTypography>You have used more than the allocated budget</TitleContentTypography>
+                        {completed > 100 && <TitleContentTypography>You have used more than the allocated budget</TitleContentTypography>}
                     </Grid>
                 </Grid>
                 <Grid className="content-wraper">
@@ -178,7 +196,9 @@ export default function ProposalView() {
                                     description={data.description}
                                     budget={data.budget}
                                     photo={data.photo}
+                                    proposalId={data.proposalId}
                                     key={key}
+                                    onDelete={handleDelete}
                                 />
                             )
                         })}
