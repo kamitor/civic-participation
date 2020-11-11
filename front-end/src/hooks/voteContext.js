@@ -25,8 +25,7 @@ function useProvideVote() {
   }
 
   useEffect(() => {
-    const isLoggedIn = await authContext.isLoggedIn()
-    if (isLoggedIn) {
+    if (authContext.isLoggedIn()) {
       const proposalsStorage = getProposalsStorage();
       if (proposalsStorage) {
         setProposals(proposalsStorage);
