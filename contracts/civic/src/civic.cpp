@@ -190,4 +190,83 @@ ACTION civic::clear()
     {
         msg_itr = _proposals.erase(msg_itr);
     }
+
+    votes_table _votes(get_self(), get_self().value);
+
+    // Delete all records in _proposals table
+    auto votes_itr = _votes.begin();
+    while (votes_itr != _votes.end())
+    {
+        votes_itr = _votes.erase(votes_itr);
+    }
+}
+
+ACTION civic::propvote(name voter, vector<uint64_t> proposal_ids)
+{
+    require_auth(voter);
+
+    // update previous proposal votes incase user has already voted
+    votes_table _votes(get_self(), get_self().value);
+    const auto votes_itr = _votes.find(voter.value);
+
+    vector<uint64_t> proposals_voted; // Will be initialized to empty vector
+    if (votes_itr != _votes.end())
+    {
+        // user has already voted => Update the proposals
+        proposals_voted = votes_itr->proposals;
+        _votes.modify(votes_itr, same_payer, [&](auto &vote) {
+            vote.proposals = proposal_ids;
+        });
+    }
+    else
+    {
+        // user has not yet voted => Create a proposal with proposal id.
+        _votes.emplace(voter, [&](auto &vote) {
+            vote.account_name = voter;
+            vote.proposals = proposal_ids;
+        });
+    }
+
+    proposals_table _proposals(get_self(), get_self().value);
+
+    float accumulated_budget = 0.0f;
+    float approved_budget = 100000.0f;
+
+    for (uint64_t proposal_id : proposal_ids)
+    {
+        const auto proposal_itr = _proposals.find(proposal_id);
+        check(proposal_itr != _proposals.end(), "Proposal not found");
+        check(proposal_itr->status == ProposalStatus::Approved, "Proposal not approved for voting");
+        accumulated_budget += proposal_itr->budget;
+
+        // See if proposal was previously voted on
+        // Find is part of algorithms library
+        vector<uint64_t>::iterator previous_vote_itr = find(proposals_voted.begin(), proposals_voted.end(), proposal_itr->proposal_id);
+        if (previous_vote_itr != proposals_voted.end())
+        {
+            // User previously voted for this proposal
+            // Remove from vector so that it is not decreased later
+            proposals_voted.erase(previous_vote_itr);
+        }
+        else
+        {
+            // Did not vote for previously
+            _proposals.modify(proposal_itr, same_payer, [&](auto &proposal) {
+                proposal.yes_vote_count += 1;
+            });
+        }
+    }
+    check(accumulated_budget <= approved_budget, "Proposals budget exceeded");
+
+    // For any remaining previous proposals (that were not voted on again) decrease vote count
+    if (!proposals_voted.empty())
+    {
+        for (uint64_t proposal_id : proposals_voted)
+        {
+            const auto proposal_itr = _proposals.find(proposal_id);
+            _proposals.modify(proposal_itr, same_payer, [&](auto &proposal) {
+                proposal.yes_vote_count -= 1;
+            });
+        }
+    }
 }

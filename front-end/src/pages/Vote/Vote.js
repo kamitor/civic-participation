@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
+
 import { Grid, Typography, Button } from '@material-ui/core';
 import { withStyles } from "@material-ui/core/styles";
 import { makeStyles } from '@material-ui/core/styles';
 import { Lock } from '@material-ui/icons';
-import { Data } from './Data';
-import Card from './Card';
+
+import { toLabel as categoryToLabel } from "../../types/proposals/categories";
+
 import Navbar from '../../components/Navbar/Navbar';
+import { ConsumeAuth } from '../../hooks/authContext'
+import { ConsumeVote } from '../../hooks/voteContext'
+
+import Card from './Card';
 import ProgressBar from './ProgressBar';
-import './Vote.scss'
 import Chart from './Chart';
+
+import './Vote.scss'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -77,15 +84,29 @@ const UploadLock = withStyles({
     }
 })(Lock);
 
-export default function ProposalView() {
+export default function Vote() {
+    const authContext = ConsumeAuth();
+    const voteContext = ConsumeVote();
 
     const classes = useStyles();
     const history = useHistory();
     const [completed, setCompleted] = useState(0);
     const [selectedValue, setSelectedValue] = useState(0);
-    const [totalvalue, setTotalValue] = useState(100000);
-   
-    const _handleVote = () => {
+    const [chartValues, setChartValues] = useState([]);
+    // total budget
+    const [budgetLimit, _] = useState(100000);
+
+    // On delete button click in proposal
+    const handleDelete = (proposalId) => {
+        // Filter the not deleted proposals and update the context with them
+        const remainingProposals = voteContext.proposals.filter(proposal => proposal.proposalId !== proposalId);
+        voteContext.setProposals(remainingProposals);
+    }
+    // On vote button click
+    const _handleVote = async () => {
+        // TODO: get proposal data from global store/ context.
+        const proposalIds = voteContext.proposals.map(proposal => proposal.proposalId);
+        await authContext.civic.proposalVote(proposalIds);
         history.push("./vote-success")
     }
 
@@ -95,13 +116,24 @@ export default function ProposalView() {
     });
 
     useEffect(() => {
-        let tempData = 0
-        Data.map((data) => {
-            tempData = tempData + parseInt(data.budget)
-        })
-        setSelectedValue(formatter.format(tempData))
-        setCompleted((tempData/totalvalue * 100))
-    }, []);
+        const totalProposalBudget = voteContext.proposals.reduce((acc, curr) => acc + parseFloat(curr.budget), 0);
+        // For currency
+        setSelectedValue(formatter.format(totalProposalBudget));
+        // For progressbar
+        setCompleted((totalProposalBudget / budgetLimit * 100));
+        // For chart
+        const chartValues = voteContext.proposals.map(proposal => {
+            return {
+                series: proposal.budget / totalProposalBudget * 100,
+                label: categoryToLabel(proposal.category),
+            };
+        });
+        setChartValues(chartValues);
+
+    }, [voteContext.proposals]);
+
+    const proposalsSeries = chartValues.map(chartValue => chartValue.series);
+    const proposalsLabels = chartValues.map(chartValue => chartValue.label);
 
     return (
         <div className={classes.root}>
@@ -119,7 +151,7 @@ export default function ProposalView() {
                             <Grid item container direction="column" spacing={2}>
                                 <ProgressBar bgcolor={"#E39696"} completed={completed} selectedValue={selectedValue} />
                                 <Grid item item container justify="flex-end">
-                                    <TitleHeaderTypography>from budget of&nbsp;&nbsp;&nbsp;&nbsp;{formatter.format(totalvalue)}</TitleHeaderTypography>
+                                    <TitleHeaderTypography>from budget of&nbsp;&nbsp;&nbsp;&nbsp;{formatter.format(budgetLimit)}</TitleHeaderTypography>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -128,7 +160,7 @@ export default function ProposalView() {
                                 <TitleHeaderTypography>Your votes by categories</TitleHeaderTypography>
                             </Grid>
                             <Grid item container xs justify="flex-end">
-                                <Chart series={[44, 55, 13, 43, 22]} labels={['Urban', 'Urban', 'Urban', 'Urban', 'Urban']} />
+                                {proposalsSeries && <Chart series={proposalsSeries} labels={proposalsLabels} />}
                             </Grid>
                         </Grid>
                     </Grid>
@@ -148,22 +180,25 @@ export default function ProposalView() {
                             </Grid>
                         </Grid>
                         <Grid item>
-                            <VoteButton type="button" onClick={_handleVote}>VOTE</VoteButton>
+                            <VoteButton type="button" onClick={_handleVote} disabled={!completed || (completed > 100)}>VOTE</VoteButton>
                         </Grid>
                     </Grid>
                     <Grid item container alignItems="center" justify="flex-end">
-                        <TitleContentTypography>You have used more than the allocated budget</TitleContentTypography>
+                        {completed > 100 && <TitleContentTypography>You have used more than the allocated budget</TitleContentTypography>}
                     </Grid>
                 </Grid>
                 <Grid className="content-wraper">
                     <Grid container spacing={5}>
-                        {Data.map((data, key) => {
+                        {voteContext.proposals.map((data, key) => {
                             return (
                                 <Card
                                     title={data.title}
                                     description={data.description}
                                     budget={data.budget}
+                                    photo={data.photo}
+                                    proposalId={data.proposalId}
                                     key={key}
+                                    onDelete={handleDelete}
                                 />
                             )
                         })}

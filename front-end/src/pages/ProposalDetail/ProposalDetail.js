@@ -412,7 +412,7 @@ export default function ProposalDetail() {
 
   function onVote() {
     voteContext.setProposals([ ...voteContext.proposals, proposal ]);
-    history.push("/proposals-vote");
+    history.push("/vote");
   }
 
   const handleChangeLocation = async (location) => {
