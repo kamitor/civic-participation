@@ -154,10 +154,11 @@ export default function ProposalCreate() {
   const classes = useStyles();
   const history = useHistory();
   const [currencyValue, setCurrencyValue] = useState();
-  const [selectedLocation, setSelectLocation] = useState(null);
+  const [selectedLocation, setSelectLocation] = useState();
   const [files, setFiles] = useState([]);
   const [fileError, setFileError] = useState(false);
   const [locationError, setLocationError] = useState(false);
+  const [budgetError, setBudgetError] = useState(false);
   const [fileSizeError, setFileSizeError] = useState(false);
   const [location, setLocation] = useState({ lat: 52.1135031, lng: 4.2829047 });
 
@@ -205,7 +206,16 @@ export default function ProposalCreate() {
 
   const onSubmit = async (data) => {
     setLoading(true);
-    setLocationError(true)
+    if (selectedLocation === undefined) {
+      setLocationError(true)
+      setLoading(false);
+      return;
+    }
+    if (currencyValue === undefined) {
+      setBudgetError(true)
+      setLoading(false);
+      return;
+    }
     if (files.length === 0) {
       setFileError(true);
       setLoading(false);
@@ -245,6 +255,16 @@ export default function ProposalCreate() {
   const getLocation = (location) => {
     setSelectLocation(location);
     setLocationError(false);
+  }
+
+  const handleChangeBudget = (budget) => {
+    if (budget != "") {
+      setCurrencyValue(budget)
+      setBudgetError(false)
+    } else {
+      alert("error")
+      setBudgetError(true)
+    }
   }
 
   const CHARACTER_LIMIT = 1000;
@@ -322,30 +342,37 @@ export default function ProposalCreate() {
               <Grid item xs={7} className="main-wraper ">
                 <Grid container item xs={12} spacing={4}>
                   <Grid item>
-                    <CurrencyTextField
-                      name="budget"
-                      currencySymbol="€"
-                      outputFormat="string"
-                      decimalCharacter="."
-                      digitGroupSeparator=","
-                      placeholder="Budget"
-                      InputProps={{
-                          classes: {
-                              input: classes.input,
-                          },
-                      }}
-                      className={classes.budgetInputStyle}
-                      className={classes.budgetInputStyle}
-                      error={errors.budget !== undefined}
-                      control={control}
-                      ref={register}
-                      key="budget"
-                      rules={{ required: true }}
-                      value={currencyValue}
-                      onChange={(event, value)=> setCurrencyValue(value)}
-                      />
+                    <FormControl className={classes.formControl}>
+                      <CurrencyTextField
+                        name="budget"
+                        currencySymbol="€"
+                        outputFormat="string"
+                        decimalCharacter="."
+                        digitGroupSeparator=","
+                        placeholder="Budget"
+                        InputProps={{
+                            classes: {
+                                input: classes.input,
+                            },
+                        }}
+                        className={classes.budgetInputStyle}
+                        className={classes.budgetInputStyle}
+                        error={errors.budget !== undefined}
+                        control={control}
+                        ref={register}
+                        key="budget"
+                        rules={{ required: true }}
+                        value={currencyValue}
+                        onChange={(event, value)=> handleChangeBudget(value)}
+                        />
+                    </FormControl>
+                    <Grid item>
+                      {budgetError && (
+                        <FormHelperText>Please select a budget.</FormHelperText>
+                      )}
+                    </Grid>
                   </Grid>
-                  <Grid item className="type-wrap">
+                  <Grid item className="create-type-wrape">
                     <FormControl className={classes.formControl}>
                       <InputLabel
                         htmlFor="type-select"
