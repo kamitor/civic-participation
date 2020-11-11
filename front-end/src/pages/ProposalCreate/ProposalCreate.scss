@@ -32,14 +32,18 @@
     }
 }
 
-.main-container {
-    width: 1015px;
+.main-container-proposal-create {
+    width: 1024px;
     height: 65vh;
     margin: 23px auto;
     position: relative;
 
     .main-wraper {
-        margin-top:60px;;
+        margin-top:60px;
+    }
+
+    .dropzone-wraper {
+        margin-top:60px;
     }
 
     .MuiTypography-colorTextSecondary {

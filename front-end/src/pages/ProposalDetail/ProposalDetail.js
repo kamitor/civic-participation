@@ -89,11 +89,11 @@ const useStyles = makeStyles((theme) => ({
       paddingBottom: "5px",
     },
     "& label.Mui-focused": {
-      color: "#ffffff",
+      color: "#000000",
       fontSize: "18px",
     },
     "& .MuiInputBase-root.MuiInput-underline:after": {
-      borderBottomColor: "#ffffff",
+      borderBottomColor: "#000000",
     },
     "& .MuiInput-underline:before": {
       borderBottom: "none",
@@ -105,18 +105,18 @@ const useStyles = makeStyles((theme) => ({
       borderBottom: "none",
     },
     "& .makeStyles-inputLabel-118": {
-      color: "#ffffff",
+      color: "#000000",
       fontSize: "25px",
     },
   },
   inputTitle: {
-    color: "white",
+    color: "#000000",
     width: "425px",
     fontSize: "25px",
     disableUnderline: true,
   },
   inputLabelTitle: {
-    color: "white",
+    color: "#000000",
     fontSize: "25px",
   },
   image: {
@@ -138,7 +138,7 @@ const useStyles = makeStyles((theme) => ({
     width: "80%",
   },
   inputTitleEdit: {
-    color: "white",
+    color: "#000000",
     width: "200px",
     fontSize: "32px",
     disableUnderline: true,
@@ -158,10 +158,9 @@ const CategoryRadio = withStyles({
 
 const HeaderCustomizeStar = withStyles({
   root: {
-    color: "#FFFFFF",
+    color: "#000000",
     width: "28px",
     height: "28px",
-    marginBottom: "6px",
   },
 })(Stars);
 
@@ -436,27 +435,28 @@ export default function ProposalDetail() {
         <Grid container direction="column">
           <Grid className="header-wraper-proposal">
             <img src={background} className="header-img" alt="Dutch canals" />
-            <Grid
-              container
-              direction="row"
-              className="header-title"
-              alignItems="center"
-            >
-              <HeaderCustomizeStar />
-              <TextField
-                className={classes.margin + " " + classes.commonText}
-                InputProps={{
-                  className: classes.inputTitle,
-                }}
-                InputLabelProps={{
-                  className: classes.inputLabelTitle,
-                }}
-                value={proposal.title}
-                editable="false"
-              />
-            </Grid>
+            
           </Grid>
           <div className="main-container-proposal">
+            <Grid
+                container
+                direction="row"
+                className="header-title"
+                alignItems="center"
+              >
+                <HeaderCustomizeStar />
+                <TextField
+                  className={classes.margin + " " + classes.commonText}
+                  InputProps={{
+                    className: classes.inputTitle,
+                  }}
+                  InputLabelProps={{
+                    className: classes.inputLabelTitle,
+                  }}
+                  value={proposal.title}
+                  editable="false"
+                />
+            </Grid>
             <Grid container>
               <Grid item xs={12} container>
                 <Grid item xs={4} container spacing={1} direction="column">
@@ -627,8 +627,8 @@ export default function ProposalDetail() {
                       </span>
                     </HtmlTooltip>
                   </Grid>
-                  <Grid item container xs className="collapse-wraper" alignItems="center" justify="flex-end">
-                    <CollapseTyography onClick={handleCollapse}>{historyCollapse}</CollapseTyography>
+                  <Grid item container xs className="collapse-wraper" alignItems="center" justify="flex-end" onClick={handleCollapse}>
+                    <CollapseTyography>{historyCollapse}</CollapseTyography>
                       {showHistory ? <ExpandLess /> : <ExpandMore />}
                   </Grid>
               </Grid>
@@ -661,35 +661,36 @@ export default function ProposalDetail() {
           <Grid container direction="column">
             <Grid className="header-wraper">
               <img src={background} className="header-img" />
-              <Grid
-                container
-                direction="row"
-                className="header-title"
-                alignItems="center"
-              >
-                <HeaderCustomizeStar />
-                <TextField
-                  label="Name your idea"
-                  className={classes.margin + " " + classes.commonText}
-                  InputProps={{
-                    className: classes.inputTitleEdit,
-                  }}
-                  InputLabelProps={{
-                    className: classes.inputLabelTitle,
-                  }}
-                  defaultValue={proposal.title}
-                  name="title"
-                  inputRef={register({
-                    required: "Please enter a title",
-                  })}
-                  error={errors.title !== undefined}
-                />
-                {errors.title && (
-                  <FormHelperText>Please select a title.</FormHelperText>
-                )}
-              </Grid>
+              
             </Grid>
             <div className="main-container-proposal-edit">
+              <Grid
+                  container
+                  direction="row"
+                  className="header-title"
+                  alignItems="center"
+                >
+                  <HeaderCustomizeStar />
+                  <TextField
+                    label="Name your idea"
+                    className={classes.margin + " " + classes.commonText}
+                    InputProps={{
+                      className: classes.inputTitleEdit,
+                    }}
+                    InputLabelProps={{
+                      className: classes.inputLabelTitle,
+                    }}
+                    defaultValue={proposal.title}
+                    name="title"
+                    inputRef={register({
+                      required: "Please enter a title",
+                    })}
+                    error={errors.title !== undefined}
+                  />
+                  {errors.title && (
+                    <FormHelperText>Please select a title.</FormHelperText>
+                  )}
+              </Grid>
               <Grid container>
                 <Grid item xs={12} container>
                   <Grid item xs={4} container spacing={1} direction="column">

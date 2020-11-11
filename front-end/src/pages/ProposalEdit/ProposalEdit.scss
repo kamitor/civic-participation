@@ -39,8 +39,8 @@
     }
 }
 
-.main-container-proposal-edit {
-    width: 756px;
+.main-container-edit-proposal {
+    width: 1024px;
     margin: 23px auto;
     position: relative;
     margin-top: 56px;
@@ -65,6 +65,10 @@
             margin-left: 10px;
             box-shadow: 0px 1px 2px 1px $pinkSwan;
         }
+    }
+
+    .dropzone-wraper {
+        height: 230p;
     }
 
     .item-wraper {
@@ -97,7 +101,7 @@
             position: relative;
             padding-bottom: 20px;
             margin-left: 0;
-            width: '80%';
+            width: 200px;
         }
 
         .MuiFormHelperText-root {
@@ -268,7 +272,7 @@
             .search-input {
                 border: none;
                 border-bottom: 1px solid $green;
-                width: 39%;
+                width: 290px;
                 margin-bottom: 20px;
                 outline: none;
                 padding-right: 20px;

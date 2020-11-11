@@ -75,7 +75,7 @@ export default function CreateAccount() {
 	}
 
 	const navigateSecurityPage = () => {
-		window.open("/security", "_blank")
+		window.open("https://conscious-cities.com/security", "_blank")
 	}
 
 	const GreenSmallTypographyCreate = withStyles({

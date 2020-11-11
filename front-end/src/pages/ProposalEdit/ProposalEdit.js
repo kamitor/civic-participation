@@ -51,11 +51,11 @@ const useStyles = makeStyles((theme) => ({
             paddingBottom: '5px'
         },
         "& label.Mui-focused": {
-            color: '#ffffff',
+            color: '#000000',
             fontSize: '18px'
         },
         "& .MuiInputBase-root.MuiInput-underline:after": {
-            borderBottomColor: '#ffffff',
+            borderBottomColor: '#000000',
         },
         "& .MuiInput-underline:before": {
             borderBottom: "none"
@@ -67,18 +67,18 @@ const useStyles = makeStyles((theme) => ({
             borderBottom: "none"
         },
         "& .makeStyles-inputLabel-118": {
-            color: "#ffffff",
+            color: "#000000",
             fontSize: "25px"
         }
     },
     inputTitle: {
-        color: "white",
+        color: "#000000",
         width: "200px",
         fontSize: "32px",
         disableUnderline: true
     },
     inputLabelTitle: {
-        color: "white",
+        color: "#000000",
         fontSize: "25px",
     },
     image: {
@@ -92,9 +92,8 @@ const useStyles = makeStyles((theme) => ({
         maxHeight: '100%',
     },
     paper: {
-        padding: theme.spacing(2),
         margin: 'auto',
-        maxWidth: 450,
+        maxWidth: '330px',
         marginRight: 25
     },
     currencyInput: {
@@ -104,10 +103,10 @@ const useStyles = makeStyles((theme) => ({
 
 const HearderCustomizeStar = withStyles({
     root: {
-        color: '#FFFFFF',
+        color: '#000000',
         width: '28px',
         height: '28px',
-        marginBottom: '6px'
+        marginTop: '12px'
     }
 })(Stars)
 
@@ -278,6 +277,8 @@ export default function ProposalDetail() {
                 <Grid container direction="column">
                     <Grid className="hearder-wraper">
                         <img src={background} className="hearder-img" />
+                    </Grid>
+                    <div className="main-container-edit-proposal">
                         <Grid container direction="row" className="hearder-title" alignItems="center">
                             <HearderCustomizeStar />
                             <TextField
@@ -294,8 +295,6 @@ export default function ProposalDetail() {
                             />
                             {hasErrorTitle && <FormHelperText>Please select a title.</FormHelperText>}
                         </Grid>
-                    </Grid>
-                    <div className="main-container-proposal-edit">
                         <Grid container>
                             <Grid item xs={12} container>
                                 <Grid item xs={4} container spacing={1} direction="column">
@@ -450,7 +449,7 @@ export default function ProposalDetail() {
                         </Grid>
                         <Grid item xs={12}>
                             <div className="googlmap-wrape">
-                                <LocationGoogleMaps location={{ lat: 52.1135031, lng: 4.2829047 }} zoom={15} />
+                                <LocationGoogleMaps location={{ lat: 52.1135031, lng: 4.2829047 }} zoom={15} editable={true} />
                             </div>
                         </Grid>
                         <Grid item xs={12} container className="government-wraper" alignItems="center">

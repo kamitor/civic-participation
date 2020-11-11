@@ -158,7 +158,6 @@ export default function ProposalCreate() {
   const [files, setFiles] = useState([]);
   const [fileError, setFileError] = useState(false);
   const [locationError, setLocationError] = useState(false);
-  const [budgetError, setBudgetError] = useState(false);
   const [fileSizeError, setFileSizeError] = useState(false);
   const [location, setLocation] = useState({ lat: 52.1135031, lng: 4.2829047 });
 
@@ -206,13 +205,12 @@ export default function ProposalCreate() {
 
   const onSubmit = async (data) => {
     setLoading(true);
+    let selectedBudget = currencyValue;
+    if (currencyValue === undefined) {
+      selectedBudget = '0';
+    }
     if (selectedLocation === undefined) {
       setLocationError(true)
-      setLoading(false);
-      return;
-    }
-    if (currencyValue === undefined) {
-      setBudgetError(true)
       setLoading(false);
       return;
     }
@@ -224,7 +222,7 @@ export default function ProposalCreate() {
 
     await authContext.civic.proposalCreate({
       ...data,
-      budget: parseFloat(currencyValue.replace(',', '')),
+      budget: parseFloat(selectedBudget.replace(',', '')),
       category: +data.category,
       type: +data.type,
       location: `${location.lat},${location.lng}`,
@@ -258,13 +256,7 @@ export default function ProposalCreate() {
   }
 
   const handleChangeBudget = (budget) => {
-    if (budget != "") {
-      setCurrencyValue(budget)
-      setBudgetError(false)
-    } else {
-      alert("error")
-      setBudgetError(true)
-    }
+    setCurrencyValue(budget)
   }
 
   const CHARACTER_LIMIT = 1000;
@@ -289,7 +281,7 @@ export default function ProposalCreate() {
           <Grid className="header-wrap">
             <img src={background} className="header-img" />
           </Grid>
-          <div className="main-container">
+          <div className="main-container-proposal-create">
             <Grid container justify="flex-start">
               <Grid
                 item
@@ -366,11 +358,6 @@ export default function ProposalCreate() {
                         onChange={(event, value)=> handleChangeBudget(value)}
                         />
                     </FormControl>
-                    <Grid item>
-                      {budgetError && (
-                        <FormHelperText>Please select a budget.</FormHelperText>
-                      )}
-                    </Grid>
                   </Grid>
                   <Grid item className="create-type-wrape">
                     <FormControl className={classes.formControl}>
@@ -507,8 +494,8 @@ export default function ProposalCreate() {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item className="main-wraper" xs={5}>
-                <Grid item xs={12}>
+              <Grid item container justify="flex-end" className="dropzone-wraper" xs={5}>
+                <Grid item xs={9}>
                   <ImageDragTypography>Images</ImageDragTypography>
                   <DropzoneArea
                     acceptedFiles={["image/*"]}

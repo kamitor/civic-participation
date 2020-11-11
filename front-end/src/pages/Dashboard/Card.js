@@ -23,7 +23,6 @@ const CardContentDescription = withStyles({
         color: '#000000',
         fontWeight: 'normal',
         fontSize: '10px',
-        lineHeight: '24px',
         marginTop: 10,
         wordBreak: 'break-word'
     }
