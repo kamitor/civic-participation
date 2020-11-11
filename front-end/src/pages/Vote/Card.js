@@ -12,16 +12,16 @@ const useStyles = makeStyles((theme) => ({
     },
     paper: {
         maxWidth: 585,
-      },
+    },
     image: {
-    width: 238,
-    height: 185,
+        width: 238,
+        height: 185,
     },
     img: {
-    margin: 'auto',
-    display: 'block',
-    maxWidth: '100%',
-    maxHeight: '100%',
+        margin: 'auto',
+        display: 'block',
+        maxWidth: '100%',
+        maxHeight: '100%',
     },
 }));
 
@@ -82,7 +82,12 @@ export default function Card(props) {
 
     const classes = useStyles();
 
-    return(
+    const deleteProposal = () => {
+        const { onDelete, proposalId } = props;
+        onDelete(proposalId);
+    }
+
+    return (
         <Grid item container alignItems="center">
             <Grid item xs container>
                 <Grid item container xs>
@@ -107,7 +112,7 @@ export default function Card(props) {
                                     </Grid>
                                     <Grid item>
                                         <CardContentTypography>
-                                        {(props.description).slice(0, 70)} ...
+                                            {(props.description).slice(0, 70)} ...
                                         </CardContentTypography>
                                     </Grid>
                                     <Grid item container alignItems="center" spacing={3}>
@@ -125,7 +130,7 @@ export default function Card(props) {
                 </Grid>
             </Grid>
             <Grid item>
-                <DeleteButton>DELETE</DeleteButton>
+                <DeleteButton onClick={deleteProposal}>DELETE</DeleteButton>
             </Grid>
         </Grid>
     )
