@@ -5,19 +5,21 @@ import AutoComplete from './Autocomplete';
 import Marker from './Marker';
 import settings from '../../settings';
 
+const defaultLocation = { lat: 52.1135031, lng: 4.2829047 };
+
 class LocationGooglMap extends Component {
     state = {
         mapApiLoaded: false,
         mapInstance: null,
         mapApi: null,
         geoCoder: null,
-        places: [this.props.location.lat, this.props.location.lng],
-        center: [this.props.location.lat, this.props.location.lng],
+        places: this.props.location ? [this.props.location.lat, this.props.location.lng] : undefined,
+        center: this.props.location ? [this.props.location.lat, this.props.location.lng] : [defaultLocation.lat, defaultLocation.lng],
         zoom: this.props.zoom,
         address: '',
         draggable: true,
-        lat: this.props.location.lat,
-        lng: this.props.location.lng
+        lat: this.props.location ? this.props.location.lat : defaultLocation.lat,
+        lng: this.props.location ? this.props.location.lng : defaultLocation.lng
     };
 
     onMarkerInteraction = (childKey, childProps, mouse) => {

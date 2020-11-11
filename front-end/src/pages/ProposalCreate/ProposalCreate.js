@@ -154,15 +154,13 @@ export default function ProposalCreate() {
   const classes = useStyles();
   const history = useHistory();
   const [currencyValue, setCurrencyValue] = useState();
-  const [selectedLocation, setSelectLocation] = useState();
   const [files, setFiles] = useState([]);
   const [fileError, setFileError] = useState(false);
   const [locationError, setLocationError] = useState(false);
   const [fileSizeError, setFileSizeError] = useState(false);
-  const [location, setLocation] = useState({ lat: 52.1135031, lng: 4.2829047 });
+  const [location, setLocation] = useState();
 
   const handleChangeLocation = async (location) => {
-    console.log(location);
     setLocation(location);
   };
 
@@ -184,7 +182,6 @@ export default function ProposalCreate() {
   } = useForm({
     criteriaMode: "all",
     defaultValues: {
-      // category: ProposalCategory.Green,
       budget: null,
     },
   });
@@ -206,10 +203,12 @@ export default function ProposalCreate() {
   const onSubmit = async (data) => {
     setLoading(true);
     let selectedBudget = currencyValue;
-    if (currencyValue === undefined) {
-      selectedBudget = '0';
+
+    const budget = 0;
+    if (currencyValue !== undefined) {
+      budget = parseFloat(selectedBudget.replace(',', ''));
     }
-    if (selectedLocation === undefined) {
+    if (location === undefined) {
       setLocationError(true)
       setLoading(false);
       return;
@@ -222,7 +221,7 @@ export default function ProposalCreate() {
 
     await authContext.civic.proposalCreate({
       ...data,
-      budget: parseFloat(selectedBudget.replace(',', '')),
+      budget: budget,
       category: +data.category,
       type: +data.type,
       location: `${location.lat},${location.lng}`,
@@ -251,7 +250,7 @@ export default function ProposalCreate() {
   })(Button);
 
   const getLocation = (location) => {
-    setSelectLocation(location);
+    setLocation(location);
     setLocationError(false);
   }
 
@@ -343,9 +342,9 @@ export default function ProposalCreate() {
                         digitGroupSeparator=","
                         placeholder="Budget"
                         InputProps={{
-                            classes: {
-                                input: classes.input,
-                            },
+                          classes: {
+                            input: classes.input,
+                          },
                         }}
                         className={classes.budgetInputStyle}
                         className={classes.budgetInputStyle}
@@ -355,8 +354,8 @@ export default function ProposalCreate() {
                         key="budget"
                         rules={{ required: true }}
                         value={currencyValue}
-                        onChange={(event, value)=> handleChangeBudget(value)}
-                        />
+                        onChange={(event, value) => handleChangeBudget(value)}
+                      />
                     </FormControl>
                   </Grid>
                   <Grid item className="create-type-wrape">
@@ -427,7 +426,7 @@ export default function ProposalCreate() {
                               />
                               <FormControlLabel
                                 control={<CategoryRadio />}
-                                label="Kidaas"
+                                label="Kids"
                                 value={ProposalCategory.Kids}
                                 defaultChecked={true}
                               />
@@ -531,9 +530,8 @@ export default function ProposalCreate() {
                   inputRef={register({
                     required: "Please enter a description",
                   })}
-                  helperText={`(${
-                    watch("description")?.length || 0
-                  }/${CHARACTER_LIMIT})`}
+                  helperText={`(${watch("description")?.length || 0
+                    }/${CHARACTER_LIMIT})`}
                   className="description-textarea"
                   error={errors.description !== undefined}
                   placeholder={placeholder}
