@@ -12,7 +12,7 @@ import ProposalStatus, { toDefinition } from "../../types/proposals/status";
 
 import CategoryItem from "./components/CategoryItem";
 import LocationGoogleMaps from "../../components/Location/LocationGoogleMaps";
-import { HtmlTooltip } from "../../components/Themes";
+import { HtmlTooltip } from '../../components/Themes';
 import Navbar from "../../components/Navbar/Navbar";
 import Timeline from "./components/Timeline";
 
@@ -28,7 +28,7 @@ import {
   Button,
   RadioGroup,
   Link,
-  CircularProgress,
+  CircularProgress
 } from "@material-ui/core";
 
 import { DropzoneArea } from "material-ui-dropzone";
@@ -122,8 +122,8 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "25px",
   },
   image: {
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
   },
   img: {
     margin: "auto",
@@ -168,21 +168,22 @@ const HeaderCustomizeStar = withStyles({
 
 const TitleLock = withStyles({
   root: {
-    fontSize: "14px",
-  },
+      fontSize: "14px"
+  }
 })(Lock);
+
 
 const GreenSmallTypographyCreate = withStyles({
   root: {
-    fontSize: "15px",
-    color: "#1261A3",
-  },
+      fontSize: '15px',
+      color: '#1261A3',
+  }
 })(Typography);
 
 const CreateLock = withStyles({
   root: {
-    color: "#1261A3",
-  },
+      color: '#1261A3'
+  }
 })(Lock);
 
 const AddToVoteButton = withStyles({
@@ -213,20 +214,20 @@ const StatusTypography = withStyles({
 
 const MainTitleTypography = withStyles({
   root: {
-    fontSize: "20px",
-    color: "rgba(18, 97, 163, 1)",
-    lineHeight: "26.6px",
-    fontWeight: "600",
-  },
+    fontSize: '20px',
+    color: 'rgba(18, 97, 163, 1)',
+    lineHeight: '26.6px',
+    fontWeight: '600'
+  }
 })(Typography);
 
 const MainSmallTitleTyography = withStyles({
   root: {
-    fontSize: "15px",
-    color: "rgba(18, 97, 163, 1)",
-    lineHeight: "26.6px",
-    fontWeight: "400",
-  },
+    fontSize: '15px',
+    color: 'rgba(18, 97, 163, 1)',
+    lineHeight: '26.6px',
+    fontWeight: '400'
+  }
 })(Typography);
 
 const TitleLabelTypography = withStyles({
@@ -273,7 +274,7 @@ const UploadButton = withStyles({
     height: 36,
     padding: "0 20px",
     marginLeft: "10px",
-    position: "relative",
+    position: "relative"
   },
   label: {
     textTransform: "capitalize",
@@ -297,9 +298,9 @@ const UploadLock = withStyles({
 
 const TimelineLock = withStyles({
   root: {
-    color: "rgba(18, 97, 163, 1);",
-    width: "25px",
-  },
+    color: 'rgba(18, 97, 163, 1);',
+    width: '25px',
+  }
 })(Lock);
 
 export default function ProposalDetail() {
@@ -319,7 +320,7 @@ export default function ProposalDetail() {
   const [editing, setEditing] = useState(false);
   const [proposal, setProposal] = useState();
   const [proposalHistory, setProposalHistory] = useState();
-  const [historyCollapse, setHistoryCollapse] = useState("COLLAPSE");
+  const [historyCollapse, setHistoryCollapse] = useState('COLLAPSE');
   const [currencyValue, setCurrencyValue] = useState();
   const [loading, setLoading] = useState(false);
   const [selectRadio, setSelectRadio] = useState();
@@ -335,15 +336,22 @@ export default function ProposalDetail() {
     vote: false,
     edit: false,
   });
-  const [statusOptions, setStatusOptions] = useState([]);
+  const [statusOptions, setStatusOptions] = useState([])
 
-  const { errors, handleSubmit, watch, register, setValue, control } = useForm({
+  const {
+    errors,
+    handleSubmit,
+    watch,
+    register,
+    setValue,
+    control,
+  } = useForm({
     criteriaMode: "all",
   });
 
   const handleChangeBudget = (budget) => {
-    setCurrencyValue(budget);
-  };
+    setCurrencyValue(budget)
+  }
 
   const handleFileSize = (message) => {
     if (message.search("File is too big") > 0) {
@@ -370,8 +378,8 @@ export default function ProposalDetail() {
       location: parseLocation(proposalRes.location),
       status: proposalRes.status,
     };
-    setCurrencyValue(proposalRes.budget);
-    setSelectRadio(proposalRes.category);
+    setCurrencyValue(proposalRes.budget)
+    setSelectRadio(proposalRes.category)
     if (proposalRes.photo) proposalState.photo = proposalRes.photo;
     if (proposalRes.regulations)
       proposalState.regulations = proposalRes.regulations;
@@ -391,21 +399,26 @@ export default function ProposalDetail() {
       }
     }
 
-    setStatusOptions([
-      { label: "Reviewing", value: ProposalStatus.Reviewing },
-      { label: "Approved", value: ProposalStatus.Approved },
-      { label: "Rejected", value: ProposalStatus.Rejected },
-      { label: "Actioned", value: ProposalStatus.Actioned },
-      { label: "Closed", value: ProposalStatus.Closed },
-    ]);
+    if (proposalState.status === ProposalStatus.Approved || proposalState.status === ProposalStatus.Actioned) {
+      setStatusOptions([
+        { label: 'Actioned', value: ProposalStatus.Actioned },
+        { label: 'Closed', value: ProposalStatus.Closed },
+      ])
+    } else {
+      setStatusOptions([
+        { label: 'Reviewing', value: ProposalStatus.Reviewing },
+        { label: 'Approved', value: ProposalStatus.Approved },
+        { label: 'Rejected', value: ProposalStatus.Rejected },
+      ])
+    }
 
     setLocation(proposalState.location);
     setProposal(proposalState);
   }, [authContext.civic, authContext.isGov, proposal_id]);
 
   const navigateSecurityPage = () => {
-    window.open("https://conscious-cities.com/security", "_blank");
-  };
+    window.open("https://conscious-cities.com/security", "_blank")
+  }
 
   const getProposalHistory = useCallback(async () => {
     const historyRes = await authContext.civic.proposalHistory(proposal_id);
@@ -415,18 +428,18 @@ export default function ProposalDetail() {
 
       let status;
       switch (historyItem.action) {
-        case "propcreate":
+        case 'propcreate':
           status = ProposalStatus.Proposed;
           break;
-        case "propupdate":
-        case "propupdate2":
+        case 'propupdate':
+        case 'propupdate2':
           status = historyItem.data.new_status;
           break;
-        case "propvote":
+        case 'propvote':
           status = -99;
           break;
         default:
-          throw new Error("action logic not implemented yet");
+          throw new Error("action logic not implemented yet")
       }
 
       historyState.push({
@@ -435,7 +448,7 @@ export default function ProposalDetail() {
         gov: historyItem.gov,
         comment: historyItem.comment,
         timestamp: historyItem.timestamp.toLocaleDateString("nl-NL"),
-        status: status !== -99 ? toDefinition(status) : "Voted",
+        status: status !== -99 ? toDefinition(status) : 'Voted',
       });
     }
     setProposalHistory(historyState);
@@ -455,7 +468,7 @@ export default function ProposalDetail() {
 
   const handleCollapse = () => {
     setShowHistory(!showHistory);
-    showHistory ? setHistoryCollapse("EXPAND") : setHistoryCollapse("COLLAPSE");
+    showHistory ? setHistoryCollapse('EXPAND') : setHistoryCollapse('COLLAPSE');
   };
 
   function onVote() {
@@ -469,10 +482,8 @@ export default function ProposalDetail() {
 
   const onSubmit = async (data) => {
     setEditing(false);
-    const budget =
-      typeof currencyValue === "string"
-        ? parseFloat(currencyValue.replace(",", ""))
-        : currencyValue;
+    const budget = parseFloat(currencyValue.replace(",", ""))
+;
 
     await authContext.civic.proposalUpdate({
       ...data,
@@ -496,7 +507,7 @@ export default function ProposalDetail() {
   const handleCancel = () => {
     setEditing(false);
     getProposal();
-  };
+  }
 
   return (
     <div className={classes.root}>
@@ -505,6 +516,7 @@ export default function ProposalDetail() {
         <Grid container direction="column">
           <Grid className="header-wraper-proposal">
             <img src={background} className="header-img" alt="Dutch canals" />
+
           </Grid>
           <div className="main-container-proposal">
             <Grid
@@ -675,17 +687,13 @@ export default function ProposalDetail() {
                   <HtmlTooltip
                     title={
                       <React.Fragment>
-                        <div>
-                          Proposals, voting and government actions are stored on
-                          the blockchain. Historic data is cryptographically
-                          secure, meaning the history of events cannot be
-                          changed by anyone, including the government.
-                          <Link
-                            className="read-more-link"
-                            onClick={navigateSecurityPage}
-                          >
+                        <div>Proposals, voting and government actions
+                        are stored on the blockchain. Historic data is cryptographically secure,
+                        meaning the history of events cannot be changed by anyone, including the
+                        government.
+                            <Link className="read-more-link" onClick={navigateSecurityPage}>
                             Click to learn more
-                          </Link>
+                            </Link>
                         </div>
                       </React.Fragment>
                     }
@@ -695,22 +703,12 @@ export default function ProposalDetail() {
                     <span>
                       <Grid item container>
                         <TimelineLock />
-                        <MainSmallTitleTyography>
-                          Immutable
-                        </MainSmallTitleTyography>
+                        <MainSmallTitleTyography>Immutable</MainSmallTitleTyography>
                       </Grid>
                     </span>
                   </HtmlTooltip>
                 </Grid>
-                <Grid
-                  item
-                  container
-                  xs
-                  className="collapse-wraper"
-                  alignItems="center"
-                  justify="flex-end"
-                  onClick={handleCollapse}
-                >
+                <Grid item container xs className="collapse-wraper" alignItems="center" justify="flex-end" onClick={handleCollapse}>
                   <CollapseTyography>{historyCollapse}</CollapseTyography>
                   {showHistory ? <ExpandLess /> : <ExpandMore />}
                 </Grid>
@@ -780,21 +778,15 @@ export default function ProposalDetail() {
                   <Grid item>
                     <HtmlTooltip
                       title={
-                        <React.Fragment>
-                          <div>
-                            {<TitleLock />}Proposals, voting and government
-                            actions are stored on the blockchain. This data is
-                            cryptographically secured and cannot be forged or
-                            tampered with by anyone, including the
-                            government.&nbsp;
-                            <Link
-                              className="read-more-link"
-                              onClick={navigateSecurityPage}
-                            >
+                      <React.Fragment>
+                        <div>{<TitleLock />}Proposals, voting and government actions are stored on the blockchain.
+                            This data is cryptographically secured and cannot be forged or tampered
+                            with by anyone, including the government.&nbsp;
+                          <Link className="read-more-link" onClick={navigateSecurityPage}>
                               Click to learn more
-                            </Link>
-                          </div>
-                        </React.Fragment>
+                          </Link>
+                        </div>
+                      </React.Fragment>
                       }
                       arrow
                       interactive
@@ -803,29 +795,22 @@ export default function ProposalDetail() {
                         <Grid item>
                           <GreenSmallTypographyCreate>
                             tamper proof
-                          </GreenSmallTypographyCreate>
+                        </GreenSmallTypographyCreate>
                         </Grid>
                         <Grid item>
-                          <CreateLock />
+                            <CreateLock />
                         </Grid>
                       </Grid>
                     </HtmlTooltip>
                   </Grid>
                   <Grid item>
-                    <UploadButton type="submit" disabled={loading}>
-                      SAVE
-                      {loading && (
-                        <CircularProgress
-                          size={24}
-                          className="button-progress"
-                        />
-                      )}
-                    </UploadButton>
+                      <UploadButton type="submit"  disabled={loading} >
+                        SAVE
+                      {loading && <CircularProgress size={24} className="button-progress" />}
+                      </UploadButton>
                   </Grid>
                   <Grid item>
-                    <UploadButton type="button" onClick={handleCancel}>
-                      CANCEL
-                    </UploadButton>
+                      <UploadButton type="button"  onClick={handleCancel}>CANCEL</UploadButton>
                   </Grid>
                 </Grid>
               </Grid>
@@ -841,12 +826,11 @@ export default function ProposalDetail() {
               <Grid item xs={12} container className="item-wraper">
                 <Grid item xs={6} container alignItems="center" spacing={3}>
                   <Grid item>
-                    <Controller
-                      defaultValue={proposal.budget}
-                      as={<CurrencyTextField />}
+                    <CurrencyTextField
                       name="budget"
+                      defaultValue={proposal.budget}
                       currencySymbol="€"
-                      outputFormat="number"
+                      outputFormat="string"
                       decimalCharacter="."
                       digitGroupSeparator=","
                       placeholder="Budget"
@@ -856,11 +840,16 @@ export default function ProposalDetail() {
                         },
                       }}
                       className={classes.budgetInputStyle}
+                      className={classes.budgetInputStyle}
                       error={errors.budget !== undefined}
+                      minimumValue={0}
+                      required={true}
                       control={control}
                       ref={register}
                       key="budget"
                       rules={{ required: true }}
+                      value={currencyValue}
+                      onChange={(event, value) => handleChangeBudget(value)}
                     />
                   </Grid>
                   <Grid item className="type-wrape">
@@ -902,10 +891,8 @@ export default function ProposalDetail() {
                           value={selectRadio}
                           onChange={(e) => {
                             setValue("category", e.target.value);
-                            setSelectRadio(parseInt(e.target.value));
-                            e.target.value === undefined
-                              ? selectErrorRadio(true)
-                              : selectErrorRadio(false);
+                            setSelectRadio(parseInt(e.target.value))
+                            e.target.value === undefined ? selectErrorRadio(true) : selectErrorRadio(false);
                           }}
                         >
                           {" "}
@@ -1010,9 +997,8 @@ export default function ProposalDetail() {
                     inputRef={register({
                       required: "Please enter a description",
                     })}
-                    helperText={`(${
-                      watch("description")?.length || 0
-                    }/${CHARACTER_LIMIT})`}
+                    helperText={`(${watch("description")?.length || 0
+                      }/${CHARACTER_LIMIT})`}
                     className="description-textarea"
                     error={errors.description !== undefined}
                     placeholder={placeholder}
@@ -1071,9 +1057,7 @@ export default function ProposalDetail() {
                         })}
                       >
                         <option aria-label="status" />
-                        {statusOptions.map((option) => (
-                          <option value={option.value}>{option.label}</option>
-                        ))}
+                        {statusOptions.map(option => <option value={option.value}>{option.label}</option>)}
                       </Select>
                       {errors.status && (
                         <FormHelperText>Please select a status.</FormHelperText>
@@ -1139,6 +1123,7 @@ export default function ProposalDetail() {
                   </Grid>
                 </Grid>
               </Grid>
+             
             </div>
           </Grid>
         </form>
