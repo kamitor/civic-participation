@@ -23,36 +23,44 @@ class LocationGooglMap extends Component {
     };
 
     onMarkerInteraction = (childKey, childProps, mouse) => {
-        this.setState({
-            draggable: false,
-            lat: mouse.lat,
-            lng: mouse.lng
-        });
+        if (this.props.editable) {
+            this.setState({
+                draggable: false,
+                lat: mouse.lat,
+                lng: mouse.lng
+            });
+        }
     }
 
     onMarkerInteractionMouseUp = (childKey, childProps, mouse) => {
-        this.setState({ draggable: true });
-        this._generateAddress();
+        if (this.props.editable) {
+            this.setState({ draggable: true });
+            this._generateAddress();
+        }
     }
 
     _onChange = ({ center, zoom }) => {
-        this.setState({
-            center: center,
-            zoom: zoom,
-        });
+        if (this.props.editable) {
+            this.setState({
+                center: center,
+                zoom: zoom,
+            });
+        }
     }
 
     _onClick = (value) => {
-        this.setState({
-            lat: value.lat,
-            lng: value.lng
-        });
-
-        if (this.props.handleChange) {
-            this.props.handleChange({
+        if (this.props.editable) {
+            this.setState({
                 lat: value.lat,
                 lng: value.lng
-            })
+            });
+    
+            if (this.props.handleChange) {
+                this.props.handleChange({
+                    lat: value.lat,
+                    lng: value.lng
+                })
+            }
         }
     }
 
@@ -128,6 +136,10 @@ class LocationGooglMap extends Component {
                     defaultZoom={this.state.zoom}
                     draggable={this.state.draggable}
                     onChange={this._onChange}
+                    onChildMouseDown={this.onMarkerInteraction}
+                    onChildMouseUp={this.onMarkerInteractionMouseUp}
+                    onChildMouseMove={this.onMarkerInteraction}
+                    onClick={this._onClick}
                     bootstrapURLKeys={{
                         key: settings.google.apiKey,
                         libraries: ['places', 'geometry'],

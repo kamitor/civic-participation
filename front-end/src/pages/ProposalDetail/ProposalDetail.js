@@ -377,6 +377,7 @@ export default function ProposalDetail() {
       location: parseLocation(proposalRes.location),
       status: proposalRes.status,
     };
+    setCurrencyValue(proposalRes.budget)
     if (proposalRes.photo) proposalState.photo = proposalRes.photo;
     if (proposalRes.regulations)
       proposalState.regulations = proposalRes.regulations;
@@ -465,10 +466,11 @@ export default function ProposalDetail() {
   };
 
   const onSubmit = async (data) => {
+    setEditing(false);
     const budget =
-      typeof data.budget === "string"
-        ? parseFloat(data.budget.replace(",", ""))
-        : data.budget;
+      typeof currencyValue === "string"
+        ? parseFloat(currencyValue.replace(",", ""))
+        : currencyValue;
 
     await authContext.civic.proposalUpdate({
       ...data,
@@ -483,17 +485,11 @@ export default function ProposalDetail() {
 
     getProposal();
     getProposalHistory();
-    setEditing(false);
   };
 
   const handleDropDownImage = (files) => {
     setFiles(files);
   };
-
-  const handleSave = () => {
-    setEditing(false);
-    getProposal();
-  }
 
   const handleCancel = () => {
     setEditing(false);
@@ -622,7 +618,7 @@ export default function ProposalDetail() {
               </Grid>
             </Grid>
             <Grid item xs={12}>
-              <div className="googlmap-wrape">
+              <div className="googlemap-wrape">
                 <LocationGoogleMaps location={proposal.location} zoom={15} />
               </div>
             </Grid>
@@ -795,7 +791,7 @@ export default function ProposalDetail() {
                     </HtmlTooltip>
                   </Grid>
                   <Grid item>
-                      <UploadButton type="button"  disabled={loading} onClick={handleSave} >
+                      <UploadButton type="submit"  disabled={loading} >
                         SAVE
                       {loading && <CircularProgress size={24} className="button-progress" />}
                       </UploadButton>
@@ -1004,11 +1000,12 @@ export default function ProposalDetail() {
                 </Grid>
               </Grid>
               <Grid item xs={12}>
-                <div className="googlmap-wrape">
+                <div className="googlemap-wrape">
                   <LocationGoogleMaps
                     location={proposal.location}
                     zoom={15}
                     handleChange={handleChangeLocation}
+                    editable={true}
                   />
                 </div>
               </Grid>

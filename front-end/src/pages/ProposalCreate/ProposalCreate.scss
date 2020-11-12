@@ -272,6 +272,15 @@
             }
         }
 
+        .tamper-wraper {
+            text-align: center;
+            display: flex;
+            justify-content: flex-end;
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
         .btn-wraper {
             position: relative;
         }
