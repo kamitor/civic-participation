@@ -122,7 +122,9 @@ export default function Vote() {
     }
     // On vote button click
     const _handleVote = async () => {
-        setLoading(true);
+        if (completed > 0) {
+            setLoading(true);
+        }
         // TODO: get proposal data from global store/ context.
         const proposalIds = voteContext.proposals.map(proposal => proposal.proposalId);
         await authContext.civic.proposalVote(proposalIds);
@@ -161,19 +163,19 @@ export default function Vote() {
 
     const UploadButton = withStyles({
         root: {
-        backgroundColor: loading ? "rgba(79,79,79, 0.26)" : "#1261A3",
-        borderRadius: 3,
-        border: 0,
-        color: "white",
-        height: 36,
-        padding: "0 20px",
-        marginLeft: "10px",
-        position: "relative",
+            backgroundColor: loading ? "rgba(79,79,79, 0.26)" : "#1261A3",
+            borderRadius: 3,
+            border: 0,
+            color: "white",
+            height: 36,
+            padding: "0 20px",
+            marginLeft: "10px",
+            position: "relative",
         },
-        label: {
-        textTransform: "capitalize",
-        fontSize: "14px",
-        fontWeight: "500",
+            label: {
+            textTransform: "capitalize",
+            fontSize: "14px",
+            fontWeight: "500",
         },
     })(Button);
 
@@ -237,7 +239,7 @@ export default function Vote() {
                             </HtmlTooltip>
                         </Grid>
                         <Grid item>
-                            <UploadButton type="button" onClick={_handleVote} disabled={(!completed || (completed > 100)) && !loading}>VOTE</UploadButton>
+                            <UploadButton type="button" onClick={_handleVote} disabled={(!completed || (completed > 100)) && loading}>VOTE</UploadButton>
                             {loading && <CircularProgress size={24} className="button-progress" />}
                         </Grid>
                     </Grid>

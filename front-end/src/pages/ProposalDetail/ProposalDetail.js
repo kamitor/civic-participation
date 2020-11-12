@@ -274,6 +274,7 @@ const UploadButton = withStyles({
     height: 36,
     padding: "0 20px",
     marginLeft: "10px",
+    position: "relative"
   },
   label: {
     textTransform: "capitalize",
@@ -489,6 +490,16 @@ export default function ProposalDetail() {
     setFiles(files);
   };
 
+  const handleSave = () => {
+    setEditing(false);
+    getProposal();
+  }
+
+  const handleCancel = () => {
+    setEditing(false);
+    getProposal();
+  }
+
   return (
     <div className={classes.root}>
       <Navbar />
@@ -502,7 +513,7 @@ export default function ProposalDetail() {
             <Grid
               container
               direction="row"
-              className="header-title"
+              className="header-title-detail"
               alignItems="center"
             >
               <HeaderCustomizeStar />
@@ -784,12 +795,13 @@ export default function ProposalDetail() {
                     </HtmlTooltip>
                   </Grid>
                   <Grid item>
-                      <UploadButton type="button"  disabled={loading}>SAVE</UploadButton>
+                      <UploadButton type="button"  disabled={loading} onClick={handleSave} >
+                        SAVE
                       {loading && <CircularProgress size={24} className="button-progress" />}
+                      </UploadButton>
                   </Grid>
                   <Grid item>
-                      <UploadButton type="button"  onClick={() => window.location.reload()}>CANCEL</UploadButton>
-                      {loading && <CircularProgress size={24} className="button-progress" />}
+                      <UploadButton type="button"  onClick={handleCancel}>CANCEL</UploadButton>
                   </Grid>
                 </Grid>
               </Grid>
@@ -861,9 +873,17 @@ export default function ProposalDetail() {
                   </Grid>
                   <Grid item sm container className="category-checkbox-wrap">
                     <Controller
-                      defaultValue={proposal.category.toString()}
                       render={(props) => (
-                        <RadioGroup {...props} aria-label="category">
+                        <RadioGroup
+                          {...props}
+                          defaultValue={proposal.category.toString()}
+                          aria-label="category"
+                          value={+watch("category")}
+                          onChange={(e) => {
+                            clearErrors(["category"]);
+                            setValue("category", e.target.value);
+                          }}
+                        >
                           {" "}
                           <Grid container alignItems="center" spacing={2}>
                             <Grid item xs={6} container direction="column">
