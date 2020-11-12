@@ -335,6 +335,7 @@ export default function ProposalDetail() {
     vote: false,
     edit: false,
   });
+  const [statusOptions, setStatusOptions] = useState([])
 
   const {
     errors,
@@ -397,6 +398,19 @@ export default function ProposalDetail() {
       }
     }
 
+    if (proposalState.status === ProposalStatus.Approved || proposalState.status === ProposalStatus.Actioned) {
+      setStatusOptions([
+        { label: 'Actioned', value: ProposalStatus.Actioned },
+        { label: 'Closed', value: ProposalStatus.Closed },
+      ])
+    } else {
+      setStatusOptions([
+        { label: 'Reviewing', value: ProposalStatus.Reviewing },
+        { label: 'Approved', value: ProposalStatus.Approved },
+        { label: 'Rejected', value: ProposalStatus.Rejected },
+      ])
+    }
+
     setLocation(proposalState.location);
     setProposal(proposalState);
   }, [authContext.civic, authContext.isGov, proposal_id]);
@@ -457,7 +471,7 @@ export default function ProposalDetail() {
   };
 
   function onVote() {
-    voteContext.setProposals([ ...voteContext.proposals, proposal ]);
+    voteContext.addProposal(proposal);
     history.push("/vote");
   }
 
@@ -1043,15 +1057,7 @@ export default function ProposalDetail() {
                         })}
                       >
                         <option aria-label="status" />
-                        <option value={ProposalStatus.Reviewing}>
-                          Reviewing
-                        </option>
-                        <option value={ProposalStatus.Approved}>
-                          Approved
-                        </option>
-                        <option value={ProposalStatus.Rejected}>
-                          Rejected
-                        </option>
+                        {statusOptions.map(option => <option value={option.value}>{option.label}</option>)}
                       </Select>
                       {errors.status && (
                         <FormHelperText>Please select a status.</FormHelperText>

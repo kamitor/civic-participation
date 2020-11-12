@@ -6,7 +6,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { makeStyles } from '@material-ui/core/styles';
 import { Lock } from '@material-ui/icons';
 import { HtmlTooltip } from '../../components/Themes';
-import { toLabel as categoryToLabel } from "../../types/proposals/categories";
+import ProposalCategory, { toLabel as categoryToLabel } from "../../types/proposals/categories";
 
 import Navbar from '../../components/Navbar/Navbar';
 import { ConsumeAuth } from '../../hooks/authContext'
@@ -17,6 +17,7 @@ import ProgressBar from './ProgressBar';
 import Chart from './Chart';
 
 import './Vote.scss'
+import { mapObj } from '../../services/objects';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -83,8 +84,8 @@ const TitleLock = withStyles({
         fontSize: "14px"
     }
 })(Lock);
-  
-  
+
+
 
 const CreateLock = withStyles({
     root: {
@@ -108,7 +109,7 @@ export default function Vote() {
     const history = useHistory();
     const [completed, setCompleted] = useState(0);
     const [selectedValue, setSelectedValue] = useState(0);
-    const [chartValues, setChartValues] = useState([]);
+    const [chartValues, setChartValues] = useState({ series: [], labels: [] });
     const [loading, setLoading] = useState(false);
 
     // total budget
@@ -117,9 +118,9 @@ export default function Vote() {
     // On delete button click in proposal
     const handleDelete = (proposalId) => {
         // Filter the not deleted proposals and update the context with them
-        const remainingProposals = voteContext.proposals.filter(proposal => proposal.proposalId !== proposalId);
-        voteContext.setProposals(remainingProposals);
+        voteContext.deleteProposalById(proposalId);
     }
+
     // On vote button click
     const _handleVote = async () => {
         if (completed > 0) {
@@ -146,20 +147,20 @@ export default function Vote() {
         setSelectedValue(formatter.format(totalProposalBudget));
         // For progressbar
         setCompleted((totalProposalBudget / budgetLimit * 100));
+
         // For chart
-        const chartValues = voteContext.proposals.map(proposal => {
-            return {
-                series: proposal.budget / totalProposalBudget * 100,
-                label: categoryToLabel(proposal.category),
-            };
-        });
-        setChartValues(chartValues);
+        const series = [], labels = [];
+        mapObj(ProposalCategory, (key, val) => {
+            labels.push(categoryToLabel(val));
+            let num = voteContext.proposals.reduce((total, proposal) => {
+                if (proposal.category === val) return total + proposal.budget
+                else return total;
+            }, 0);
+            series.push(num)
+        })
+        setChartValues({ series, labels });
 
     }, [voteContext.proposals]);
-
-    const proposalsSeries = chartValues.map(chartValue => chartValue.series);
-    const proposalsLabels = chartValues.map(chartValue => chartValue.label);
-
 
     const UploadButton = withStyles({
         root: {
@@ -172,13 +173,12 @@ export default function Vote() {
             marginLeft: "10px",
             position: "relative",
         },
-            label: {
+        label: {
             textTransform: "capitalize",
             fontSize: "14px",
             fontWeight: "500",
         },
     })(Button);
-
 
     return (
         <div className={classes.root}>
@@ -205,7 +205,7 @@ export default function Vote() {
                                 <TitleHeaderTypography>Your votes by categories</TitleHeaderTypography>
                             </Grid>
                             <Grid item container xs justify="flex-end">
-                                {proposalsSeries && <Chart series={proposalsSeries} labels={proposalsLabels} />}
+                                {completed !== 0 && <Chart series={chartValues.series} labels={chartValues.labels} />}
                             </Grid>
                         </Grid>
                     </Grid>
@@ -217,15 +217,15 @@ export default function Vote() {
                         <Grid item>
                             <HtmlTooltip
                                 title={
-                                <React.Fragment>
-                                    <div>{<TitleLock />}Proposals, voting and government actions are stored on the blockchain.
+                                    <React.Fragment>
+                                        <div>{<TitleLock />}Proposals, voting and government actions are stored on the blockchain.
                                         This data is cryptographically secured and cannot be forged or tampered
                                         with by anyone, including the government.&nbsp;
                                         <Link className="read-more-link" onClick={navigateSecurityPage}>
-                                            Click to learn more
+                                                Click to learn more
                                         </Link>
-                                    </div>
-                                </React.Fragment>
+                                        </div>
+                                    </React.Fragment>
                                 }
                                 arrow
                                 interactive
