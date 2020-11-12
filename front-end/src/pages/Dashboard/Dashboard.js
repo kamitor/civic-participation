@@ -10,6 +10,7 @@ import Card from './Card';
 import Map from './Map';
 import { ConsumeAuth } from '../../hooks/authContext';
 import { useHistory } from "react-router-dom";
+import ProposalStatus from "../../types/proposals/status";
 
 function parseLocation(location) {
     return {
@@ -79,6 +80,14 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
+function sortByCreatedDate(data) {
+    data.sort((a, b) => {
+        if (a.created > b.created) { return 1; }
+        if (a.created < b.created) { return -1; }
+        return 0;
+    })
+
+}
 function Dashboard(props) {
     const classes = useStyles();
     const [proposalList, setProposalList] = useState([]);
@@ -89,13 +98,23 @@ function Dashboard(props) {
     const [selected, setSelected] = useState({});
 
     const handleChange = (event) => {
-        setStatus(event.target.value);
-        let tempData = proposalList;
-        if (event.target.value == "all") {
-            setSelectedProposals(tempData);
-            return;
+        let value = event.target.value;
+        setStatus(value);
+        let searchedProposals;
+        if (value === "all") {
+            searchedProposals = proposalList;
+            sortByCreatedDate(searchedProposals);
+        } else if (value === "my") {
+            searchedProposals = proposalList.filter(item => item.creator === authContext.civic.account.accountName);
+            sortByCreatedDate(searchedProposals);
+        } else if (value === ProposalStatus.Approved.toString()) {
+            searchedProposals = proposalList.filter(item => item.status.toString() === value);
+            searchedProposals.sort((a, b) => b.yesVoteCount - a.yesVoteCount);
         }
-        let searchedProposals = tempData.filter(item => item.type == event.target.value);
+        else {
+            searchedProposals = proposalList.filter(item => item.status.toString() === value);
+            sortByCreatedDate(searchedProposals);
+        }
         setSelectedProposals(searchedProposals);
     };
 
@@ -139,16 +158,14 @@ function Dashboard(props) {
                                             onChange={handleChange}
                                             id="search-proposal"
                                         >
-                                            <option value="all">Search all proposals</option>
-                                            <option value="0">Proposed</option>
-                                            <option value="1">Reviewing by gov</option>
-                                            <option value="2">Approved by gov</option>
-                                            <option value="3">Rejected by gov</option>
-                                            <option value="4">Voteable</option>
-                                            <option value="5"> Vote passed</option>
-                                            <option value="6">Vote failed</option>
-                                            <option value="7">Executing by gov</option>
-                                            <option value="8">Closed</option>
+                                            <option value="all">All proposals</option>
+                                            <option value="my">My proposals</option>
+                                            <option value={ProposalStatus.Proposed}>Proposed</option>
+                                            <option value={ProposalStatus.Reviewing}>Reviewing by gov</option>
+                                            <option value={ProposalStatus.Rejected}>Rejected by gov</option>
+                                            <option value={ProposalStatus.Approved}>Voting</option>
+                                            <option value={ProposalStatus.Actioned}>Executing by gov</option>
+                                            <option value={ProposalStatus.Closed}>Closed</option>
                                         </NativeSelect>
                                     </FormControl>
                                 </Grid>

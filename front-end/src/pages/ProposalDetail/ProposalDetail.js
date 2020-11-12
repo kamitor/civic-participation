@@ -302,6 +302,7 @@ export default function ProposalDetail() {
     vote: false,
     edit: false,
   });
+  const [statusOptions, setStatusOptions] = useState([])
 
   const {
     errors,
@@ -349,6 +350,19 @@ export default function ProposalDetail() {
           edit: false,
         });
       }
+    }
+
+    if (proposalState.status === ProposalStatus.Approved || proposalState.status === ProposalStatus.Actioned) {
+      setStatusOptions([
+        { label: 'Actioned', value: ProposalStatus.Actioned },
+        { label: 'Closed', value: ProposalStatus.Closed },
+      ])
+    } else {
+      setStatusOptions([
+        { label: 'Reviewing', value: ProposalStatus.Reviewing },
+        { label: 'Approved', value: ProposalStatus.Approved },
+        { label: 'Rejected', value: ProposalStatus.Rejected },
+      ])
     }
 
     setLocation(proposalState.location);
@@ -909,15 +923,7 @@ export default function ProposalDetail() {
                         })}
                       >
                         <option aria-label="status" />
-                        <option value={ProposalStatus.Reviewing}>
-                          Reviewing
-                        </option>
-                        <option value={ProposalStatus.Approved}>
-                          Approved
-                        </option>
-                        <option value={ProposalStatus.Rejected}>
-                          Rejected
-                        </option>
+                        {statusOptions.map(option => <option value={option.value}>{option.label}</option>)}
                       </Select>
                       {errors.status && (
                         <FormHelperText>Please select a status.</FormHelperText>
