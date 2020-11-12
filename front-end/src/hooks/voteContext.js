@@ -1,31 +1,64 @@
-import React, { useState, useContext, createContext } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState, useContext, createContext } from "react";
+import PropTypes from "prop-types";
+
+import { ConsumeAuth } from "./authContext";
+
+import {
+  setProposalsStorage,
+  getProposalsStorage,
+} from "./storage";
 
 const voteContext = createContext();
 
 function useProvideVote() {
-    const [proposals, setProposals] = useState([]);
+  const authContext = ConsumeAuth();
 
-    return {
-        proposals,
-        setProposals,
-    };
+  const [proposals, setProposals] = useState([]);
+
+  const addProposal = async (proposal) => {
+    const proposalExists = proposals.find(x => x.proposalId === proposal.proposalId)
+    if (!proposalExists) {
+      const newProposals = [...proposals, proposal]
+      setProposals(newProposals)
+      setProposalsStorage(newProposals)
+    }
+  }
+
+  const deleteProposalById = async (proposalId) => {
+    const remainingProposals = proposals.filter(proposal => proposal.proposalId !== proposalId);
+    setProposals(remainingProposals);
+    setProposalsStorage(remainingProposals)
+  }
+
+  useEffect(() => {
+    if (authContext.isLoggedIn()) {
+      const proposalsStorage = getProposalsStorage();
+      if (proposalsStorage) {
+        setProposals(proposalsStorage);
+      }
+    }
+  }, [authContext.isLoggedInValue]);
+
+  return {
+    proposals,
+    setProposals,
+    addProposal,
+    deleteProposalById
+  };
 }
 
 export function ProvideVote({ children }) {
-    const voteProvider = useProvideVote();
+  const voteProvider = useProvideVote();
 
-    return (
-        <voteContext.Provider value={voteProvider}>
-            {children}
-        </voteContext.Provider>
-    );
+  return (
+    <voteContext.Provider value={voteProvider}>{children}</voteContext.Provider>
+  );
 }
 
 export const ConsumeVote = () => {
-    return useContext(voteContext);
+  return useContext(voteContext);
 };
 
 ProvideVote.propTypes = {
-    children: PropTypes.node.isRequired,
+  children: PropTypes.node.isRequired,
 };

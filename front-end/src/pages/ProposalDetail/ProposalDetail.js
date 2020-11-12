@@ -425,7 +425,7 @@ export default function ProposalDetail() {
   };
 
   function onVote() {
-    voteContext.setProposals([...voteContext.proposals, proposal]);
+    voteContext.addProposal(proposal);
     history.push("/vote");
   }
 
