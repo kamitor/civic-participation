@@ -24,6 +24,12 @@ function useProvideVote() {
     }
   }
 
+  const deleteProposalById = async (proposalId) => {
+    const remainingProposals = proposals.filter(proposal => proposal.proposalId !== proposalId);
+    setProposals(remainingProposals);
+    setProposalsStorage(remainingProposals)
+  }
+
   useEffect(() => {
     if (authContext.isLoggedIn()) {
       const proposalsStorage = getProposalsStorage();
@@ -36,7 +42,8 @@ function useProvideVote() {
   return {
     proposals,
     setProposals,
-    addProposal
+    addProposal,
+    deleteProposalById
   };
 }
 
