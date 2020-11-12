@@ -109,6 +109,7 @@ export default function Vote() {
         // TODO: get proposal data from global store/ context.
         const proposalIds = voteContext.proposals.map(proposal => proposal.proposalId);
         await authContext.civic.proposalVote(proposalIds);
+        voteContext.clearAllProposals();
         history.push("./vote-success")
     }
 
