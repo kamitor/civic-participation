@@ -7,19 +7,7 @@
         height: 100%;
     }
     position: relative;
-    .header-title {
-        position: absolute;
-        bottom: 0px;
-        align-items: flex-end;
-        border-radius: 35px 35px 0 0;
-        width: 550px;
-        justify-content: center;
-        padding-bottom: 4px;
-        background: $green;
-        margin-left: 243px;
-        align-items: center;
-        height: 100px;
-    }
+   
     .input-container+p+p {
         margin: 0;
         color: $red;
@@ -36,10 +24,19 @@
 }
 
 .main-container-proposal {
-    width: 756px;
+    width: 1024px;
     margin: 23px auto;
     position: relative;
     margin-top: 56px;
+    .header-title-detail {
+        bottom: 0px;
+        margin-bottom: 35px;
+        width: 550px;
+        padding-bottom: 4px;
+        align-items: center;
+        height: 100px;
+        pointer-events: none;
+    }
     .button-wraper {
         margin-top: 10px;
         position: relative;
@@ -186,7 +183,7 @@
             }
         }
     }
-    .googlmap-wrape {
+    .googlemap-wrape {
         height: 330px;
         width: 100%;
         margin-top: 89px;
@@ -195,7 +192,7 @@
             .search-input {
                 border: none;
                 border-bottom: 1px solid $green;
-                width: 39%;
+                width: 286px;
                 margin-bottom: 20px;
                 outline: none;
                 padding-right: 20px;
@@ -243,7 +240,7 @@
         .timeline-item-wraper {
             margin-bottom: 30px;
             .item-content {
-                width: 611px;
+                width: 905px;
                 height: 102px;
                 background: $whisper;
                 border-radius: 15px;

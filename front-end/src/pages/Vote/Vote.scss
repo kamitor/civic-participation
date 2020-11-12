@@ -8,17 +8,21 @@
 }
 
 .main-container {
-    width: 60%;
-    margin-top: 32px;
+    width: 70%;
+    margin: auto;
+    margin-top: 60px;
     .button-wraper {
         margin-top: 10px;
-        .tamper-wraper {
+        .button-progress {
+            color: #FFFFFF;
+            position: absolute;
+            margin-top: 7px;
+            margin-left: -51px;
+        }
+        .tamper-vote-wraper {
             text-align: center;
             display: flex;
             justify-content: flex-end;
-            &:hover {
-                cursor: pointer;
-            }
         }
         .MuiButton-root {
             text-decoration: none;
