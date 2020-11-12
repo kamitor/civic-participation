@@ -100,9 +100,9 @@ export default function Vote() {
     // On delete button click in proposal
     const handleDelete = (proposalId) => {
         // Filter the not deleted proposals and update the context with them
-        const remainingProposals = voteContext.proposals.filter(proposal => proposal.proposalId !== proposalId);
-        voteContext.setProposals(remainingProposals);
+        voteContext.deleteProposalById(proposalId);
     }
+
     // On vote button click
     const _handleVote = async () => {
         // TODO: get proposal data from global store/ context.
