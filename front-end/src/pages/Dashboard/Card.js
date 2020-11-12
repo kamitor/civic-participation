@@ -110,7 +110,7 @@ export default function Card(props) {
 
   return (
     <StyledBadge
-      invisible={!props.hasBadge}
+      invisible={!props.hasBadge || props.badgeContent == ''}
       badgeContent={props.badgeContent}
       max={999}
       color="error"
