@@ -344,7 +344,6 @@ export default function ProposalDetail() {
     watch,
     register,
     setValue,
-    clearErrors,
     control,
   } = useForm({
     criteriaMode: "all",
@@ -492,7 +491,7 @@ export default function ProposalDetail() {
       ...data,
       proposalId: proposal.proposalId,
       budget,
-      category: +data.category,
+      category: +selectRadio,
       status: +data.status,
       type: +data.type,
       location: `${location.lat},${location.lng}`,
@@ -891,7 +890,6 @@ export default function ProposalDetail() {
                           aria-label="category"
                           value={selectRadio}
                           onChange={(e) => {
-                            clearErrors(["category"]);
                             setValue("category", e.target.value);
                             setSelectRadio(parseInt(e.target.value))
                             e.target.value === undefined ? selectErrorRadio(true) : selectErrorRadio(false);
@@ -954,7 +952,6 @@ export default function ProposalDetail() {
                           </Grid>
                         </RadioGroup>
                       )}
-                      rules={{ required: true }}
                       name="category"
                       control={control}
                     />
