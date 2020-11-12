@@ -30,6 +30,11 @@ function useProvideVote() {
     setProposalsStorage(remainingProposals)
   }
 
+  const clearAllProposals = () => {
+    setProposals([]);
+    setProposalsStorage([]);
+  }
+
   useEffect(() => {
     if (authContext.isLoggedIn()) {
       const proposalsStorage = getProposalsStorage();
@@ -43,7 +48,8 @@ function useProvideVote() {
     proposals,
     setProposals,
     addProposal,
-    deleteProposalById
+    deleteProposalById,
+    clearAllProposals
   };
 }
 
