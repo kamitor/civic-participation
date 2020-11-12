@@ -94,6 +94,7 @@ export default function Vote() {
     const [completed, setCompleted] = useState(0);
     const [selectedValue, setSelectedValue] = useState(0);
     const [chartValues, setChartValues] = useState({ series: [], labels: [] });
+
     // total budget
     const [budgetLimit, _] = useState(100000);
 
@@ -133,7 +134,6 @@ export default function Vote() {
             }, 0);
             series.push(num)
         })
-        console.log('Vote', series, labels);
         setChartValues({ series, labels });
 
     }, [voteContext.proposals]);
