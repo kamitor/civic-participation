@@ -192,19 +192,19 @@ const StatusTypography = withStyles({
 
 const MainTitleTypography = withStyles({
   root: {
-      fontSize: '20px',
-      color: 'rgba(18, 97, 163, 1)',
-      lineHeight: '26.6px',
-      fontWeight: '600'
+    fontSize: '20px',
+    color: 'rgba(18, 97, 163, 1)',
+    lineHeight: '26.6px',
+    fontWeight: '600'
   }
 })(Typography);
 
 const MainSmallTitleTyography = withStyles({
   root: {
-      fontSize: '15px',
-      color: 'rgba(18, 97, 163, 1)',
-      lineHeight: '26.6px',
-      fontWeight: '400'
+    fontSize: '15px',
+    color: 'rgba(18, 97, 163, 1)',
+    lineHeight: '26.6px',
+    fontWeight: '400'
   }
 })(Typography);
 
@@ -275,8 +275,8 @@ const UploadLock = withStyles({
 
 const TimelineLock = withStyles({
   root: {
-      color: 'rgba(18, 97, 163, 1);',
-      width: '25px',
+    color: 'rgba(18, 97, 163, 1);',
+    width: '25px',
   }
 })(Lock);
 
@@ -366,13 +366,29 @@ export default function ProposalDetail() {
     for (let historyItem of historyRes) {
       const txUrl = `${settings.eosio.blockExplorerUrl}/tx/${historyItem.txId}`;
 
+      let status;
+      switch (historyItem.action) {
+        case 'propcreate':
+          status = ProposalStatus.Proposed;
+          break;
+        case 'propupdate':
+        case 'propupdate2':
+          status = historyItem.data.new_status;
+          break;
+        case 'propvote':
+          status = -99;
+          break;
+        default:
+          throw new Error("action logic not implemented yet")
+      }
+
       historyState.push({
         txUrl: txUrl,
         name: historyItem.authHumanCommonName,
         gov: historyItem.gov,
         comment: historyItem.comment,
         timestamp: historyItem.timestamp.toLocaleDateString("nl-NL"),
-        status: toDefinition(historyItem.status),
+        status: status !== -99 ? toDefinition(status) : 'Voted',
       });
     }
     setProposalHistory(historyState);
@@ -435,27 +451,27 @@ export default function ProposalDetail() {
         <Grid container direction="column">
           <Grid className="header-wraper-proposal">
             <img src={background} className="header-img" alt="Dutch canals" />
-            
+
           </Grid>
           <div className="main-container-proposal">
             <Grid
-                container
-                direction="row"
-                className="header-title"
-                alignItems="center"
-              >
-                <HeaderCustomizeStar />
-                <TextField
-                  className={classes.margin + " " + classes.commonText}
-                  InputProps={{
-                    className: classes.inputTitle,
-                  }}
-                  InputLabelProps={{
-                    className: classes.inputLabelTitle,
-                  }}
-                  value={proposal.title}
-                  editable="false"
-                />
+              container
+              direction="row"
+              className="header-title"
+              alignItems="center"
+            >
+              <HeaderCustomizeStar />
+              <TextField
+                className={classes.margin + " " + classes.commonText}
+                InputProps={{
+                  className: classes.inputTitle,
+                }}
+                InputLabelProps={{
+                  className: classes.inputLabelTitle,
+                }}
+                value={proposal.title}
+                editable="false"
+              />
             </Grid>
             <Grid container>
               <Grid item xs={12} container>
@@ -601,36 +617,36 @@ export default function ProposalDetail() {
               <Grid item container alignItems="center" justify="space-between">
                 <Grid item xs container spacing={8} alignItems="center">
                   <Grid item>
-                      <MainTitleTypography>History</MainTitleTypography>
+                    <MainTitleTypography>History</MainTitleTypography>
                   </Grid>
-                    <HtmlTooltip
-                      title={
-                        <React.Fragment>
-                          <div>Proposals, voting and government actions
-                              are stored on the blockchain. Historic data is cryptographically secure,
-                              meaning the history of events cannot be changed by anyone, including the
-                              government.
+                  <HtmlTooltip
+                    title={
+                      <React.Fragment>
+                        <div>Proposals, voting and government actions
+                        are stored on the blockchain. Historic data is cryptographically secure,
+                        meaning the history of events cannot be changed by anyone, including the
+                        government.
                             <Link className="read-more-link" onClick={navigateSecurityPage}>
-                              Click to learn more
+                            Click to learn more
                             </Link>
-                          </div>
-                        </React.Fragment>
-                      }
-                      arrow
-                      interactive
-                    >
-                      <span>
-                        <Grid item container>
-                          <TimelineLock />
-                          <MainSmallTitleTyography>Immutable</MainSmallTitleTyography>
-                        </Grid>
-                      </span>
-                    </HtmlTooltip>
-                  </Grid>
-                  <Grid item container xs className="collapse-wraper" alignItems="center" justify="flex-end" onClick={handleCollapse}>
-                    <CollapseTyography>{historyCollapse}</CollapseTyography>
-                      {showHistory ? <ExpandLess /> : <ExpandMore />}
-                  </Grid>
+                        </div>
+                      </React.Fragment>
+                    }
+                    arrow
+                    interactive
+                  >
+                    <span>
+                      <Grid item container>
+                        <TimelineLock />
+                        <MainSmallTitleTyography>Immutable</MainSmallTitleTyography>
+                      </Grid>
+                    </span>
+                  </HtmlTooltip>
+                </Grid>
+                <Grid item container xs className="collapse-wraper" alignItems="center" justify="flex-end" onClick={handleCollapse}>
+                  <CollapseTyography>{historyCollapse}</CollapseTyography>
+                  {showHistory ? <ExpandLess /> : <ExpandMore />}
+                </Grid>
               </Grid>
               <Grid className="timeline-box-wraper">
                 {showHistory &&
@@ -661,35 +677,35 @@ export default function ProposalDetail() {
           <Grid container direction="column">
             <Grid className="header-wraper">
               <img src={background} className="header-img" />
-              
+
             </Grid>
             <div className="main-container-proposal-edit">
               <Grid
-                  container
-                  direction="row"
-                  className="header-title"
-                  alignItems="center"
-                >
-                  <HeaderCustomizeStar />
-                  <TextField
-                    label="Name your idea"
-                    className={classes.margin + " " + classes.commonText}
-                    InputProps={{
-                      className: classes.inputTitleEdit,
-                    }}
-                    InputLabelProps={{
-                      className: classes.inputLabelTitle,
-                    }}
-                    defaultValue={proposal.title}
-                    name="title"
-                    inputRef={register({
-                      required: "Please enter a title",
-                    })}
-                    error={errors.title !== undefined}
-                  />
-                  {errors.title && (
-                    <FormHelperText>Please select a title.</FormHelperText>
-                  )}
+                container
+                direction="row"
+                className="header-title"
+                alignItems="center"
+              >
+                <HeaderCustomizeStar />
+                <TextField
+                  label="Name your idea"
+                  className={classes.margin + " " + classes.commonText}
+                  InputProps={{
+                    className: classes.inputTitleEdit,
+                  }}
+                  InputLabelProps={{
+                    className: classes.inputLabelTitle,
+                  }}
+                  defaultValue={proposal.title}
+                  name="title"
+                  inputRef={register({
+                    required: "Please enter a title",
+                  })}
+                  error={errors.title !== undefined}
+                />
+                {errors.title && (
+                  <FormHelperText>Please select a title.</FormHelperText>
+                )}
               </Grid>
               <Grid container>
                 <Grid item xs={12} container>
@@ -828,9 +844,8 @@ export default function ProposalDetail() {
                     inputProps={{
                       maxLength: CHARACTER_LIMIT,
                     }}
-                    helperText={`${
-                      (watch("description") && watch("description").length) || 0
-                    }/${CHARACTER_LIMIT}`}
+                    helperText={`${(watch("description") && watch("description").length) || 0
+                      }/${CHARACTER_LIMIT}`}
                     margin="normal"
                     name="description"
                     inputRef={register({

@@ -141,7 +141,7 @@ export default class Civic {
             throw new Error('Photo is mandatory while creating proposal');
         }
 
-        const budget = 0;
+        let budget = 0;
         if (proposal.budget) {
             if (isNumber(proposal.budget)) {
                 budget = proposal.budget;
@@ -198,7 +198,7 @@ export default class Civic {
      * @returns {ProposalDetailed}
      */
     async proposalUpdate(proposal) {
-        const budget = 0;
+        let budget = 0;
         if (proposal.budget) {
             if (isNumber(proposal.budget)) {
                 budget = proposal.budget;
@@ -298,23 +298,27 @@ export default class Civic {
             }) : proposalsQuery.rows;
 
             // return ProposalDetailed[] type
-            const response = proposals.map(x => ({
-                proposalId: x.json.proposal_id,
-                title: x.json.title,
-                description: x.json.description,
-                category: x.json.category,
-                budget: x.json.budget,
-                type: x.json.type,
-                location: x.json.location,
-                status: x.json.status,
-                photo: x.json.photo,
-                regulations: x.json.regulations,
-                created: Accountability.timePointToDate(x.json.approved),
-                approved: Accountability.timePointToDate(x.json.approved),
-                updated: Accountability.timePointToDate(x.json.updated),
-                voted: x.json.voted,
-                yesVoteCount: x.json.yes_vote_count,
-            }))
+            const response = proposals.map(x => {
+                const res = {
+                    proposalId: x.json.proposal_id,
+                    title: x.json.title,
+                    description: x.json.description,
+                    category: x.json.category,
+                    budget: x.json.budget,
+                    type: x.json.type,
+                    location: x.json.location,
+                    status: x.json.status,
+                    photo: x.json.photo,
+                    created: Accountability.timePointToDate(x.json.approved),
+                    approved: Accountability.timePointToDate(x.json.approved),
+                    updated: Accountability.timePointToDate(x.json.updated),
+                    yesVoteCount: x.json.yes_vote_count,
+                }
+                if (x.json.budget !== 0) res.budget = x.json.budget;
+                if (x.json.regulations && x.json.regulations !== "") res.regulations = x.json.regulations;
+                return res;
+            }
+            )
 
             // sort by created date
             response.sort((a, b) => {
@@ -339,12 +343,11 @@ export default class Civic {
 
         const proposal = proposalsQuery.row.json
 
-        return {
+        const res = {
             proposalId: proposal.proposal_id,
             title: proposal.title,
             description: proposal.description,
             category: proposal.category,
-            budget: proposal.budget,
             type: proposal.type,
             location: proposal.location,
             status: proposal.status,
@@ -353,9 +356,11 @@ export default class Civic {
             created: Accountability.timePointToDate(proposal.approved),
             approved: Accountability.timePointToDate(proposal.approved),
             updated: Accountability.timePointToDate(proposal.updated),
-            voted: proposal.voted,
             yesVoteCount: proposal.yes_vote_count,
         }
+        if (proposal.budget !== 0) res.budget = proposal.budget;
+        if (proposal.regulations && proposal.regulations !== "") res.regulations = proposal.regulations;
+        return res;
     }
 
     /** 
@@ -383,8 +388,7 @@ export default class Civic {
                     authHuman: data.account_authorizers[0],
                     authHumanCommonName: data.account_authorizers_common_names[0],
                     data: actionData.data,
-                    gov: isGovAction(actionData.name),
-                    status: mapActionToStatus(actionData.name)
+                    gov: isGovAction(actionData.name)
                 }
                 if (actionData.name === "propupdate") proposalData.status = actionData.data.new_status;
                 if (actionData.data.comment) proposalData.comment = actionData.data.comment;
