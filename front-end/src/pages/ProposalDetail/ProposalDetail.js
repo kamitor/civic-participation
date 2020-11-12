@@ -323,7 +323,7 @@ export default function ProposalDetail() {
   const [historyCollapse, setHistoryCollapse] = useState('COLLAPSE');
   const [currencyValue, setCurrencyValue] = useState();
   const [loading, setLoading] = useState(false);
-
+  const [selectRadio, setSelectRadio] = useState();
 
   const [placeholder, setPlaceholder] = useState(`
       Please provide a clear description of the infrastructure change.
@@ -378,6 +378,7 @@ export default function ProposalDetail() {
       status: proposalRes.status,
     };
     setCurrencyValue(proposalRes.budget)
+    setSelectRadio(proposalRes.category)
     if (proposalRes.photo) proposalState.photo = proposalRes.photo;
     if (proposalRes.regulations)
       proposalState.regulations = proposalRes.regulations;
@@ -872,12 +873,12 @@ export default function ProposalDetail() {
                       render={(props) => (
                         <RadioGroup
                           {...props}
-                          defaultValue={proposal.category.toString()}
                           aria-label="category"
-                          value={+watch("category")}
+                          value={selectRadio}
                           onChange={(e) => {
                             clearErrors(["category"]);
                             setValue("category", e.target.value);
+                            setSelectRadio(parseInt(e.target.value))
                           }}
                         >
                           {" "}
