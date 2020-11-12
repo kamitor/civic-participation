@@ -203,7 +203,7 @@ export default function Vote() {
                         </Grid>
                         <Grid item container xs={6} direction="column" spacing={5} alignItems="center">
                             <Grid item>
-                                <TitleHeaderTypography>Your votes by categories</TitleHeaderTypography>
+                                <TitleHeaderTypography>€ budget breakdown</TitleHeaderTypography>
                             </Grid>
                             <Grid item container xs justify="flex-end">
                                 {completed !== 0 && <Chart series={chartValues.series} labels={chartValues.labels} />}
