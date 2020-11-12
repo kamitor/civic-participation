@@ -324,6 +324,7 @@ export default function ProposalDetail() {
   const [currencyValue, setCurrencyValue] = useState();
   const [loading, setLoading] = useState(false);
   const [selectRadio, setSelectRadio] = useState();
+  const [errorRadio, selectErrorRadio] = useState(false);
 
   const [placeholder, setPlaceholder] = useState(`
       Please provide a clear description of the infrastructure change.
@@ -893,6 +894,7 @@ export default function ProposalDetail() {
                             clearErrors(["category"]);
                             setValue("category", e.target.value);
                             setSelectRadio(parseInt(e.target.value))
+                            e.target.value === undefined ? selectErrorRadio(true) : selectErrorRadio(false);
                           }}
                         >
                           {" "}
@@ -964,7 +966,7 @@ export default function ProposalDetail() {
                       container
                       justify="flex-start"
                     >
-                      {errors.category !== undefined && (
+                      {errorRadio && (
                         <FormHelperText>
                           Please select a category.
                         </FormHelperText>
