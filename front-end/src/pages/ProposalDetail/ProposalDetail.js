@@ -13,7 +13,6 @@ import ProposalStatus, { toDefinition } from "../../types/proposals/status";
 import CategoryItem from "./components/CategoryItem";
 import LocationGoogleMaps from "../../components/Location/LocationGoogleMaps";
 import { HtmlTooltip } from '../../components/Themes';
-import { Link } from '@material-ui/core';
 import Navbar from "../../components/Navbar/Navbar";
 import Timeline from "./components/Timeline";
 
@@ -28,6 +27,8 @@ import {
   TextField,
   Button,
   RadioGroup,
+  Link,
+  CircularProgress
 } from "@material-ui/core";
 
 import { DropzoneArea } from "material-ui-dropzone";
@@ -54,7 +55,7 @@ function parseLocation(location) {
   };
 }
 
-const CHARACTER_LIMIT = 580;
+const CHARACTER_LIMIT = 1000;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -140,8 +141,8 @@ const useStyles = makeStyles((theme) => ({
   },
   inputTitleEdit: {
     color: "#000000",
-    width: "200px",
-    fontSize: "32px",
+    width: "425px",
+    fontSize: "25px",
     disableUnderline: true,
   },
 }));
@@ -164,6 +165,26 @@ const HeaderCustomizeStar = withStyles({
     height: "28px",
   },
 })(Stars);
+
+const TitleLock = withStyles({
+  root: {
+      fontSize: "14px"
+  }
+})(Lock);
+
+
+const GreenSmallTypographyCreate = withStyles({
+  root: {
+      fontSize: '15px',
+      color: '#1261A3',
+  }
+})(Typography);
+
+const CreateLock = withStyles({
+  root: {
+      color: '#1261A3'
+  }
+})(Lock);
 
 const AddToVoteButton = withStyles({
   root: {
@@ -238,7 +259,7 @@ const TitleCategoryTypography = withStyles({
 const GovernmentTitleTypography = withStyles({
   root: {
     fontSize: "12px",
-    color: "rgba(0, 0, 0, 0.5393)",
+    color: "rgba(89, 156, 109, 1)",
     lineHeight: "16x",
     fontWeight: "400",
   },
@@ -293,11 +314,22 @@ export default function ProposalDetail() {
   const [showHistory, setShowHistory] = useState(true);
   const [category, setCategory] = useState(null);
   const [files, setFiles] = useState([]);
+  const [fileSizeError, setFileSizeError] = useState(false);
   const [location, setLocation] = useState({ lat: 52.1135031, lng: 4.2829047 });
   const [editing, setEditing] = useState(false);
   const [proposal, setProposal] = useState();
   const [proposalHistory, setProposalHistory] = useState();
   const [historyCollapse, setHistoryCollapse] = useState('COLLAPSE');
+  const [currencyValue, setCurrencyValue] = useState();
+  const [loading, setLoading] = useState(false);
+
+
+  const [placeholder, setPlaceholder] = useState(`
+      Please provide a clear description of the infrastructure change.
+      Clearly describe how this proposal will impact the neighborhood.
+      Explain who will this change have a positive and negative impact on.
+  `);
+
   const [showButtons, setShowButtons] = useState({
     vote: false,
     edit: false,
@@ -314,6 +346,18 @@ export default function ProposalDetail() {
   } = useForm({
     criteriaMode: "all",
   });
+
+  const handleChangeBudget = (budget) => {
+    setCurrencyValue(budget)
+  }
+
+  const handleFileSize = (message) => {
+    if (message.search("File is too big") > 0) {
+      setFileSizeError(true);
+      return;
+    }
+    setFileSizeError(false);
+  };
 
   const currencyFormatter = new Intl.NumberFormat("nl-NL", {
     style: "currency",
@@ -678,35 +722,76 @@ export default function ProposalDetail() {
           <Grid container direction="column">
             <Grid className="header-wraper">
               <img src={background} className="header-img" />
-
             </Grid>
             <div className="main-container-proposal-edit">
-              <Grid
-                container
-                direction="row"
-                className="header-title"
-                alignItems="center"
-              >
-                <HeaderCustomizeStar />
-                <TextField
-                  label="Name your idea"
-                  className={classes.margin + " " + classes.commonText}
-                  InputProps={{
-                    className: classes.inputTitleEdit,
-                  }}
-                  InputLabelProps={{
-                    className: classes.inputLabelTitle,
-                  }}
-                  defaultValue={proposal.title}
-                  name="title"
-                  inputRef={register({
-                    required: "Please enter a title",
-                  })}
-                  error={errors.title !== undefined}
-                />
-                {errors.title && (
-                  <FormHelperText>Please select a title.</FormHelperText>
-                )}
+              <Grid container alignItems="center">
+                <Grid
+                  item
+                  container
+                  direction="row"
+                  className="header-title"
+                  alignItems="center"
+                  xs={8}
+                >
+                  <HeaderCustomizeStar />
+                  <TextField
+                    label="Name your idea"
+                    className={classes.margin + " " + classes.commonText}
+                    InputProps={{
+                      className: classes.inputTitleEdit,
+                    }}
+                    InputLabelProps={{
+                      className: classes.inputLabelTitle,
+                    }}
+                    defaultValue={proposal.title}
+                    name="title"
+                    inputRef={register({
+                      required: "Please enter a title",
+                    })}
+                    error={errors.title !== undefined}
+                  />
+                  {errors.title && (
+                    <FormHelperText>Please select a title.</FormHelperText>
+                  )}
+                </Grid>
+                <Grid item xs={4} container className="upload-button">
+                  <Grid item>
+                    <HtmlTooltip
+                      title={
+                      <React.Fragment>
+                        <div>{<TitleLock />}Proposals, voting and government actions are stored on the blockchain.
+                            This data is cryptographically secured and cannot be forged or tampered
+                            with by anyone, including the government.&nbsp;
+                          <Link className="read-more-link" onClick={navigateSecurityPage}>
+                              Click to learn more
+                          </Link>
+                        </div>
+                      </React.Fragment>
+                      }
+                      arrow
+                      interactive
+                    >
+                      <Grid item container className="tamper-wraper">
+                        <Grid item>
+                          <GreenSmallTypographyCreate>
+                            tamper proof
+                        </GreenSmallTypographyCreate>
+                        </Grid>
+                        <Grid item>
+                            <CreateLock />
+                        </Grid>
+                      </Grid>
+                    </HtmlTooltip>
+                  </Grid>
+                  <Grid item>
+                      <UploadButton type="button"  disabled={loading}>SAVE</UploadButton>
+                      {loading && <CircularProgress size={24} className="button-progress" />}
+                  </Grid>
+                  <Grid item>
+                      <UploadButton type="button"  onClick={() => window.location.reload()}>CANCEL</UploadButton>
+                      {loading && <CircularProgress size={24} className="button-progress" />}
+                  </Grid>
+                </Grid>
               </Grid>
               <Grid container>
                 <Grid item xs={12} container>
@@ -718,14 +803,13 @@ export default function ProposalDetail() {
                 </Grid>
               </Grid>
               <Grid item xs={12} container className="item-wraper">
-                <Grid item xs={4} container direction="column">
+                <Grid item xs={6} container alignItems="center" spacing={3}>
                   <Grid item>
-                    <Controller
-                      defaultValue={proposal.budget}
-                      as={<CurrencyTextField />}
+                    <CurrencyTextField
                       name="budget"
+                      defaultValue={proposal.budget}
                       currencySymbol="€"
-                      outputFormat="number"
+                      outputFormat="string"
                       decimalCharacter="."
                       digitGroupSeparator=","
                       placeholder="Budget"
@@ -735,11 +819,14 @@ export default function ProposalDetail() {
                         },
                       }}
                       className={classes.budgetInputStyle}
+                      className={classes.budgetInputStyle}
                       error={errors.budget !== undefined}
                       control={control}
                       ref={register}
                       key="budget"
                       rules={{ required: true }}
+                      value={currencyValue}
+                      onChange={(event, value) => handleChangeBudget(value)}
                     />
                   </Grid>
                   <Grid item className="type-wrape">
@@ -777,49 +864,60 @@ export default function ProposalDetail() {
                       defaultValue={proposal.category.toString()}
                       render={(props) => (
                         <RadioGroup {...props} aria-label="category">
-                          <Grid item xs={12} md={6}>
-                            <FormControlLabel
-                              control={<CategoryRadio />}
-                              label="Green space"
-                              value={ProposalCategory.Green.toString()}
-                            />
-                            <FormControlLabel
-                              control={<CategoryRadio />}
-                              label="Kids"
-                              value={ProposalCategory.Kids.toString()}
-                            />
-                            <FormControlLabel
-                              control={<CategoryRadio />}
-                              value={ProposalCategory.Safety.toString()}
-                              label="Safety"
-                            />
-                            <FormControlLabel
-                              control={<CategoryRadio />}
-                              value={ProposalCategory.Accessibility.toString()}
-                              label="Accessibility"
-                            />
-                          </Grid>
-                          <Grid item xs={12} md={6}>
-                            <FormControlLabel
-                              control={<CategoryRadio />}
-                              value={ProposalCategory.Art.toString()}
-                              label="Art"
-                            />
-                            <FormControlLabel
-                              control={<CategoryRadio />}
-                              value={ProposalCategory.Health.toString()}
-                              label="Health"
-                            />
-                            <FormControlLabel
-                              control={<CategoryRadio />}
-                              value={ProposalCategory.Road.toString()}
-                              label="Roads"
-                            />
-                            <FormControlLabel
-                              control={<CategoryRadio />}
-                              value={ProposalCategory.Residential.toString()}
-                              label="Residential"
-                            />
+                          {" "}
+                          <Grid container alignItems="center" spacing={2}>
+                            <Grid item xs={6} container direction="column">
+                              <FormControlLabel
+                                control={<CategoryRadio />}
+                                label="Green space"
+                                value={ProposalCategory.Green}
+                                defaultChecked={true}
+                              />
+                              <FormControlLabel
+                                control={<CategoryRadio />}
+                                label="Kids"
+                                value={ProposalCategory.Kids}
+                                defaultChecked={true}
+                              />
+                              <FormControlLabel
+                                control={<CategoryRadio />}
+                                value={ProposalCategory.Safety}
+                                label="Safety"
+                                defaultChecked={false}
+                              />
+                              <FormControlLabel
+                                control={<CategoryRadio />}
+                                value={ProposalCategory.Accessibility}
+                                label="Accessibility"
+                                defaultChecked={false}
+                              />
+                            </Grid>
+                            <Grid item xs={6} container direction="column">
+                              <FormControlLabel
+                                control={<CategoryRadio />}
+                                value={ProposalCategory.Art}
+                                label="Art"
+                                defaultChecked={false}
+                              />
+                              <FormControlLabel
+                                control={<CategoryRadio />}
+                                value={ProposalCategory.Health}
+                                label="Health"
+                                defaultChecked={false}
+                              />
+                              <FormControlLabel
+                                control={<CategoryRadio />}
+                                value={ProposalCategory.Road}
+                                label="Roads"
+                                defaultChecked={false}
+                              />
+                              <FormControlLabel
+                                control={<CategoryRadio />}
+                                value={ProposalCategory.Residential}
+                                label="Residential"
+                                defaultChecked={false}
+                              />
+                            </Grid>
                           </Grid>
                         </RadioGroup>
                       )}
@@ -827,14 +925,31 @@ export default function ProposalDetail() {
                       name="category"
                       control={control}
                     />
+
+                    <Grid
+                      item
+                      xs={12}
+                      className="checkbox-helper"
+                      container
+                      justify="flex-start"
+                    >
+                      {errors.category !== undefined && (
+                        <FormHelperText>
+                          Please select a category.
+                        </FormHelperText>
+                      )}
+                    </Grid>
                   </Grid>
                 </Grid>
-                <Grid item xs={8}>
+                <Grid item container xs={6} justify="flex-end">
                   <DropzoneArea
                     acceptedFiles={["image/*"]}
                     dropzoneText="drag files here or click to upload"
                     onChange={(files) => handleDropDownImage(files)}
                     filesLimit={1}
+                    showAlerts={false}
+                    maxFileSize={2000000}
+                    onAlert={(message) => handleFileSize(message)}
                   />
                 </Grid>
               </Grid>
@@ -845,23 +960,25 @@ export default function ProposalDetail() {
                     inputProps={{
                       maxLength: CHARACTER_LIMIT,
                     }}
-                    helperText={`${(watch("description") && watch("description").length) || 0
-                      }/${CHARACTER_LIMIT}`}
                     margin="normal"
+                    multiline
+                    fullWidth
                     name="description"
                     inputRef={register({
                       required: "Please enter a description",
                     })}
-                    multiline
-                    rows={10}
-                    fullWidth
-                    defaultValue={proposal.description}
+                    helperText={`(${watch("description")?.length || 0
+                      }/${CHARACTER_LIMIT})`}
+                    className="description-textarea"
+                    error={errors.description !== undefined}
+                    placeholder={placeholder}
+                    value={proposal.description}
                   />
                 </Grid>
                 <Grid item xs={12} className="description-helper">
                   {errors.description && (
                     <FormHelperText>
-                      Description must be at min 100 to 580 characters.{" "}
+                      Description must be at min 100 to 1000 characters.{" "}
                     </FormHelperText>
                   )}
                 </Grid>
@@ -983,9 +1100,7 @@ export default function ProposalDetail() {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid className="upload-button">
-                <UploadButton type="submit">SUBMIT</UploadButton>
-              </Grid>
+             
             </div>
           </Grid>
         </form>

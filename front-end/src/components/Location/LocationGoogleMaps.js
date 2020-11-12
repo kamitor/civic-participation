@@ -128,10 +128,6 @@ class LocationGooglMap extends Component {
                     defaultZoom={this.state.zoom}
                     draggable={this.state.draggable}
                     onChange={this._onChange}
-                    onChildMouseDown={this.onMarkerInteraction}
-                    onChildMouseUp={this.onMarkerInteractionMouseUp}
-                    onChildMouseMove={this.onMarkerInteraction}
-                    onClick={this._onClick}
                     bootstrapURLKeys={{
                         key: settings.google.apiKey,
                         libraries: ['places', 'geometry'],

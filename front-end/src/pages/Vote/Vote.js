@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
 
-import { Grid, Typography, Button } from '@material-ui/core';
+import { Grid, Typography, Button, Link, CircularProgress } from '@material-ui/core';
 import { withStyles } from "@material-ui/core/styles";
 import { makeStyles } from '@material-ui/core/styles';
 import { Lock } from '@material-ui/icons';
-
+import { HtmlTooltip } from '../../components/Themes';
 import { toLabel as categoryToLabel } from "../../types/proposals/categories";
 
 import Navbar from '../../components/Navbar/Navbar';
@@ -78,11 +78,27 @@ const VoteButton = withStyles({
     },
 })(Button);
 
-const UploadLock = withStyles({
+const TitleLock = withStyles({
+    root: {
+        fontSize: "14px"
+    }
+})(Lock);
+  
+  
+
+const CreateLock = withStyles({
     root: {
         color: '#1261A3'
     }
 })(Lock);
+
+
+const GreenSmallTypographyCreate = withStyles({
+    root: {
+        fontSize: '15px',
+        color: '#1261A3',
+    }
+})(Typography);
 
 export default function Vote() {
     const authContext = ConsumeAuth();
@@ -93,6 +109,8 @@ export default function Vote() {
     const [completed, setCompleted] = useState(0);
     const [selectedValue, setSelectedValue] = useState(0);
     const [chartValues, setChartValues] = useState([]);
+    const [loading, setLoading] = useState(false);
+
     // total budget
     const [budgetLimit, _] = useState(100000);
 
@@ -104,6 +122,7 @@ export default function Vote() {
     }
     // On vote button click
     const _handleVote = async () => {
+        setLoading(true);
         // TODO: get proposal data from global store/ context.
         const proposalIds = voteContext.proposals.map(proposal => proposal.proposalId);
         await authContext.civic.proposalVote(proposalIds);
@@ -114,6 +133,10 @@ export default function Vote() {
         style: 'currency',
         currency: 'EUR',
     });
+
+    const navigateSecurityPage = () => {
+        window.open("https://conscious-cities.com/security", "_blank")
+    }
 
     useEffect(() => {
         const totalProposalBudget = voteContext.proposals.reduce((acc, curr) => acc + parseFloat(curr.budget), 0);
@@ -134,6 +157,26 @@ export default function Vote() {
 
     const proposalsSeries = chartValues.map(chartValue => chartValue.series);
     const proposalsLabels = chartValues.map(chartValue => chartValue.label);
+
+
+    const UploadButton = withStyles({
+        root: {
+        backgroundColor: loading ? "rgba(79,79,79, 0.26)" : "#1261A3",
+        borderRadius: 3,
+        border: 0,
+        color: "white",
+        height: 36,
+        padding: "0 20px",
+        marginLeft: "10px",
+        position: "relative",
+        },
+        label: {
+        textTransform: "capitalize",
+        fontSize: "14px",
+        fontWeight: "500",
+        },
+    })(Button);
+
 
     return (
         <div className={classes.root}>
@@ -170,17 +213,32 @@ export default function Vote() {
                 <Grid container spacing={2}>
                     <Grid item container alignItems="center" justify="flex-end" className="button-wraper">
                         <Grid item>
-                            <Grid item container className="tamper-wraper">
-                                <Grid item>
-                                    <UploadSmallTypographyCreate>tamper proof</UploadSmallTypographyCreate>
+                            <HtmlTooltip
+                                title={
+                                <React.Fragment>
+                                    <div>{<TitleLock />}Proposals, voting and government actions are stored on the blockchain.
+                                        This data is cryptographically secured and cannot be forged or tampered
+                                        with by anyone, including the government.&nbsp;
+                                        <Link className="read-more-link" onClick={navigateSecurityPage}>
+                                            Click to learn more
+                                        </Link>
+                                    </div>
+                                </React.Fragment>
+                                }
+                                arrow
+                                interactive
+                            >
+                                <Grid item container className="tamper-wraper">
+                                    <GreenSmallTypographyCreate>
+                                        tamper proof
+                                    </GreenSmallTypographyCreate>
+                                    <CreateLock />
                                 </Grid>
-                                <Grid item>
-                                    <UploadLock />
-                                </Grid>
-                            </Grid>
+                            </HtmlTooltip>
                         </Grid>
                         <Grid item>
-                            <VoteButton type="button" onClick={_handleVote} disabled={!completed || (completed > 100)}>VOTE</VoteButton>
+                            <UploadButton type="button" onClick={_handleVote} disabled={(!completed || (completed > 100)) && !loading}>VOTE</UploadButton>
+                            {loading && <CircularProgress size={24} className="button-progress" />}
                         </Grid>
                     </Grid>
                     <Grid item container alignItems="center" justify="flex-end">

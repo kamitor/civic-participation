@@ -10,6 +10,7 @@ import {
   Button,
   RadioGroup,
   CircularProgress,
+  Link
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import background from "../../assets/image/header.png";
@@ -20,6 +21,7 @@ import FormControl from "@material-ui/core/FormControl";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import { HtmlTooltip } from '../../components/Themes';
 import Select from "@material-ui/core/Select";
 import { DropzoneArea } from "material-ui-dropzone";
 import { Lock } from "@material-ui/icons";
@@ -98,6 +100,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const TitleLock = withStyles({
+  root: {
+      fontSize: "14px"
+  }
+})(Lock);
+
 const HeaderCustomizeStar = withStyles({
   root: {
     color: "#000000",
@@ -168,6 +176,9 @@ export default function ProposalCreate() {
     setFileError(false);
     setFiles(files);
   };
+  const navigateSecurityPage = () => {
+    window.open("https://conscious-cities.com/security", "_blank")
+  }
 
   const [loading, setLoading] = useState(false);
 
@@ -187,10 +198,10 @@ export default function ProposalCreate() {
   });
 
   const [placeholder, setPlaceholder] = useState(`
-        Please provide a clear description of the infrastructure change.
-        Clearly describe how this proposal will impact the neighborhood.
-        Explain who will this change have a positive and negative impact on.
-    `);
+      Please provide a clear description of the infrastructure change.
+      Clearly describe how this proposal will impact the neighborhood.
+      Explain who will this change have a positive and negative impact on.
+  `);
 
   const handleFileSize = (message) => {
     if (message.search("File is too big") > 0) {
@@ -309,14 +320,34 @@ export default function ProposalCreate() {
               </Grid>
 
               <Grid item xs className="upload-button">
-                <div className="encrypt-wraper">
+                <div>
                   <Grid item>
-                    <UploadSmallTypographyCreate>
-                      tamper proof
-                    </UploadSmallTypographyCreate>
-                  </Grid>
-                  <Grid item>
-                    <UploadLock />
+                    <HtmlTooltip
+                      title={
+                      <React.Fragment>
+                        <div>{<TitleLock />}Proposals, voting and government actions are stored on the blockchain.
+                            This data is cryptographically secured and cannot be forged or tampered
+                            with by anyone, including the government.&nbsp;
+                          <Link className="read-more-link" onClick={navigateSecurityPage}>
+                              Click to learn more
+                          </Link>
+                        </div>
+                      </React.Fragment>
+                      }
+                      arrow
+                      interactive
+                    >
+                      <Grid item container className="tamper-wraper">
+                        <Grid item>
+                          <UploadSmallTypographyCreate>
+                            tamper proof
+                          </UploadSmallTypographyCreate>
+                        </Grid>
+                        <Grid item>
+                            <UploadLock />
+                        </Grid>
+                      </Grid>
+                    </HtmlTooltip>
                   </Grid>
                 </div>
                 <div className="btn-wraper">
