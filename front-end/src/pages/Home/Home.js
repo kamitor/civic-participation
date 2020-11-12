@@ -55,8 +55,8 @@ function Home() {
 
             accountLoginRes = await civic.accountLogin('jack', 'Password1234!');
             console.log('accountLogin() - jack 2', accountLoginRes);
-            const proposalVoteRes = await civic.proposalVote(proposalId, true);
-            console.log('proposalVote', proposalVoteRes);
+            await civic.proposalVote([proposalId]);
+            console.log('proposalVote');
 
             let proposals = await civic.proposalList();
             console.log('proposalList()', proposals);

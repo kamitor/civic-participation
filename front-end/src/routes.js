@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-// import ProtectedRoute from './components/ProtectedRoute'
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import CreateAccount from './pages/CreateAccount/CreateAccount';
@@ -8,7 +7,6 @@ import Security from './pages/Security/Security';
 import ProposalCreate from './pages/ProposalCreate/ProposalCreate';
 import Dashboard from './pages/Dashboard/Dashboard';
 import ProposalDetail from './pages/ProposalDetail/ProposalDetail';
-import ProposalEdit from './pages/ProposalEdit/ProposalEdit';
 import ProposalVote from './pages/ProposalVote/ProposalVote';
 import Vote from './pages/Vote/Vote';
 import VoteSuccess from './pages/Vote/VoteSuccess';
@@ -36,9 +34,6 @@ const Routes = () => (
             </Route>
             <Route path="/proposal/:proposal_id">
                 <ProposalDetail />
-            </Route>
-            <Route path="/proposal-edit/:proposal_id">
-                <ProposalEdit />
             </Route>
             <Route path="/proposals-vote">
                 <ProposalVote />

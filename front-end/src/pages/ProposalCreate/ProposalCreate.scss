@@ -32,14 +32,18 @@
     }
 }
 
-.main-container {
-    width: 1015px;
+.main-container-proposal-create {
+    width: 1024px;
     height: 65vh;
     margin: 23px auto;
     position: relative;
 
     .main-wraper {
-        margin-top:60px;;
+        margin-top:60px;
+    }
+
+    .dropzone-wraper {
+        margin-top:60px;
     }
 
     .MuiTypography-colorTextSecondary {
@@ -59,7 +63,8 @@
         border-bottom: 2px solid #599C6D;
     }
 
-    .type-wrape {
+    .create-type-wrape {
+        margin-top: 8px;
         .MuiFormControl-root {
             position: relative;
             padding-bottom: 20px;
@@ -169,8 +174,6 @@
                 .MuiDropzonePreviewList-image {
                     height: 250px;
                     width: 100%;
-                    min-width: 200px;
-                    max-width: 412px;
                 }
                 .MuiDropzonePreviewList-removeButton {
                     top: 2px;
@@ -213,7 +216,7 @@
             .search-input {
                 border: none;
                 border-bottom: 1px solid #599C6D;
-                width: 70%;
+                width: 290px;
                 margin-bottom: 20px;
                 outline: none;
                 padding-right: 20px;

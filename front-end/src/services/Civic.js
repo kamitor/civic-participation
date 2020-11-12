@@ -7,6 +7,7 @@ import crypto from 'crypto'
 import { wait } from './objects';
 
 import encodeImageFileAsURL from '../utils';
+import { isNumber } from './objects';
 
 export default class Civic {
     // SEE civic AND accounts FOR TYPES!!!
@@ -140,12 +141,21 @@ export default class Civic {
             throw new Error('Photo is mandatory while creating proposal');
         }
 
+        let budget = 0;
+        if (proposal.budget) {
+            if (isNumber(proposal.budget)) {
+                budget = proposal.budget;
+            } else {
+                throw new Error("Expected budget to be a number")
+            }
+        }
+
         let proposalDetails = [
             this.account.accountName,
             proposal.title,
             proposal.description,
             proposal.category,
-            proposal.budget,
+            budget,
             proposal.type,
             proposal.location
         ];
@@ -177,7 +187,7 @@ export default class Civic {
             status: ProposalStatus.Proposed,
             created: new Date(decodedRow.created),
         }
-        if (proposal.budget) { proposalDetailed.budget = proposal.budget }
+        if (proposal.budget) { proposalDetailed.budget = budget }
         if (proposal.photo) { proposalDetailed.photo = proposal.photo }
         return proposalDetailed;
     }
@@ -188,6 +198,15 @@ export default class Civic {
      * @returns {ProposalDetailed}
      */
     async proposalUpdate(proposal) {
+        let budget = 0;
+        if (proposal.budget) {
+            if (isNumber(proposal.budget)) {
+                budget = proposal.budget;
+            } else {
+                throw new Error("Expected budget to be a number")
+            }
+        }
+
         const txData = {
             actions: [{
                 account: 'civic',
@@ -205,7 +224,7 @@ export default class Civic {
                     title: proposal.title,
                     description: proposal.description,
                     category: proposal.category,
-                    budget: proposal.budget,
+                    budget: budget,
                     type: proposal.type,
                     location: proposal.location,
                     new_status: proposal.status,
@@ -248,7 +267,7 @@ export default class Civic {
             approved: Accountability.timePointToDate(decodedRow.approved),
             status: proposal.status,
         };
-        if (proposal.budget) { proposalDetailed.budget = proposal.budget }
+        if (proposal.budget) { proposalDetailed.budget = budget }
         if (proposal.photo) { proposalDetailed.photo = proposal.photo }
         if (proposal.regulations) { proposalDetailed.regulations = proposal.regulations }
         if (proposal.comment) { proposalDetailed.comment = proposal.comment }
@@ -258,11 +277,14 @@ export default class Civic {
 
     /** 
      * Votes on an open proposal as the logged in user
-     * @param {number} proposalId
-     * @param {boolean} vote - true = yes, false = no
-     * @returns {ProposalDetailed}
+     * @param {Array} proposalIds - Array of proposal ids.
      */
-    async proposalVote(proposalId, vote) { }
+    async proposalVote(proposalIds) {
+        if (!Array.isArray(proposalIds) || proposalIds.length < 1) {
+            throw new Error('We should send at least one proposal Id in an array');
+        }
+        await this.civicContract.propvote(this.account.accountName, proposalIds);
+    }
 
     /** 
      * Returns a list of proposals ordered by date with optional filter
@@ -279,23 +301,27 @@ export default class Civic {
             }) : proposalsQuery.rows;
 
             // return ProposalDetailed[] type
-            const response = proposals.map(x => ({
-                proposalId: x.json.proposal_id,
-                title: x.json.title,
-                description: x.json.description,
-                category: x.json.category,
-                budget: x.json.budget,
-                type: x.json.type,
-                location: x.json.location,
-                status: x.json.status,
-                photo: x.json.photo,
-                regulations: x.json.regulations,
-                created: Accountability.timePointToDate(x.json.approved),
-                approved: Accountability.timePointToDate(x.json.approved),
-                updated: Accountability.timePointToDate(x.json.updated),
-                voted: x.json.voted,
-                yesVoteCount: x.json.yes_vote_count,
-            }))
+            const response = proposals.map(x => {
+                const res = {
+                    proposalId: x.json.proposal_id,
+                    title: x.json.title,
+                    description: x.json.description,
+                    category: x.json.category,
+                    budget: x.json.budget,
+                    type: x.json.type,
+                    location: x.json.location,
+                    status: x.json.status,
+                    photo: x.json.photo,
+                    created: Accountability.timePointToDate(x.json.approved),
+                    approved: Accountability.timePointToDate(x.json.approved),
+                    updated: Accountability.timePointToDate(x.json.updated),
+                    yesVoteCount: x.json.yes_vote_count,
+                }
+                if (x.json.budget !== 0) res.budget = x.json.budget;
+                if (x.json.regulations && x.json.regulations !== "") res.regulations = x.json.regulations;
+                return res;
+            }
+            )
 
             // sort by created date
             response.sort((a, b) => {
@@ -320,12 +346,11 @@ export default class Civic {
 
         const proposal = proposalsQuery.row.json
 
-        return {
+        const res = {
             proposalId: proposal.proposal_id,
             title: proposal.title,
             description: proposal.description,
             category: proposal.category,
-            budget: proposal.budget,
             type: proposal.type,
             location: proposal.location,
             status: proposal.status,
@@ -334,9 +359,11 @@ export default class Civic {
             created: Accountability.timePointToDate(proposal.approved),
             approved: Accountability.timePointToDate(proposal.approved),
             updated: Accountability.timePointToDate(proposal.updated),
-            voted: proposal.voted,
             yesVoteCount: proposal.yes_vote_count,
         }
+        if (proposal.budget !== 0) res.budget = proposal.budget;
+        if (proposal.regulations && proposal.regulations !== "") res.regulations = proposal.regulations;
+        return res;
     }
 
     /** 
@@ -364,8 +391,7 @@ export default class Civic {
                     authHuman: data.account_authorizers[0],
                     authHumanCommonName: data.account_authorizers_common_names[0],
                     data: actionData.data,
-                    gov: isGovAction(actionData.name),
-                    status: mapActionToStatus(actionData.name)
+                    gov: isGovAction(actionData.name)
                 }
                 if (actionData.name === "propupdate") proposalData.status = actionData.data.new_status;
                 if (actionData.data.comment) proposalData.comment = actionData.data.comment;

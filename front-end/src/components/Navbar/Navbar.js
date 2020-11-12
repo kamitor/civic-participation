@@ -104,7 +104,7 @@ export default function Navbar() {
                         <Grid item className={classes.logo}>
                             <img src={logo} alt="Civic Participation Tool" className={classes.logoImage} />
                         </Grid>
-                        <LogoTitle>The Hague</LogoTitle>
+                        <LogoTitle>Civic</LogoTitle>
                     </Grid>
                 </Grid>
                 <Grid item container xs alignItems="center">

@@ -12,8 +12,7 @@
     margin-top: 32px;
     .button-wraper {
         margin-top: 10px;
-        .encrypt-wrape {
-            margin-top: 18px;
+        .tamper-wraper {
             text-align: center;
             display: flex;
             justify-content: flex-end;
@@ -21,7 +20,7 @@
                 cursor: pointer;
             }
         }
-        .MuiButton-root:hover {
+        .MuiButton-root {
             text-decoration: none;
             background-color: #1261A3;
             margin-left: 10px;
