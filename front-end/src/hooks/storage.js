@@ -19,3 +19,15 @@ export function getUserStorage() {
 export function clearUserStorage() {
     localStorage.removeItem('user');
 }
+
+export function setProposalsStorage(proposals) {
+    localStorage.setItem('proposals', JSON.stringify(proposals));
+}
+
+export function getProposalsStorage() {
+    return JSON.parse(localStorage.getItem('proposals'));
+}
+
+export function clearProposalsStorage() {
+    localStorage.removeItem('proposals');
+}

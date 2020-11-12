@@ -185,6 +185,7 @@ export default class Civic {
             location: proposal.location,
             proposalId: decodedRow.proposal_id,
             status: ProposalStatus.Proposed,
+            creator: decodedRow.creator,
             created: new Date(decodedRow.created),
         }
         if (proposal.budget) { proposalDetailed.budget = budget }
@@ -262,6 +263,7 @@ export default class Civic {
             location: proposal.location,
             proposalId: proposal.proposalId,
             status: ProposalStatus.Proposed,
+            creator: decodedRow.creator,
             created: Accountability.timePointToDate(decodedRow.created),
             updated: Accountability.timePointToDate(decodedRow.updated),
             approved: Accountability.timePointToDate(decodedRow.approved),
@@ -312,6 +314,7 @@ export default class Civic {
                     location: x.json.location,
                     status: x.json.status,
                     photo: x.json.photo,
+                    creator: x.json.creator,
                     created: Accountability.timePointToDate(x.json.approved),
                     approved: Accountability.timePointToDate(x.json.approved),
                     updated: Accountability.timePointToDate(x.json.updated),
@@ -355,6 +358,7 @@ export default class Civic {
             location: proposal.location,
             status: proposal.status,
             photo: proposal.photo,
+            creator: proposal.creator,
             regulations: proposal.regulations,
             created: Accountability.timePointToDate(proposal.approved),
             approved: Accountability.timePointToDate(proposal.approved),

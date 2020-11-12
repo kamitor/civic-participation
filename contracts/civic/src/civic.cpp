@@ -23,6 +23,7 @@ ACTION civic::propcreate(name creator, string title, string description, uint8_t
         proposal.type = type;
         proposal.location = location;
         proposal.status = ProposalStatus::Proposed;
+        proposal.creator = creator;
         proposal.created = now;
         proposal.photo = photo;
     });
@@ -76,7 +77,7 @@ ACTION civic::propupdate(name updater, uint64_t proposal_id, string title, strin
 }
 
 ACTION civic::propupdate2(name updater, uint64_t proposal_id, string title, string description, uint8_t category,
-                         float budget, uint8_t type, string location, uint8_t new_status, string regulations, string comment)
+                          float budget, uint8_t type, string location, uint8_t new_status, string regulations, string comment)
 {
     // check(updater == eosio::name("gov"), "Only government can update proposals"); // do not use, otherwise the human account cannot be used
     require_auth(updater);
@@ -118,48 +119,6 @@ ACTION civic::propupdate2(name updater, uint64_t proposal_id, string title, stri
 
     proposal_event(proposal_id);
 }
-
-// Default Action hi
-// ACTION civic::hi(name from, string message)
-// {
-//     require_auth(from);
-
-//     // Init the _message table
-//     messages_table _messages(get_self(), get_self().value);
-
-//     // Find the record from _messages table
-//     auto msg_itr = _messages.find(from.value);
-//     if (msg_itr == _messages.end())
-//     {
-//         // Create a message record if it does not exist
-//         _messages.emplace(from, [&](auto &msg) {
-//             msg.user = from;
-//             msg.text = message;
-//         });
-//     }
-//     else
-//     {
-//         // Modify a message record if it exists
-//         _messages.modify(msg_itr, from, [&](auto &msg) {
-//             msg.text = message;
-//         });
-//     }
-// }
-
-// Default Action clear
-// ACTION civic::clear()
-// {
-//     require_auth(get_self());
-
-//     messages_table _messages(get_self(), get_self().value);
-
-//     // Delete all records in _messages table
-//     auto msg_itr = _messages.begin();
-//     while (msg_itr != _messages.end())
-//     {
-//         msg_itr = _messages.erase(msg_itr);
-//     }
-// }
 
 void civic::proposal_event(uint64_t proposal_id)
 {
@@ -255,6 +214,7 @@ ACTION civic::propvote(name voter, vector<uint64_t> proposal_ids)
                 proposal.yes_vote_count += 1;
             });
         }
+        proposal_event(proposal_id);
     }
     check(accumulated_budget <= approved_budget, "Proposals budget exceeded");
 
