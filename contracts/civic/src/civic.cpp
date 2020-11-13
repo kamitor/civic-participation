@@ -189,7 +189,7 @@ ACTION civic::propvote(name voter, vector<uint64_t> proposal_ids)
     proposals_table _proposals(get_self(), get_self().value);
 
     float accumulated_budget = 0.0f;
-    float approved_budget = 100000.0f;
+    float approved_budget = 200000.0f;
 
     for (uint64_t proposal_id : proposal_ids)
     {

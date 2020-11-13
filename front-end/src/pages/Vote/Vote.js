@@ -113,7 +113,7 @@ export default function Vote() {
     const [loading, setLoading] = useState(false);
 
     // total budget
-    const [budgetLimit, _] = useState(100000);
+    const [budgetLimit, _] = useState(200000);
 
     // On delete button click in proposal
     const handleDelete = (proposalId) => {
