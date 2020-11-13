@@ -221,7 +221,7 @@ const MainTitleTypography = withStyles({
   }
 })(Typography);
 
-const MainSmallTitleTyography = withStyles({
+const MainSmallTitleTypography = withStyles({
   root: {
     fontSize: '15px',
     color: 'rgba(18, 97, 163, 1)',
@@ -239,7 +239,7 @@ const TitleLabelTypography = withStyles({
   },
 })(Typography);
 
-const CollapseTyography = withStyles({
+const CollapseTypography = withStyles({
   root: {
     fontSize: "12px",
     color: "rgba(18, 97, 163, 1)",
@@ -248,13 +248,6 @@ const CollapseTyography = withStyles({
   },
 })(Typography);
 
-const TitleCategoryTypography = withStyles({
-  root: {
-    color: "#599C6D",
-    fontWeight: 500,
-    fontSize: "15px",
-  },
-})(Typography);
 
 const GovernmentTitleTypography = withStyles({
   root: {
@@ -283,18 +276,6 @@ const UploadButton = withStyles({
   },
 })(Button);
 
-const UploadSmallTypographyCreate = withStyles({
-  root: {
-    fontSize: "15px",
-    color: "#1261A3",
-  },
-})(Typography);
-
-const UploadLock = withStyles({
-  root: {
-    color: "#1261A3",
-  },
-})(Lock);
 
 const TimelineLock = withStyles({
   root: {
@@ -344,14 +325,12 @@ export default function ProposalDetail() {
     watch,
     register,
     setValue,
+    setError,
+    clearErrors,
     control,
   } = useForm({
     criteriaMode: "all",
   });
-
-  const handleChangeBudget = (budget) => {
-    setCurrencyValue(budget)
-  }
 
   const handleFileSize = (message) => {
     if (message.search("File is too big") > 0) {
@@ -481,9 +460,12 @@ export default function ProposalDetail() {
   };
 
   const onSubmit = async (data) => {
-    setEditing(false);
-    const budget = parseFloat(currencyValue.replace(",", ""))
-;
+    if(currencyValue === undefined || currencyValue === '') {
+      setError('budget')
+      return
+    }
+
+    const budget = parseFloat(currencyValue.replace(",", ""));
 
     await authContext.civic.proposalUpdate({
       ...data,
@@ -498,6 +480,7 @@ export default function ProposalDetail() {
 
     getProposal();
     getProposalHistory();
+    setEditing(false);
   };
 
   const handleDropDownImage = (files) => {
@@ -703,13 +686,13 @@ export default function ProposalDetail() {
                     <span>
                       <Grid item container>
                         <TimelineLock />
-                        <MainSmallTitleTyography>Immutable</MainSmallTitleTyography>
+                        <MainSmallTitleTypography>Immutable</MainSmallTitleTypography>
                       </Grid>
                     </span>
                   </HtmlTooltip>
                 </Grid>
                 <Grid item container xs className="collapse-wraper" alignItems="center" justify="flex-end" onClick={handleCollapse}>
-                  <CollapseTyography>{historyCollapse}</CollapseTyography>
+                  <CollapseTypography>{historyCollapse}</CollapseTypography>
                   {showHistory ? <ExpandLess /> : <ExpandMore />}
                 </Grid>
               </Grid>
@@ -827,7 +810,11 @@ export default function ProposalDetail() {
                 <Grid item xs={6} container alignItems="center" spacing={3}>
                   <Grid item>
                     <CurrencyTextField
-                      name="budget"
+                    onChange={(event, value)=> {
+                          setCurrencyValue(value)
+                          clearErrors('budget')
+                        }
+                      }
                       defaultValue={proposal.budget}
                       currencySymbol="€"
                       outputFormat="string"
@@ -840,16 +827,8 @@ export default function ProposalDetail() {
                         },
                       }}
                       className={classes.budgetInputStyle}
-                      className={classes.budgetInputStyle}
                       error={errors.budget !== undefined}
-                      minimumValue={0}
-                      required={true}
-                      control={control}
-                      ref={register}
-                      key="budget"
-                      rules={{ required: true }}
-                      value={currencyValue}
-                      onChange={(event, value) => handleChangeBudget(value)}
+                      minimumValue={'1'}
                     />
                   </Grid>
                   <Grid item className="type-wrape">
