@@ -450,11 +450,6 @@ export default function ProposalDetail() {
     showHistory ? setHistoryCollapse('EXPAND') : setHistoryCollapse('COLLAPSE');
   };
 
-  function onVote() {
-    voteContext.addProposal(proposal);
-    history.push("/vote");
-  }
-
   function voteAndBrowse() {
     voteContext.addProposal(proposal);
     history.push("/dashboard?filter=voting");
