@@ -114,8 +114,8 @@ class Accountability {
                 console.error(JSON.stringify(e.json, null, 2));
             else {
                 console.error(e)
-                throw Error(e);
             }
+            throw Error(e);
         }
     }
 
