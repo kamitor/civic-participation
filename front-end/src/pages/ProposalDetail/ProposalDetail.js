@@ -455,6 +455,16 @@ export default function ProposalDetail() {
     history.push("/vote");
   }
 
+  function voteAndBrowse() {
+    voteContext.addProposal(proposal);
+    history.push("/dashboard?filter=voting");
+  }
+
+  function voteAndSubmit() {
+    voteContext.addProposal(proposal);
+    history.push("/vote");
+  }
+
   const handleChangeLocation = async (location) => {
     setLocation(location);
   };
@@ -543,11 +553,19 @@ export default function ProposalDetail() {
                   className="button-wraper"
                 >
                   {showButtons.vote && (
+                    <>
                     <Grid item>
-                      <AddToVoteButton type="button" onClick={onVote}>
-                        ADD TO VOTE
+                      <AddToVoteButton type="button" onClick={voteAndBrowse}>
+                        VOTE AND CONTINUE BROWSING
                       </AddToVoteButton>
                     </Grid>
+                    <Grid item>
+                      <AddToVoteButton type="button" onClick={voteAndSubmit}>
+                        VOTE AND SUBMIT
+                      </AddToVoteButton>
+                    </Grid>
+                    </>
+
                   )}
                   {showButtons.edit && (
                     <Grid item>
