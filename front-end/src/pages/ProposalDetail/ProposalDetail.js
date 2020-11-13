@@ -168,21 +168,21 @@ const HeaderCustomizeStar = withStyles({
 
 const TitleLock = withStyles({
   root: {
-    fontSize: "14px"
+      fontSize: "14px"
   }
 })(Lock);
 
 
 const GreenSmallTypographyCreate = withStyles({
   root: {
-    fontSize: '15px',
-    color: '#1261A3',
+      fontSize: '15px',
+      color: '#1261A3',
   }
 })(Typography);
 
 const CreateLock = withStyles({
   root: {
-    color: '#1261A3'
+      color: '#1261A3'
   }
 })(Lock);
 
@@ -399,13 +399,18 @@ export default function ProposalDetail() {
       }
     }
 
-    setStatusOptions([
-      { label: 'Reviewing', value: ProposalStatus.Reviewing },
-      { label: 'Approved', value: ProposalStatus.Approved },
-      { label: 'Rejected', value: ProposalStatus.Rejected },
-      { label: 'Actioned', value: ProposalStatus.Actioned },
-      { label: 'Closed', value: ProposalStatus.Closed }
-    ])
+    if (proposalState.status === ProposalStatus.Approved || proposalState.status === ProposalStatus.Actioned) {
+      setStatusOptions([
+        { label: 'Actioned', value: ProposalStatus.Actioned },
+        { label: 'Closed', value: ProposalStatus.Closed },
+      ])
+    } else {
+      setStatusOptions([
+        { label: 'Reviewing', value: ProposalStatus.Reviewing },
+        { label: 'Approved', value: ProposalStatus.Approved },
+        { label: 'Rejected', value: ProposalStatus.Rejected },
+      ])
+    }
 
     setLocation(proposalState.location);
     setProposal(proposalState);
@@ -477,10 +482,8 @@ export default function ProposalDetail() {
 
   const onSubmit = async (data) => {
     setEditing(false);
-    const budget =
-      typeof currencyValue === "string"
-        ? parseFloat(currencyValue.replace(",", ""))
-        : currencyValue;
+    const budget = parseFloat(currencyValue.replace(",", ""))
+;
 
     await authContext.civic.proposalUpdate({
       ...data,
@@ -775,15 +778,15 @@ export default function ProposalDetail() {
                   <Grid item>
                     <HtmlTooltip
                       title={
-                        <React.Fragment>
-                          <div>{<TitleLock />}Proposals, voting and government actions are stored on the blockchain.
+                      <React.Fragment>
+                        <div>{<TitleLock />}Proposals, voting and government actions are stored on the blockchain.
                             This data is cryptographically secured and cannot be forged or tampered
                             with by anyone, including the government.&nbsp;
                           <Link className="read-more-link" onClick={navigateSecurityPage}>
                               Click to learn more
                           </Link>
-                          </div>
-                        </React.Fragment>
+                        </div>
+                      </React.Fragment>
                       }
                       arrow
                       interactive
@@ -795,19 +798,19 @@ export default function ProposalDetail() {
                         </GreenSmallTypographyCreate>
                         </Grid>
                         <Grid item>
-                          <CreateLock />
+                            <CreateLock />
                         </Grid>
                       </Grid>
                     </HtmlTooltip>
                   </Grid>
                   <Grid item>
-                    <UploadButton type="submit" disabled={loading} >
-                      SAVE
+                      <UploadButton type="submit"  disabled={loading} >
+                        SAVE
                       {loading && <CircularProgress size={24} className="button-progress" />}
-                    </UploadButton>
+                      </UploadButton>
                   </Grid>
                   <Grid item>
-                    <UploadButton type="button" onClick={handleCancel}>CANCEL</UploadButton>
+                      <UploadButton type="button"  onClick={handleCancel}>CANCEL</UploadButton>
                   </Grid>
                 </Grid>
               </Grid>
@@ -839,6 +842,8 @@ export default function ProposalDetail() {
                       className={classes.budgetInputStyle}
                       className={classes.budgetInputStyle}
                       error={errors.budget !== undefined}
+                      minimumValue={0}
+                      required={true}
                       control={control}
                       ref={register}
                       key="budget"
@@ -1118,7 +1123,7 @@ export default function ProposalDetail() {
                   </Grid>
                 </Grid>
               </Grid>
-
+             
             </div>
           </Grid>
         </form>
