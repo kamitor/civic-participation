@@ -54,7 +54,15 @@ export default function CreateAccount() {
 			await authContext.createAccount(username, password, `${firstname} ${lastname}`)
 			history.push('/dashboard')
 		} catch (err) {
-			setMessage(err.message)
+			const regex = /Cannot create account named (.*), as that name is already taken/
+			const usernameAlreadyTaken = regex.test(err.response.data);
+
+			if(usernameAlreadyTaken) {
+				setMessage('Username already taken. Please, choose a different one.')
+			} else {
+				setMessage(err.response.data)
+			}
+
 			setOpen(true);
 			setLoading(false)
 		}
