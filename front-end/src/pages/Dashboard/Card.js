@@ -104,6 +104,11 @@ export default function Card(props) {
   if (props.selected) {
     style.paper.backgroundColor = "lightgrey";
   }
+
+  if (props.isAddedToVoteBasket) {
+    style.paper.border = "12px solid #599C6D";
+  }
+
   const useStyles = makeStyles((theme) => style);
 
   const classes = useStyles();

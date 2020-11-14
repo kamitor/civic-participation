@@ -9,6 +9,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import Card from "./Card";
 import Map from "./Map";
 import { ConsumeAuth } from "../../hooks/authContext";
+import { ConsumeVote } from "../../hooks/voteContext";
 import { useHistory, useLocation } from "react-router-dom";
 import ProposalStatus from "../../types/proposals/status";
 
@@ -21,7 +22,7 @@ function parseLocation(location) {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1,
+    flexGrow: 1
   },
   mainContainer: {
     marginTop: 30,
@@ -32,6 +33,11 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: 780,
     overflowY: "auto",
     marginTop: 70,
+  },
+  cardInnerContainer: {
+    display: 'flex',
+    flex: 1,
+    justifyContent: 'center'
   },
   searchContainer: {
     height: 150,
@@ -93,21 +99,23 @@ function sortByCreatedDate(data) {
 }
 function Dashboard(props) {
   const classes = useStyles();
-  const [navigation, setNavigation] = useState('2');
+  const [navigation, setNavigation] = useState("2");
   const authContext = ConsumeAuth();
+  const voteContext = ConsumeVote();
   const history = useHistory();
   const location = useLocation();
   const [selectedProposals, setSelectedProposals] = useState([]);
   const [selected, setSelected] = useState({});
 
-
   useEffect(() => {
     async function main() {
       let proposals = await authContext.civic.proposalList();
-      proposals = proposals ? proposals.map((item) => {
-        item.position = parseLocation(item.location);
-        return item;
-      }): [];
+      proposals = proposals
+        ? proposals.map((item) => {
+            item.position = parseLocation(item.location);
+            return item;
+          })
+        : [];
 
       let searchedProposals;
 
@@ -133,9 +141,8 @@ function Dashboard(props) {
       setSelectedProposals(searchedProposals);
     }
 
-    if(navigation && authContext) {
+    if (navigation && authContext) {
       main();
-
     }
   }, [navigation, authContext]);
 
@@ -209,7 +216,7 @@ function Dashboard(props) {
             {selectedProposals.length > 0 && (
               <Grid item container className={classes.cardWrap}>
                 {selectedProposals.map((proposal) => (
-                  <Grid item xs={6} key={proposal.proposalId}>
+                  <Grid item className={classes.cardInnerContainer} xs={6} key={proposal.proposalId}>
                     <Card
                       title={proposal.title}
                       description={proposal.description}
@@ -227,6 +234,9 @@ function Dashboard(props) {
                             }`
                           : ""
                       }
+                      isAddedToVoteBasket={voteContext.proposals
+                        .map((proposal) => proposal.proposalId)
+                        .includes(proposal.proposalId)}
                     />
                   </Grid>
                 ))}
