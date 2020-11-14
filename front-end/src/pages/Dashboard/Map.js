@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { useHistory } from "react-router-dom";
 
 import { toLabel as categoryToLabel } from "../../types/proposals/categories";
 
@@ -9,6 +10,7 @@ import GoogleMapReact from "google-map-react";
 import Card from "./Card";
 
 const InfoWindow = (props) => {
+  const history = useHistory();
   const { place } = props;
   const infoWindowStyle = {
     position: "relative",
@@ -26,14 +28,31 @@ const InfoWindow = (props) => {
   console.log(place);
 
   return (
-    <div style={infoWindowStyle}>
+    <div
+      style={infoWindowStyle}
+      onClick={() => {
+        history.push(`/proposal/${place.proposalId}`);
+      }}
+    >
       <img
         alt={place.title}
         src={place.photo}
-        style={{ width: "100px", height: "100px", marginRight: "12px" }}
+        style={{
+          width: "100px",
+          height: "100px",
+          marginRight: "12px",
+          cursor: "pointer",
+        }}
       />
 
-      <div style={{ display: "flex", flex:1, flexDirection: "column" }}>
+      <div
+        style={{
+          display: "flex",
+          flex: 1,
+          flexDirection: "column",
+          cursor: "pointer",
+        }}
+      >
         <div style={{ fontSize: 17, fontWeight: 500 }}>{place.title}</div>
         <div
           style={{
