@@ -25,8 +25,6 @@ const InfoWindow = (props) => {
     flexDirection: "row",
   };
 
-  console.log(place);
-
   return (
     <div
       style={infoWindowStyle}
