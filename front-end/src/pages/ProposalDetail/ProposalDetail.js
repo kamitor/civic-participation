@@ -1024,7 +1024,7 @@ export default function ProposalDetail() {
                     className="description-textarea"
                     error={errors.description !== undefined}
                     placeholder={placeholder}
-                    value={proposal.description}
+                    defaultValue={proposal.description}
                   />
                 </Grid>
                 <Grid item xs={12} className="description-helper">
