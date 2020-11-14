@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import * as QueryString from 'query-string';
 import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import NativeSelect from "@material-ui/core/NativeSelect";
@@ -9,7 +10,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import Card from "./Card";
 import Map from "./Map";
 import { ConsumeAuth } from "../../hooks/authContext";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import ProposalStatus from "../../types/proposals/status";
 
 function parseLocation(location) {
@@ -93,56 +94,66 @@ function sortByCreatedDate(data) {
 }
 function Dashboard(props) {
   const classes = useStyles();
-  const [proposalList, setProposalList] = useState([]);
+  const [navigation, setNavigation] = useState("all");
   const authContext = ConsumeAuth();
   const history = useHistory();
+  const location = useLocation();
   const [selectedProposals, setSelectedProposals] = useState([]);
   const [status, setStatus] = useState("");
   const [selected, setSelected] = useState({});
 
-  const handleChange = (event) => {
-    let value = event.target.value;
-    setStatus(value);
-    let searchedProposals;
-    if (value === "all") {
-      searchedProposals = proposalList;
-      sortByCreatedDate(searchedProposals);
-    } else if (value === "my") {
-      searchedProposals = proposalList.filter(
-        (item) => item.creator === authContext.civic.account.accountName
-      );
-      sortByCreatedDate(searchedProposals);
-    } else if (value === ProposalStatus.Approved.toString()) {
-      searchedProposals = proposalList.filter(
-        (item) => item.status.toString() === value
-      );
-      searchedProposals.sort((a, b) => b.yesVoteCount - a.yesVoteCount);
-    } else {
-      searchedProposals = proposalList.filter(
-        (item) => item.status.toString() === value
-      );
-      sortByCreatedDate(searchedProposals);
-    }
-    setSelectedProposals(searchedProposals);
-  };
 
   useEffect(() => {
     async function main() {
-      if (!(await authContext.isLoggedIn())) {
-        history.push("/login");
-        return;
-      }
       let proposals = await authContext.civic.proposalList();
       proposals = proposals.map((item) => {
         item.position = parseLocation(item.location);
         return item;
       });
-      setProposalList(proposals);
-      setSelectedProposals(proposals);
+
+      let searchedProposals;
+
+      if (navigation === "all") {
+        searchedProposals = proposals;
+        sortByCreatedDate(searchedProposals);
+      } else if (navigation === "my") {
+        searchedProposals = proposals.filter(
+          (item) => item.creator === authContext.civic.account.accountName
+        );
+        sortByCreatedDate(searchedProposals);
+      } else if (navigation === ProposalStatus.Approved.toString()) {
+        searchedProposals = proposals.filter(
+          (item) => item.status.toString() === navigation
+        );
+        searchedProposals.sort((a, b) => b.yesVoteCount - a.yesVoteCount);
+      } else {
+        searchedProposals = proposals.filter(
+          (item) => item.status.toString() === navigation
+        );
+        sortByCreatedDate(searchedProposals);
+      }
+      setSelectedProposals(searchedProposals);
     }
 
-    main();
-  }, [authContext, history]);
+    if(navigation && authContext) {
+      main();
+
+    }
+  }, [navigation, authContext]);
+
+  useEffect(() => {
+    if (!authContext.isLoggedIn()) {
+      history.push("/login");
+      return;
+    }
+
+    const params = QueryString.parse(location.search);
+
+    if(params.filter === 'voting') {
+      setNavigation('2')
+    }
+
+  }, []);
 
   const navigateToProposal = (proposalId) => {
     history.push(`/proposal/${proposalId}`);
@@ -173,8 +184,8 @@ function Dashboard(props) {
                       Status
                     </InputLabel>
                     <NativeSelect
-                      value={status}
-                      onChange={handleChange}
+                      value={navigation}
+                      onChange={(e) => setNavigation(e.target.value)}
                       id="search-proposal"
                     >
                       <option value="all">All proposals</option>
@@ -223,7 +234,7 @@ function Dashboard(props) {
                           ? `${proposal.yesVoteCount} ${
                               proposal.yesVoteCount > 1 ? "votes" : "vote"
                             }`
-                          : ''
+                          : ""
                       }
                     />
                   </Grid>

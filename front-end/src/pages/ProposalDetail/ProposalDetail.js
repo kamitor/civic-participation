@@ -450,7 +450,12 @@ export default function ProposalDetail() {
     showHistory ? setHistoryCollapse('EXPAND') : setHistoryCollapse('COLLAPSE');
   };
 
-  function onVote() {
+  function voteAndBrowse() {
+    voteContext.addProposal(proposal);
+    history.push("/dashboard?filter=voting");
+  }
+
+  function voteAndSubmit() {
     voteContext.addProposal(proposal);
     history.push("/vote");
   }
@@ -543,11 +548,19 @@ export default function ProposalDetail() {
                   className="button-wraper"
                 >
                   {showButtons.vote && (
+                    <>
                     <Grid item>
-                      <AddToVoteButton type="button" onClick={onVote}>
-                        ADD TO VOTE
+                      <AddToVoteButton type="button" onClick={voteAndBrowse}>
+                        VOTE AND CONTINUE BROWSING
                       </AddToVoteButton>
                     </Grid>
+                    <Grid item>
+                      <AddToVoteButton type="button" onClick={voteAndSubmit}>
+                        VOTE AND SUBMIT
+                      </AddToVoteButton>
+                    </Grid>
+                    </>
+
                   )}
                   {showButtons.edit && (
                     <Grid item>
