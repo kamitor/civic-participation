@@ -104,10 +104,10 @@ function Dashboard(props) {
   useEffect(() => {
     async function main() {
       let proposals = await authContext.civic.proposalList();
-      proposals = proposals.map((item) => {
+      proposals = proposals ? proposals.map((item) => {
         item.position = parseLocation(item.location);
         return item;
-      });
+      }): [];
 
       let searchedProposals;
 

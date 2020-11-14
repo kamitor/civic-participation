@@ -123,7 +123,8 @@ function DashboardMap(props) {
   }, [selected]);
 
   const onChildClickCallback = (key) => {
-    props.onSelect(props.selectedProposals[key]);
+    const proposal = props.selectedProposals.find(x => x.proposalId == key)
+    props.onSelect(proposal);
   };
 
   return (
