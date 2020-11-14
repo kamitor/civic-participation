@@ -452,7 +452,7 @@ export default function ProposalDetail() {
 
   function voteAndBrowse() {
     voteContext.addProposal(proposal);
-    history.push("/dashboard?filter=voting");
+    history.push("/dashboard");
   }
 
   function voteAndSubmit() {

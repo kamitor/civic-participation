@@ -254,7 +254,7 @@ export default function Vote() {
           <Grid item container justify="center">
             <HomeButton
               onClick={() => {
-                history.push("/dashboard?filter=voting");
+                history.push("/dashboard");
               }}
             >
               FIND PROPOSALS
