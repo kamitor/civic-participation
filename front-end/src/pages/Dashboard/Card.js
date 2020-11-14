@@ -15,7 +15,7 @@ const CardTitle = withStyles({
   root: {
     color: "#000000",
     fontWeight: "normal",
-    fontSize: "18px",
+    fontSize: "22px",
     lineHeight: "21px",
     "&:hover": {
       cursor: "pointer",
@@ -28,8 +28,8 @@ const CardContentDescription = withStyles({
   root: {
     color: "#000000",
     fontWeight: "normal",
-    fontSize: "10px",
-    marginTop: 10,
+    fontSize: "16px",
+    // marginTop: 10,
     wordBreak: "break-word",
   },
 })(Typography);
@@ -71,17 +71,15 @@ export default function Card(props) {
       flexGrow: 1,
     },
     mainContainer: {
-      marginTop: 30,
     },
     cardWrap: {
       maxWidth: 800,
       margin: "auto",
     },
     paper: {
-      padding: 10,
       margin: "auto",
       maxWidth: 285,
-      marginBottom: 30,
+      marginBottom: 60,
       height: 300,
     },
     image: {
@@ -98,7 +96,8 @@ export default function Card(props) {
       padding: 10,
     },
     cardTitle: {
-      minHeight: 50,
+      marginTop: 6,
+      marginBottom: 6,
     },
   };
   if (props.selected) {
@@ -159,7 +158,7 @@ export default function Card(props) {
             </Grid>
             <Grid item>
               <CardContentDescription>
-                {props.description.slice(0, 70)} ...
+                {props.description.length > 65 ? `${props.description.slice(0, 65)} ...` : props.description }
               </CardContentDescription>
             </Grid>
           </Grid>

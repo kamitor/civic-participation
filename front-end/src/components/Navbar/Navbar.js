@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+
 import { Grid, Typography, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { withStyles } from "@material-ui/core/styles";
@@ -6,6 +9,12 @@ import logo from "../../assets/image/logo.png";
 import { useHistory } from "react-router-dom";
 import { ConsumeAuth } from "../../hooks/authContext";
 import { ConsumeVote } from "../../hooks/voteContext";
+import {
+  AddCircle,
+  CheckCircleOutline,
+  Dashboard,
+  ExitToApp,
+} from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   navbar: {
     width: "100%",
     height: 85,
-    backgroundColor: "#C4C4C4",
+    backgroundColor: "#ddd",
   },
   logo: {
     width: 60,
@@ -27,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "100%",
   },
   logoContainer: {
-    marginLeft: 80,
+    marginLeft: 20,
     alignItems: "center",
     cursor: "pointer",
   },
@@ -71,7 +80,6 @@ const DashboardButton = withStyles({
     border: 0,
     color: "#1261A3",
     height: 36,
-    padding: "0 20px",
     "&:hover": {
       backgroundColor: "#C4C4C4",
     },
@@ -99,61 +107,48 @@ export default function Navbar() {
   }
 
   return (
-    <div className={classes.root}>
-      <Grid
-        item
-        container
-        className={classes.navbar}
-        alignItems="center"
-        justify="flex-start"
-      >
-        <Grid item container xs alignItems="center">
-          <Grid
-            item
-            container
-            className={classes.logoContainer}
-            onClick={clickLogo}
-          >
-            <Grid item className={classes.logo}>
-              <img
-                src={logo}
-                alt="Civic Participation Tool"
-                className={classes.logoImage}
-              />
-            </Grid>
-            <LogoTitle>Civic</LogoTitle>
-          </Grid>
+    <AppBar position="static" style={{ backgroundColor: "#ddd", height: "82px", justifyContent: 'center' }}>
+      <Toolbar>
+        <Grid item className={classes.logo}>
+          <img
+            src={logo}
+            alt="Civic Participation Tool"
+            className={classes.logoImage}
+          />
         </Grid>
-        <Grid item container xs alignItems="center">
-          <Grid item container className={classes.buttonContainer}>
-            <DashboardButton onClick={logout}>Logout</DashboardButton>
-            <DashboardButton
-              variant={
-                history.location.pathname.includes("vote") ? "contained" : null
-              }
-              onClick={() => history.push("/vote")}
-            >
-              Vote
-              {voteContext.proposals.length > 0
-                ? ` (${voteContext.proposals.length})`
-                : ""}
-            </DashboardButton>
-            <DashboardButton
-              variant={
-                history.location.pathname.includes("dashboard")
-                  ? "contained"
-                  : null
-              }
-              onClick={() => history.push("/dashboard")}
-            >
-              Dashboard
-            </DashboardButton>
-            <CreateButton onClick={() => history.push("/proposal-create")}>
-              CREATE
-            </CreateButton>
-          </Grid>
-        </Grid>
-      </Grid>
-    </div>
+        <LogoTitle>Civic</LogoTitle>
+        <div style={{ flexGrow: 1 }} />
+
+        <DashboardButton
+          variant={
+            history.location.pathname.includes("vote") ? "contained" : null
+          }
+          onClick={() => history.push("/vote")}
+          style={{ marginRight: 20 }}
+        >
+          <CheckCircleOutline style={{ marginRight: 8 }} /> Vote summary
+          {voteContext.proposals.length > 0
+            ? ` (${voteContext.proposals.length})`
+            : ""}
+        </DashboardButton>
+        <DashboardButton
+          variant={
+            history.location.pathname.includes("dashboard") ? "contained" : null
+          }
+          onClick={() => history.push("/dashboard")}
+          style={{ borderRadius: 12, marginRight: 120 }}
+        >
+          <Dashboard style={{ marginRight: 8 }} /> Dashboard
+        </DashboardButton>
+        <CreateButton style={{ marginRight: 20 }}  onClick={() => history.push("/proposal-create")}>
+          <AddCircle style={{ marginRight: 8 }} />
+          CREATE
+        </CreateButton>
+        <DashboardButton onClick={logout}>
+          <ExitToApp style={{ marginRight: 8 }} />
+          Logout
+        </DashboardButton>
+      </Toolbar>
+    </AppBar>
   );
 }
