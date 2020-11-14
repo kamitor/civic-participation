@@ -228,7 +228,7 @@ function Dashboard(props) {
                       onButtonClick={() =>
                         navigateToProposal(proposal.proposalId)
                       }
-                      hasBadge={status == ProposalStatus.Approved}
+                      hasBadge={navigation == ProposalStatus.Approved}
                       badgeContent={
                         proposal.yesVoteCount > 0
                           ? `${proposal.yesVoteCount} ${
