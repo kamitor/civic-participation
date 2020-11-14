@@ -1,27 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import settings from '../../settings';
-import styled from 'styled-components';
-import GoogleMapReact from 'google-map-react';
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+
+import { toLabel as categoryToLabel } from "../../types/proposals/categories";
+
+import settings from "../../settings";
+import styled from "styled-components";
+import GoogleMapReact from "google-map-react";
+import Card from "./Card";
 
 const InfoWindow = (props) => {
   const { place } = props;
   const infoWindowStyle = {
-    position: 'relative',
-    bottom: 100,
-    left: '-150px',
+    position: "relative",
+    left: "20px",
     width: 300,
-    backgroundColor: 'white',
-    boxShadow: '0 2px 7px 1px rgba(0, 0, 0, 0.3)',
-    padding: 20,
+    backgroundColor: "white",
+    boxShadow: "0 2px 7px 1px rgba(0, 0, 0, 0.3)",
+    padding: 12,
     fontSize: 14,
     zIndex: 100,
+    display: "flex",
+    flexDirection: "row",
   };
+
+  console.log(place);
 
   return (
     <div style={infoWindowStyle}>
-      <div style={{ fontSize: 16 }}>
-        {place.title}
+      <img
+        alt={place.title}
+        src={place.photo}
+        style={{ width: "100px", height: "100px", marginRight: "12px" }}
+      />
+
+      <div style={{ display: "flex", flex:1, flexDirection: "column" }}>
+        <div style={{ fontSize: 17, fontWeight: 500 }}>{place.title}</div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <div style={{ fontSize: 14, marginTop: "4px" }}>
+            {categoryToLabel(place.category)}
+          </div>
+          <div style={{ fontSize: 14, marginTop: "4px", color: "#227B3C" }}>
+            {place.status === 2 && "Open to votes"}
+          </div>
+        </div>
+        <div
+          style={{ fontSize: 14, marginTop: "8px", display: "flex", flex: "1" }}
+        >
+          {place.description.length > 70
+            ? `${place.description.substring(0, 70)}...`
+            : place.description}
+        </div>
       </div>
     </div>
   );
@@ -32,10 +66,11 @@ const Marker = ({ place, selected }) => {
   const markerStyle = {
     width: 38,
     height: 37,
-    backgroundImage: 'url(https://icon-library.com/images/pin-icon-png/pin-icon-png-9.jpg)',
-    backgroundSize: 'contain',
-    backgroundRepeat: 'no-repeat',
-    cursor: 'pointer',
+    backgroundImage:
+      "url(https://icon-library.com/images/pin-icon-png/pin-icon-png-9.jpg)",
+    backgroundSize: "contain",
+    backgroundRepeat: "no-repeat",
+    cursor: "pointer",
     zIndex: 10,
   };
 
@@ -53,56 +88,57 @@ const Wrapper = styled.section`
 `;
 
 function DashboardMap(props) {
-    const { selected } = props;
+  const { selected } = props;
 
-    const defaultCenter = {
-        lat: 52.11935031, lng: 4.2829047
+  const defaultCenter = {
+    lat: 52.11935031,
+    lng: 4.2829047,
+  };
+
+  const [currentPosition, setCurrentPosition] = useState(defaultCenter);
+
+  useEffect(() => {
+    if (selected && selected.proposalId) {
+      setCurrentPosition(selected.position);
     }
-  
-    const [currentPosition, setCurrentPosition] = useState(defaultCenter);
+  }, [selected]);
 
-    useEffect(() => {
-        if (selected && selected.proposalId) {
-            setCurrentPosition(selected.position);
-        }
-    }, [selected])
+  const onChildClickCallback = (key) => {
+    props.onSelect(props.selectedProposals[key]);
+  };
 
-    const onChildClickCallback = (key) => {
-        props.onSelect(props.selectedProposals[key])
-    };
-
-    return (
-      <Wrapper>
-        {true && (
-          <GoogleMapReact
-            defaultZoom={props.zoom}
-            yesIWantToUseGoogleMapApiInternals={true}
-            defaultCenter={defaultCenter}
-            bootstrapURLKeys={{
-                key: settings.google.apiKey,
-                libraries: ['places', 'geometry'],
-            }}
-            onChildClick={onChildClickCallback}
-            center={currentPosition}
-          >
-             {
-                props.selectedProposals.map(place => {
-                    return (
-                        <Marker
-                            key={place.proposalId}
-                            lat={place.position.lat}
-                            lng={place.position.lng}
-                            show={true}
-                            place={place}
-                            selected={selected.proposalId == place.proposalId ? true : false}
-                        />
-                    )
-                })
-            }
-          </GoogleMapReact>
-        )}
-      </Wrapper>
-    );
+  return (
+    <Wrapper>
+      {true && (
+        <GoogleMapReact
+          defaultZoom={props.zoom}
+          yesIWantToUseGoogleMapApiInternals={true}
+          defaultCenter={defaultCenter}
+          bootstrapURLKeys={{
+            key: settings.google.apiKey,
+            libraries: ["places", "geometry"],
+          }}
+          onChildClick={onChildClickCallback}
+          center={currentPosition}
+        >
+          {props.selectedProposals.map((place) => {
+            return (
+              <Marker
+                key={place.proposalId}
+                lat={place.position.lat}
+                lng={place.position.lng}
+                show={true}
+                place={place}
+                selected={
+                  selected.proposalId == place.proposalId ? true : false
+                }
+              />
+            );
+          })}
+        </GoogleMapReact>
+      )}
+    </Wrapper>
+  );
 }
 
 InfoWindow.propTypes = {

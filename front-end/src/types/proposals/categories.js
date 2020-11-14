@@ -18,7 +18,7 @@ export default ProposalCategory;
 
 const categoryReverse = {
     0: {
-        label: "Green",
+        label: "Green Space",
         icon: EcoIcon
     },
     1: {
