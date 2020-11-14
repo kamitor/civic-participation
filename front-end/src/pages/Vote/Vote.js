@@ -105,6 +105,42 @@ const GreenSmallTypographyCreate = withStyles({
   },
 })(Typography);
 
+const TitleTypography = withStyles({
+  root: {
+    fontStyle: "normal",
+    fontWeight: "normal",
+    fontSize: "24px",
+    lineHeight: "28px",
+  },
+})(Typography);
+
+const ContentTypography = withStyles({
+  root: {
+    fontStyle: "normal",
+    fontWeight: "normal",
+    fontSize: "18px",
+    lineHeight: "21px",
+  },
+})(Typography);
+
+const HomeButton = withStyles({
+  root: {
+    backgroundColor: "#1261A3",
+    borderRadius: 3,
+    border: 0,
+    color: "white",
+    height: 36,
+    padding: "0 20px",
+    width: 220,
+  },
+  label: {
+    textTransform: "capitalize",
+    fontSize: "14px",
+    fontWeight: "500",
+  },
+})(Button);
+
+
 export default function Vote() {
   const authContext = ConsumeAuth();
   const voteContext = ConsumeVote();
@@ -199,135 +235,171 @@ export default function Vote() {
   return (
     <div className={classes.root}>
       <Navbar />
-      <Grid container direction="column" className="header-container">
-        <Grid className="header-wraper">
-          <Grid container spacing={10}>
-            <Grid item container xs={6} direction="column" spacing={5}>
-              <Grid item>
-                <VoteTypography>Vote</VoteTypography>
-              </Grid>
-              <Grid item>
-                <TitleHeaderTypography>
-                  Please vote responsibly to upgrade the infrastructure in your
-                  neighbourhood for the benefit of all!
-                </TitleHeaderTypography>
-              </Grid>
-              <Grid item container direction="column" spacing={2}>
-                <ProgressBar
-                  bgcolor={completed > 100 ? "#E39696" : "#599C6D"}
-                  completed={completed > 100 ? 100 : completed}
-                  selectedValue={selectedValue}
-                />
-                <Grid item item container justify="flex-end">
-                  <TitleHeaderTypography>
-                    from budget of&nbsp;&nbsp;&nbsp;&nbsp;
-                    {formatter.format(budgetLimit)}
-                  </TitleHeaderTypography>
+
+      {voteContext.proposals.length === 0 && (
+        <Grid container direction="column" className="header-container">
+            <Grid className="header-wraper">
+
+        <Grid container spacing={10}>
+          <Grid item container direction="column" spacing={6}>
+            <Grid item>
+              <TitleTypography>Your vote basket looks so empty!</TitleTypography>
+            </Grid>
+            <Grid item>
+              <ContentTypography>
+                Select your favorite proposals in the Dashboard page and the overview of your choices will be shown here for confirmation
+              </ContentTypography>
+            </Grid>
+          </Grid>
+          <Grid item container justify="center">
+            <HomeButton
+              onClick={() => {
+                history.push("/dashboard?filter=voting");
+              }}
+            >
+              FIND PROPOSALS
+            </HomeButton>
+          </Grid>
+        </Grid>
+        </Grid>
+        </Grid>
+
+      )}
+
+      {voteContext.proposals.length > 0 && (
+        <>
+          <Grid container direction="column" className="header-container">
+            <Grid className="header-wraper">
+              <Grid container spacing={10}>
+                <Grid item container xs={6} direction="column" spacing={5}>
+                  <Grid item>
+                    <VoteTypography>Vote</VoteTypography>
+                  </Grid>
+                  <Grid item>
+                    <TitleHeaderTypography>
+                      Please vote responsibly to upgrade the infrastructure in
+                      your neighbourhood for the benefit of all!
+                    </TitleHeaderTypography>
+                  </Grid>
+                  <Grid item container direction="column" spacing={2}>
+                    <ProgressBar
+                      bgcolor={completed > 100 ? "#E39696" : "#599C6D"}
+                      completed={completed > 100 ? 100 : completed}
+                      selectedValue={selectedValue}
+                    />
+                    <Grid item item container justify="flex-end">
+                      <TitleHeaderTypography>
+                        from budget of&nbsp;&nbsp;&nbsp;&nbsp;
+                        {formatter.format(budgetLimit)}
+                      </TitleHeaderTypography>
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <Grid
+                  item
+                  container
+                  xs={6}
+                  direction="column"
+                  spacing={5}
+                  alignItems="center"
+                >
+                  <Grid item>
+                    <TitleHeaderTypography>
+                      € budget breakdown
+                    </TitleHeaderTypography>
+                  </Grid>
+                  <Grid item container xs justify="flex-end">
+                    {completed !== 0 && (
+                      <Chart
+                        series={chartValues.series}
+                        labels={chartValues.labels}
+                      />
+                    )}
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
-            <Grid
-              item
-              container
-              xs={6}
-              direction="column"
-              spacing={5}
-              alignItems="center"
-            >
-              <Grid item>
-                <TitleHeaderTypography>
-                  € budget breakdown
-                </TitleHeaderTypography>
+          </Grid>
+          <Grid className="main-container">
+            <Grid container spacing={2}>
+              <Grid
+                item
+                container
+                alignItems="center"
+                justify="flex-end"
+                className="button-wraper"
+              >
+                <Grid item>
+                  <HtmlTooltip
+                    title={
+                      <React.Fragment>
+                        <div>
+                          {<TitleLock />}Proposals, voting and government
+                          actions are stored on the blockchain. This data is
+                          cryptographically secured and cannot be forged or
+                          tampered with by anyone, including the
+                          government.&nbsp;
+                          <Link
+                            className="read-more-link"
+                            onClick={navigateSecurityPage}
+                          >
+                            Click to learn more
+                          </Link>
+                        </div>
+                      </React.Fragment>
+                    }
+                    arrow
+                    interactive
+                  >
+                    <Grid item container className="tamper-wraper">
+                      <GreenSmallTypographyCreate>
+                        tamper proof
+                      </GreenSmallTypographyCreate>
+                      <CreateLock />
+                    </Grid>
+                  </HtmlTooltip>
+                </Grid>
+                <Grid item>
+                  <UploadButton
+                    type="button"
+                    onClick={_handleVote}
+                    disabled={!completed || completed > 100 || loading}
+                  >
+                    VOTE
+                  </UploadButton>
+                  {loading && (
+                    <CircularProgress size={24} className="button-progress" />
+                  )}
+                </Grid>
               </Grid>
-              <Grid item container xs justify="flex-end">
-                {completed !== 0 && (
-                  <Chart
-                    series={chartValues.series}
-                    labels={chartValues.labels}
-                  />
+              <Grid item container alignItems="center" justify="flex-end">
+                {completed > 100 && (
+                  <TitleContentTypography>
+                    You have used more than the allocated budget
+                  </TitleContentTypography>
                 )}
               </Grid>
             </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
-      <Grid className="main-container">
-        <Grid container spacing={2}>
-          <Grid
-            item
-            container
-            alignItems="center"
-            justify="flex-end"
-            className="button-wraper"
-          >
-            <Grid item>
-              <HtmlTooltip
-                title={
-                  <React.Fragment>
-                    <div>
-                      {<TitleLock />}Proposals, voting and government actions
-                      are stored on the blockchain. This data is
-                      cryptographically secured and cannot be forged or tampered
-                      with by anyone, including the government.&nbsp;
-                      <Link
-                        className="read-more-link"
-                        onClick={navigateSecurityPage}
-                      >
-                        Click to learn more
-                      </Link>
-                    </div>
-                  </React.Fragment>
-                }
-                arrow
-                interactive
-              >
-                <Grid item container className="tamper-wraper">
-                  <GreenSmallTypographyCreate>
-                    tamper proof
-                  </GreenSmallTypographyCreate>
-                  <CreateLock />
-                </Grid>
-              </HtmlTooltip>
-            </Grid>
-            <Grid item>
-              <UploadButton
-                type="button"
-                onClick={_handleVote}
-                disabled={!completed || completed > 100 || loading}
-              >
-                VOTE
-              </UploadButton>
-              {loading && (
-                <CircularProgress size={24} className="button-progress" />
-              )}
+            <Grid className="content-wraper">
+              <Grid container spacing={5}>
+                {voteContext.proposals.map((data, key) => {
+                  return (
+                    <Card
+                      title={data.title}
+                      description={data.description}
+                      budget={data.budget}
+                      photo={data.photo}
+                      proposalId={data.proposalId}
+                      key={key}
+                      onDelete={handleDelete}
+                    />
+                  );
+                })}
+              </Grid>
             </Grid>
           </Grid>
-          <Grid item container alignItems="center" justify="flex-end">
-            {completed > 100 && (
-              <TitleContentTypography>
-                You have used more than the allocated budget
-              </TitleContentTypography>
-            )}
-          </Grid>
-        </Grid>
-        <Grid className="content-wraper">
-          <Grid container spacing={5}>
-            {voteContext.proposals.map((data, key) => {
-              return (
-                <Card
-                  title={data.title}
-                  description={data.description}
-                  budget={data.budget}
-                  photo={data.photo}
-                  proposalId={data.proposalId}
-                  key={key}
-                  onDelete={handleDelete}
-                />
-              );
-            })}
-          </Grid>
-        </Grid>
-      </Grid>
+        </>
+      )}
     </div>
   );
 }
