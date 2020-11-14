@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import * as QueryString from 'query-string';
 import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import NativeSelect from "@material-ui/core/NativeSelect";
@@ -94,12 +93,11 @@ function sortByCreatedDate(data) {
 }
 function Dashboard(props) {
   const classes = useStyles();
-  const [navigation, setNavigation] = useState("all");
+  const [navigation, setNavigation] = useState('2');
   const authContext = ConsumeAuth();
   const history = useHistory();
   const location = useLocation();
   const [selectedProposals, setSelectedProposals] = useState([]);
-  const [status, setStatus] = useState("");
   const [selected, setSelected] = useState({});
 
 
@@ -146,13 +144,6 @@ function Dashboard(props) {
       history.push("/login");
       return;
     }
-
-    const params = QueryString.parse(location.search);
-
-    if(params.filter === 'voting') {
-      setNavigation('2')
-    }
-
   }, []);
 
   const navigateToProposal = (proposalId) => {
