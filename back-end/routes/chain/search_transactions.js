@@ -40,5 +40,10 @@ async function getAuth(trx) {
 
     const accountName = keyRes.account_names[0]
     const accountDoc = await accountController.findOne({ accountName });
-    trx.account_authorizers_common_names = [accountDoc.commonName];
+
+    if (accountDoc.deletedAt) {
+        trx.account_authorizers_common_names = [`Deleted at ${accountDoc.deletedAt}`];
+    } else {
+        trx.account_authorizers_common_names = [accountDoc.commonName];
+    }
 }
