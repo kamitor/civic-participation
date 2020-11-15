@@ -18,7 +18,7 @@ module.exports = async function (req, res) {
     // ssiServerUrl already contains '/' at the end
     const url = `${ssiServerUrl}api/utils/jwt/${clientId}`;
     const requestData = {
-        credentialType,
+        type: credentialType,
         callbackUrl,
         sub: "credential-verify-request",
     };
