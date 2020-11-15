@@ -107,16 +107,37 @@ export default function Navbar() {
   }
 
   return (
-    <AppBar position="static" style={{ backgroundColor: "#ddd", height: "82px", justifyContent: 'center' }}>
+    <AppBar
+      position="static"
+      style={{
+        backgroundColor: "#ddd",
+        height: "82px",
+        justifyContent: "center",
+      }}
+    >
       <Toolbar>
-        <Grid item className={classes.logo}>
+        <Grid
+          item
+          className={classes.logo}
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            history.push("/dashboard");
+          }}
+        >
           <img
             src={logo}
             alt="Civic Participation Tool"
             className={classes.logoImage}
           />
         </Grid>
-        <LogoTitle>Civic</LogoTitle>
+        <LogoTitle
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            history.push("/dashboard");
+          }}
+        >
+          Civic
+        </LogoTitle>
         <div style={{ flexGrow: 1 }} />
 
         <DashboardButton
@@ -140,7 +161,10 @@ export default function Navbar() {
         >
           <Dashboard style={{ marginRight: 8 }} /> Dashboard
         </DashboardButton>
-        <CreateButton style={{ marginRight: 20 }}  onClick={() => history.push("/proposal-create")}>
+        <CreateButton
+          style={{ marginRight: 20 }}
+          onClick={() => history.push("/proposal-create")}
+        >
           <AddCircle style={{ marginRight: 8 }} />
           CREATE
         </CreateButton>
