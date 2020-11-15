@@ -57,7 +57,7 @@ export default function VoteSuccesfult() {
                             <TitleTypography>Thank you for voting</TitleTypography>
                         </Grid>
                         <Grid item>
-                            <ContentTypography>Your votes are now being processed and you will be notified with any changes by email. Any other info for the user goes here...</ContentTypography>
+                            <ContentTypography>Your votes are now being processed.</ContentTypography>
                         </Grid>
                     </Grid>
                     <Grid item container justify="center">
