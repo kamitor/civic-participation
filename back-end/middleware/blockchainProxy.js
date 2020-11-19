@@ -8,6 +8,7 @@ const { mergeObj } = require('../services/objects');
 const blockchainPathBlacklist = ['/login', '/create-account', '/image', '/ssi/token'];
 
 const pre = async function(req, res, next) {
+    const start = (new Date()).getTime();
     if (blockchainPathBlacklist.includes(req.path)) {
         next();
         return;
@@ -22,9 +23,15 @@ const pre = async function(req, res, next) {
         options.body = JSON.stringify(body);
         req.body = body;
     }
+    const startDfuse = (new Date()).getTime();
     const fetchResponse = await nodeFetch(url, options);
+    const endDfuse = (new Date()).getTime();
     const blockchainRes = await fetchResponse.json();
 
+    blockchainRes.timer = {
+        start,
+        dfuseFetch: endDfuse - startDfuse
+    };
     req.blockchainRes = blockchainRes;
     req.blockchainResStatus = fetchResponse.status;
 
