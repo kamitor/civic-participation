@@ -1,6 +1,11 @@
 #!/bin/bash
 
 # Ubuntu 18 machine
+# needs to be added: docker-compose
+# needs to be added: NVM 
+#nvm version 14.15.0 
+# needs to be added node
+# needs to be added nodejs
 
 sudo apt update
 
